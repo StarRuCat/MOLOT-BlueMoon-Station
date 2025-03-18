@@ -24,7 +24,7 @@
 /obj/vehicle/sealed/mecha/run_obj_armor(damage_amount, damage_type, damage_flag = 0, attack_dir)
 	. = ..()
 	if(!damage_amount)
-		return 0
+		return FALSE
 	var/booster_deflection_modifier = 1
 	var/booster_damage_modifier = 1
 	if(damage_flag == BULLET || damage_flag == LASER || damage_flag == ENERGY)
@@ -47,7 +47,7 @@
 	if(prob(deflect_chance * booster_deflection_modifier))
 		visible_message("<span class='danger'>[src]'s armour deflects the attack!</span>")
 		log_message("Armor saved.", LOG_MECHA)
-		return 0
+		return FALSE
 	if(.)
 		. *= booster_damage_modifier
 
@@ -72,7 +72,7 @@
 	log_message("Attack by simple animal. Attacker - [user].", LOG_MECHA, color="red")
 	if(!user.melee_damage_upper && !user.obj_damage)
 		user.emote("custom", message = "[user.friendly_verb_continuous] [src].")
-		return 0
+		return FALSE
 	else
 		var/play_soundeffect = 1
 		if(user.environment_smash)
@@ -84,7 +84,7 @@
 		animal_damage = min(animal_damage, 20*user.environment_smash)
 		log_combat(user, src, "attacked")
 		attack_generic(user, animal_damage, user.melee_damage_type, MELEE, play_soundeffect)
-		return 1
+		return TRUE
 
 
 /obj/vehicle/sealed/mecha/hulk_damage()
@@ -156,10 +156,10 @@
 		for(var/occus in occupants)
 			var/mob/living/occupant = occus
 			occupant.update_mouse_pointer()
-	if(!equipment_disabled && occupants) //prevent spamming this message with back-to-back EMPs
+	if(!equipment_disabled && LAZYLEN(occupants)) //prevent spamming this message with back-to-back EMPs
 		to_chat(occupants, "<span=danger>Error -- Connection to equipment control unit has been lost.</span>")
 	if(!QDELETED(src))
-		addtimer(CALLBACK(src, /obj/vehicle/sealed/mecha/proc/restore_equipment), 3 SECONDS, TIMER_UNIQUE | TIMER_OVERRIDE)
+		addtimer(CALLBACK(src, TYPE_PROC_REF(/obj/vehicle/sealed/mecha, restore_equipment)), 3 SECONDS, TIMER_UNIQUE | TIMER_OVERRIDE)
 	equipment_disabled = 1
 
 /obj/vehicle/sealed/mecha/temperature_expose(datum/gas_mixture/air, exposed_temperature, exposed_volume)
@@ -362,33 +362,3 @@
 			else if(damtype == TOX)
 				visual_effect_icon = ATTACK_EFFECT_MECHTOXIN
 	..()
-
-/obj/vehicle/sealed/mecha/obj_destruction()
-	if(wreckage)
-		var/mob/living/silicon/ai/AI
-		for(var/crew in occupants)
-			if(isAI(crew))
-				if(AI)
-					var/mob/living/silicon/ai/unlucky_ais = crew
-					unlucky_ais.gib()
-					continue
-				AI = crew
-		var/obj/structure/mecha_wreckage/WR = new wreckage(loc, AI)
-		for(var/obj/item/mecha_parts/mecha_equipment/E in equipment)
-			if(E.salvageable && prob(30))
-				WR.crowbar_salvage += E
-				E.detach(WR) //detaches from src into WR
-				E.equip_ready = 1
-			else
-				E.detach(loc)
-				qdel(E)
-		if(cell)
-			WR.crowbar_salvage += cell
-			cell.forceMove(WR)
-			cell.charge = rand(0, cell.charge)
-			cell = null
-		if(internal_tank)
-			WR.crowbar_salvage += internal_tank
-			internal_tank.forceMove(WR)
-			cell = null
-	. = ..()

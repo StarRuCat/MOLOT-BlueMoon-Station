@@ -82,9 +82,9 @@ GLOBAL_DATUM(main_supermatter_engine, /obj/machinery/power/supermatter_crystal)
 
 /obj/machinery/power/supermatter_crystal
 	name = "supermatter crystal"
-	desc = "A strangely translucent and iridescent crystal."
+	desc = "Странный, полупрозрачный и переливающийся энергией кристалл нейтронной звезды."
 	icon = 'icons/obj/supermatter.dmi'
-	icon_state = "darkmatter"
+	icon_state = "sm"
 	density = TRUE
 	anchored = TRUE
 	flags_1 = PREVENT_CONTENTS_EXPLOSION_1
@@ -101,7 +101,7 @@ GLOBAL_DATUM(main_supermatter_engine, /obj/machinery/power/supermatter_crystal)
 	///The portion of the gasmix we're on that we should remove
 	var/gasefficency = 0.15
 	///Used for changing icon states for diff base sprites
-	base_icon_state = "darkmatter"
+	base_icon_state = "sm"
 
 	///Are we exploding?
 	var/final_countdown = FALSE
@@ -192,10 +192,13 @@ GLOBAL_DATUM(main_supermatter_engine, /obj/machinery/power/supermatter_crystal)
 	///Disables the sm's proccessing totally.
 	var/processes = TRUE
 
+	/// If the SM is decorated with holiday lights
+	var/holiday_lights = FALSE
+
 /obj/machinery/power/supermatter_crystal/Initialize(mapload)
 	. = ..()
 	uid = gl_uid++
-	SSair.atmos_machinery += src
+	SSair.start_processing_machine(src)
 	countdown = new(src)
 	countdown.start()
 	GLOB.poi_list |= src
@@ -208,13 +211,16 @@ GLOBAL_DATUM(main_supermatter_engine, /obj/machinery/power/supermatter_crystal)
 		GLOB.main_supermatter_engine = src
 
 	AddElement(/datum/element/bsa_blocker)
-	RegisterSignal(src, COMSIG_ATOM_BSA_BEAM, .proc/call_explode)
+	RegisterSignal(src, COMSIG_ATOM_BSA_BEAM, PROC_REF(call_explode))
 
 	soundloop = new(src, TRUE)
 
+	if((NEW_YEAR in SSevents.holidays) || (CHRISTMAS in SSevents.holidays))
+		holiday_lights()
+
 /obj/machinery/power/supermatter_crystal/Destroy()
 	investigate_log("has been destroyed.", INVESTIGATE_SUPERMATTER)
-	SSair.atmos_machinery -= src
+	SSair.stop_processing_machine(src)
 	QDEL_NULL(radio)
 	GLOB.poi_list -= src
 	QDEL_NULL(countdown)
@@ -229,6 +235,8 @@ GLOBAL_DATUM(main_supermatter_engine, /obj/machinery/power/supermatter_crystal)
 		var/mob/living/carbon/C = user
 		if (!istype(C.glasses, /obj/item/clothing/glasses/meson) && (get_dist(user, src) < HALLUCINATION_RANGE(power)))
 			. += "<span class='danger'>You get headaches just from looking at it.</span>"
+	if(holiday_lights)
+		. += span_notice("Испуская как праздничное настроение, так и настоящую радиацию, этот объект украшен ослепительными гирляндами, которые аккуратно обвивают его основание, превращая потенциальное оружие апокалипсиса в космический рождественский шедевр.")
 
 // SupermatterMonitor UI for ghosts only. Inherited attack_ghost will call this.
 /obj/machinery/power/supermatter_crystal/ui_interact(mob/user, datum/tgui/ui)
@@ -331,6 +339,13 @@ GLOBAL_DATUM(main_supermatter_engine, /obj/machinery/power/supermatter_crystal)
 	. = ..()
 	if(final_countdown)
 		. += "casuality_field"
+	if(holiday_lights)
+		if(istype(src, /obj/machinery/power/supermatter_crystal/shard))
+			. += mutable_appearance(icon, "holiday_lights_shard")
+			. += emissive_appearance(icon, "holiday_lights_shard_e", src, alpha = src.alpha)
+		else
+			. += mutable_appearance(icon, "holiday_lights")
+			. += emissive_appearance(icon, "holiday_lights_e", src, alpha = src.alpha)
 
 /obj/machinery/power/supermatter_crystal/proc/countdown()
 	set waitfor = FALSE
@@ -380,7 +395,7 @@ GLOBAL_DATUM(main_supermatter_engine, /obj/machinery/power/supermatter_crystal)
 	if(combined_gas > MOLE_PENALTY_THRESHOLD)
 		investigate_log("has collapsed into a singularity.", INVESTIGATE_SUPERMATTER)
 		if(T) //If something fucks up we blow anyhow. This fix is 4 years old and none ever said why it's here. help.
-			var/obj/singularity/S = new(T)
+			var/obj/singularity/gravitational/S = new(T)
 			S.energy = 800
 			S.consume(src)
 			return //No boom for me sir
@@ -577,7 +592,7 @@ GLOBAL_DATUM(main_supermatter_engine, /obj/machinery/power/supermatter_crystal)
 	var/temp_factor = 50
 	if(gasmix_power_ratio > 0.8)
 		//with a perfect gas mix, make the power more based on heat
-		icon_state = "[base_icon_state]_glow"
+		icon_state = "[base_icon_state]-glow"
 	else
 		//in normal mode, power is less effected by heat
 		temp_factor = 30
@@ -721,7 +736,7 @@ GLOBAL_DATUM(main_supermatter_engine, /obj/machinery/power/supermatter_crystal)
 		if(damage > explosion_point)
 			countdown()
 
-	return 1
+	return TRUE
 
 /obj/machinery/power/supermatter_crystal/bullet_act(obj/item/projectile/Proj)
 	var/turf/L = loc
@@ -851,6 +866,16 @@ GLOBAL_DATUM(main_supermatter_engine, /obj/machinery/power/supermatter_crystal)
 			playsound(src, 'sound/effects/supermatter.ogg', 50, TRUE)
 			radiation_pulse(src, 50, 3)
 			return
+	if((NEW_YEAR in SSevents.holidays) || (CHRISTMAS in SSevents.holidays))
+		if(istype(W, /obj/item/clothing/head/christmashat) || istype(W, /obj/item/clothing/head/christmashatg))
+			QDEL_NULL(W)
+			RegisterSignal(src, COMSIG_PARENT_EXAMINE, PROC_REF(holiday_hat_examine))
+			if(istype(src, /obj/machinery/power/supermatter_crystal/shard))
+				add_overlay(mutable_appearance(icon, "santa_hat_shard", 3))
+			else
+				add_overlay(mutable_appearance(icon, "santa_hat", 3))
+			return COMPONENT_CANCEL_ATTACK_CHAIN
+		return NONE
 	if(istype(W, /obj/item/scalpel/supermatter))
 		var/obj/item/scalpel/supermatter/scalpel = W
 		to_chat(user, "<span class='notice'>You carefully begin to scrape \the [src] with \the [W]...</span>")
@@ -921,7 +946,7 @@ GLOBAL_DATUM(main_supermatter_engine, /obj/machinery/power/supermatter_crystal)
 		user.dust(force = TRUE)
 		if(power_changes)
 			matter_power += 200
-	else if(istype(AM, /obj/singularity))
+	else if(istype(AM, /obj/singularity/gravitational))
 		return
 	else if(isobj(AM))
 		if(!iseffect(AM))
@@ -965,8 +990,8 @@ GLOBAL_DATUM(main_supermatter_engine, /obj/machinery/power/supermatter_crystal)
 /obj/machinery/power/supermatter_crystal/shard
 	name = "supermatter shard"
 	desc = "A strangely translucent and iridescent crystal that looks like it used to be part of a larger structure."
-	base_icon_state = "darkmatter_shard"
-	icon_state = "darkmatter_shard"
+	base_icon_state = "sm_shard"
+	icon_state = "sm_shard"
 	anchored = FALSE
 	gasefficency = 0.125
 	explosion_power = 12
@@ -999,8 +1024,8 @@ GLOBAL_DATUM(main_supermatter_engine, /obj/machinery/power/supermatter_crystal)
 
 /obj/machinery/power/supermatter_crystal/shard/hugbox/fakecrystal //Hugbox shard with crystal visuals, used in the Supermatter/Hyperfractal shuttle
 	name = "supermatter crystal"
-	base_icon_state = "darkmatter"
-	icon_state = "darkmatter"
+	base_icon_state = "sm"
+	icon_state = "sm"
 
 /obj/machinery/power/supermatter_crystal/proc/supermatter_pull(turf/center, pull_range = 3)
 	playsound(center, 'sound/weapons/marauder.ogg', 100, TRUE, extrarange = pull_range - world.view)
@@ -1141,7 +1166,7 @@ GLOBAL_DATUM(main_supermatter_engine, /obj/machinery/power/supermatter_crystal)
 		else if(isliving(target))//If we got a fleshbag on our hands
 			var/mob/living/creature = target
 			creature.set_shocked()
-			addtimer(CALLBACK(creature, /mob/living/proc/reset_shocked), 10)
+			addtimer(CALLBACK(creature, TYPE_PROC_REF(/mob/living, reset_shocked)), 10)
 			//3 shots a human with no resistance. 2 to crit, one to death. This is at at least 10000 power.
 			//There's no increase after that because the input power is effectivly capped at 10k
 			//Does 1.5 damage at the least
@@ -1167,6 +1192,15 @@ GLOBAL_DATUM(main_supermatter_engine, /obj/machinery/power/supermatter_crystal)
 			if(zap_count > 1)
 				targets_hit = targets_hit.Copy() //Pass by ref begone
 			supermatter_zap(target, new_range, zap_str, zap_flags, targets_hit)
+
+/obj/machinery/power/supermatter_crystal/proc/holiday_lights()
+	holiday_lights = TRUE
+	update_appearance()
+
+/// Adds the hat flavor text when examined
+/obj/machinery/power/supermatter_crystal/proc/holiday_hat_examine(atom/source, mob/user, list/examine_list)
+	SIGNAL_HANDLER
+	examine_list += span_info("На кристалл Суперматерии надета шапка Деда Мороза. Как она туда попала, не будучи стёртой в пыль, остается загадкой...")
 
 #undef HALLUCINATION_RANGE
 #undef GRAVITATIONAL_ANOMALY

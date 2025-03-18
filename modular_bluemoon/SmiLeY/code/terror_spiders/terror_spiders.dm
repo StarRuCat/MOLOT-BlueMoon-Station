@@ -4,6 +4,7 @@ GLOBAL_VAR_INIT(ts_count_alive_awaymission, 0)
 GLOBAL_VAR_INIT(ts_count_alive_station, 0)
 GLOBAL_VAR_INIT(ts_death_last, 0)
 GLOBAL_VAR_INIT(ts_death_window, 9000) // 15 minutes
+GLOBAL_VAR_INIT(ts_default_health, 100)
 GLOBAL_LIST_EMPTY(ts_spiderlist)
 GLOBAL_LIST_EMPTY(ts_egg_list)
 GLOBAL_LIST_EMPTY(ts_spiderling_list)
@@ -35,21 +36,24 @@ GLOBAL_LIST_EMPTY(ts_spiderling_list)
 	footstep_type = FOOTSTEP_MOB_CLAW
 	talk_sound = list('sound/creatures/terrorspiders/speech_1.ogg', 'sound/creatures/terrorspiders/speech_2.ogg', 'sound/creatures/terrorspiders/speech_3.ogg', 'sound/creatures/terrorspiders/speech_4.ogg', 'sound/creatures/terrorspiders/speech_5.ogg', 'sound/creatures/terrorspiders/speech_6.ogg')
 	damaged_sound = list('sound/creatures/terrorspiders/speech_1.ogg', 'sound/creatures/terrorspiders/speech_2.ogg', 'sound/creatures/terrorspiders/speech_3.ogg', 'sound/creatures/terrorspiders/speech_4.ogg', 'sound/creatures/terrorspiders/speech_5.ogg', 'sound/creatures/terrorspiders/speech_6.ogg')
+	faction = list(ROLE_TERROR_SPIDER)
 
 	//HEALTH
-	maxHealth = 120
-	health = 120
+	maxHealth = 100
+	health = 100
 	a_intent = INTENT_HARM
-	var/regeneration = 2 //pure regen on life
+	var/regeneration = 1 //pure regen on life
 	var/degenerate = FALSE // if TRUE, they slowly degen until they all die off.
 	//also regenerates by using /datum/status_effect/terror/food_regen when wraps a carbon, wich grants full health witin ~25 seconds
-	damage_coeff = list(BRUTE = 0.75, BURN = 1, TOX = 1, CLONE = 0, STAMINA = 0, OXY = 0.2)
+	damage_coeff = list(BRUTE = 0.85, BURN = 1, TOX = 1, CLONE = 0, STAMINA = 0, OXY = 1)
 
 	//ATTACK
 	melee_damage_lower = 15
 	melee_damage_upper = 20
+	obj_damage = 25
 
 	//MOVEMENT
+	movement_type = GROUND
 	pass_flags = PASSTABLE
 	turns_per_move = 3 // number of turns before AI-controlled spiders wander around. No effect on actual player or AI movement speed!
 	move_to_delay = 6
@@ -116,6 +120,7 @@ GLOBAL_LIST_EMPTY(ts_spiderling_list)
 	var/killcount = 0
 	var/busy = 0 // leave this alone!
 	var/spider_tier = TS_TIER_1 // 1 for red,gray,green. 2 for purple,black,white, 3 for prince, mother. 4 for queen
+	var/wall_destroy_hardness = 50
 	var/hasdied = 0
 	var/list/spider_special_drops = list()
 	var/attackstep = 0
@@ -127,8 +132,8 @@ GLOBAL_LIST_EMPTY(ts_spiderling_list)
 	var/web_infects = 0
 	var/spider_creation_time = 0
 
-	var/datum/action/innate/terrorspider/web/web_action
-	var/datum/action/innate/terrorspider/wrap/wrap_action
+	var/datum/action/terrorspider/web/web_action
+	var/datum/action/terrorspider/wrap/wrap_action
 
 	// Breathing - require some oxygen, and no toxins
 	atmos_requirements = list("min_oxy" = 5, "max_oxy" = 0, "min_tox" = 0, "max_tox" = 1, "min_co2" = 0, "max_co2" = 0, "min_n2" = 0, "max_n2" = 0)
@@ -189,9 +194,16 @@ GLOBAL_LIST_EMPTY(ts_spiderling_list)
 				F.open()
 		else
 			to_chat(src, "Closing fire doors does not help.")
+	else if(istype(target, /turf/closed/wall))
+		var/turf/closed/wall/W = target
+		if (src.wall_destroy_hardness <= W.hardness)
+			if (do_after(src, 100 / W.hardness * 10, target = W))
+				playsound(W, 'sound/effects/meteorimpact.ogg', 100, 1)
+				W.dismantle_wall(1)
 	else if(istype(target, /obj/machinery/door/airlock))
 		var/obj/machinery/door/airlock/A = target
-		try_open_airlock(A)
+		if (!try_open_airlock(A))
+			target.attack_animal(src)
 	else if(isliving(target) && (!client || a_intent == INTENT_HARM))
 		var/mob/living/G = target
 		if(issilicon(G))
@@ -201,7 +213,7 @@ GLOBAL_LIST_EMPTY(ts_spiderling_list)
 			var/can_poison = 1
 			if(ishuman(G))
 				var/mob/living/carbon/human/H = G
-				if(!(H.metabolism_efficiency & REAGENT_ORGANIC_PROCESS) || (!H.physiology.tox_mod))
+				if(!H.physiology.tox_mod)
 					can_poison = 0
 			spider_specialattack(G,can_poison)
 		else
@@ -325,7 +337,7 @@ GLOBAL_LIST_EMPTY(ts_spiderling_list)
 
 /mob/living/simple_animal/hostile/retaliate/poison/terror_spider/proc/give_intro_text()
 	to_chat(src, "<center><span class='userdanger'>Вы паук ужаса!</span></center>")
-	to_chat(src, "<center>Работайте сообща, помогайте своим братьям и сёстрам, саботируйте станцию, убивайте экипаж, превратите это место в своё гнездо!</center>")
+	to_chat(src, "<center>Работайте сообща, помогайте своим братьям и сёстрам, саботируйте станцию, убивайте экипаж, превратите это место в своё гнездо! Чтобы общаться с другими пауками используйте :t</center>")
 	to_chat(src, "<center><span class='big'>[spider_intro_text]</span></center><br>")
 	SEND_SOUND(src, sound('sound/ambience/antag/terrorspider.ogg'))
 
@@ -365,7 +377,7 @@ GLOBAL_LIST_EMPTY(ts_spiderling_list)
 
 /mob/living/simple_animal/hostile/retaliate/poison/terror_spider/proc/try_open_airlock(obj/machinery/door/airlock/D)
 	if(D.operating)
-		return
+		return FALSE
 	if(D.welded)
 		to_chat(src, "<span class='warning'>The door is welded.</span>")
 	else if(D.locked)
@@ -381,14 +393,16 @@ GLOBAL_LIST_EMPTY(ts_spiderling_list)
 	else if(!spider_opens_doors)
 		to_chat(src, "<span class='warning'>Your type of spider is not strong enough to force open doors.</span>")
 	else
+		playsound(D, 'sound/machines/airlock_alien_prying.ogg', 100, 1)
+		if (do_after(src, 20, target = D))
+			if(D.density)
+				D.open(TRUE)
+			else
+				D.close(TRUE)
 		visible_message("<span class='danger'>[src] forces the door!</span>")
 		playsound(src.loc, "sparks", 100, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
-		if(D.density)
-			D.open(TRUE)
-		else
-			D.close(TRUE)
 		return TRUE
-
+	return FALSE
 
 /mob/living/simple_animal/hostile/retaliate/poison/terror_spider/get_spacemove_backup()
 	. = ..()

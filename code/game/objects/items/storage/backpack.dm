@@ -151,6 +151,14 @@
 	resistance_flags = FIRE_PROOF
 	rad_flags = RAD_PROTECT_CONTENTS | RAD_NO_CONTAMINATE
 
+/obj/item/storage/backpack/atmospheric
+	name = "atmospheric backpack"
+	desc = "It's a backpack made of fire resistant fibers. Smells like plasma."
+	icon_state = "atmospack"
+	item_state = "atmospack"
+	resistance_flags = FIRE_PROOF
+	rad_flags = RAD_PROTECT_CONTENTS | RAD_NO_CONTAMINATE
+
 /obj/item/storage/backpack/botany
 	name = "botany backpack"
 	desc = "It's a backpack made of all-natural fibers."
@@ -203,6 +211,14 @@
 	desc = "A tough satchel with extra pockets."
 	icon_state = "satchel-eng"
 	item_state = "engiepack"
+	resistance_flags = FIRE_PROOF
+	rad_flags = RAD_PROTECT_CONTENTS | RAD_NO_CONTAMINATE
+
+/obj/item/storage/backpack/satchel/atmospheric
+	name = "atmospheric satchel"
+	desc = "A tough satchel made of fire resistant fibers. Smells like plasma."
+	icon_state = "satchel-atmos"
+	item_state = "satchel-atmos"
 	resistance_flags = FIRE_PROOF
 	rad_flags = RAD_PROTECT_CONTENTS | RAD_NO_CONTAMINATE
 
@@ -387,7 +403,7 @@
 		/obj/item/hypospray/mkii,
 		/obj/item/sensor_device,
 		/obj/item/radio,
-		/obj/item/clothing/gloves/,
+		/obj/item/clothing/gloves,
 		/obj/item/lazarus_injector,
 		/obj/item/bikehorn/rubberducky,
 		/obj/item/clothing/mask/surgical,
@@ -463,6 +479,14 @@
 	desc = "A large duffel bag for holding extra tools and supplies."
 	icon_state = "duffel-eng"
 	item_state = "duffel-eng"
+	resistance_flags = FIRE_PROOF
+	rad_flags = RAD_PROTECT_CONTENTS | RAD_NO_CONTAMINATE
+
+/obj/item/storage/backpack/duffelbag/atmospheric
+	name = "atmospheric duffel bag"
+	desc = "A large duffel bag made of fire resistant fibers. Smells like plasma."
+	icon_state = "duffel-atmos"
+	item_state = "duffel-atmos"
 	resistance_flags = FIRE_PROOF
 	rad_flags = RAD_PROTECT_CONTENTS | RAD_NO_CONTAMINATE
 
@@ -744,4 +768,4 @@
 	new /obj/item/weldingtool/experimental/ashwalker(src)
 	new /obj/item/crowbar/ashwalker(src)
 	new /obj/item/wirecutters/ashwalker(src, "red")
-	new /obj/item/clothing/gloves/tackler/combat/insulated/infiltrator(src)
+  // /obj/item/clothing/gloves/tackler/combat/insulated/infiltrator bluemoon removal

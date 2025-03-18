@@ -208,28 +208,42 @@
 	name = "CentCom Commander"
 
 	uniform = /obj/item/clothing/under/rank/centcom/commander
-	suit = /obj/item/clothing/suit/armor/bulletproof
+	suit = /obj/item/clothing/suit/hooded/wintercoat/centcom
 	shoes = /obj/item/clothing/shoes/combat/swat
 	gloves = /obj/item/clothing/gloves/tackler/combat/insulated
-	ears = /obj/item/radio/headset/headset_cent/commander
-	glasses = /obj/item/clothing/glasses/eyepatch
+	ears = /obj/item/radio/headset/headset_cent/commander/alt/generic
+	glasses = /obj/item/clothing/glasses/hud/security/night/combat
 	mask = /obj/item/clothing/mask/cigarette/cigar/cohiba
-	head = /obj/item/clothing/head/centhat
-	belt = /obj/item/gun/ballistic/revolver/mateba
+	head = /obj/item/clothing/head/centhat/cap
+	belt = /obj/item/storage/belt/military/ert_max
 	r_pocket = /obj/item/lighter
-	l_pocket = /obj/item/ammo_box/a357
+	l_pocket = /obj/item/tank/internals/emergency_oxygen/double
+	suit_store = /obj/item/gun/energy/pulse/pistol/loyalpin
 	back = /obj/item/storage/backpack/satchel/leather
-	id = /obj/item/card/id
+	id = /obj/item/card/id/ert
 
-// BLUEMOON ADD START - командная коробочка для командира
-/datum/outfit/centcom_commander/pre_equip(mob/living/carbon/human/H, visualsOnly, client/preference_source)
-	. = ..()
-	var/list/extra_backpack_items = list(
-		/obj/item/storage/box/pinpointer_squad
+	backpack_contents = list(/obj/item/storage/box/survival/centcom=1,
+		/obj/item/storage/box/ert_commander=1,
+		/obj/item/melee/classic_baton/telescopic/centcom/plus = 1,
+		)
+
+	implants = list(
+		/obj/item/implant/mindshield,
+		/obj/item/implant/deathrattle/centcom,
+	 	/obj/item/implant/weapons_auth,
+		/obj/item/implant/radio/centcom,
+	 	/obj/item/implant/cqc,
 	)
-	LAZYADD(backpack_contents, extra_backpack_items)
-// BLUEMOON ADD END
 
+	cybernetic_implants = list(
+		/obj/item/organ/cyberimp/eyes/hud/medical,
+		/obj/item/organ/cyberimp/chest/nutrimentextreme,
+		/obj/item/organ/cyberimp/chest/chem_implant/plus,
+		/obj/item/organ/cyberimp/arm/combat,
+		/obj/item/organ/eyes/robotic/thermals,
+		/obj/item/organ/cyberimp/mouth/breathing_tube,
+		/obj/item/organ/cyberimp/chest/thrusters,
+	)
 /datum/outfit/centcom_commander/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE, client/preference_source)
 	if(visualsOnly)
 		return
@@ -242,6 +256,10 @@
 	W.registered_name = H.real_name
 	W.update_label()
 
+	var/obj/item/radio/headset/R = H.ears
+	R.set_frequency(FREQ_CENTCOM)
+	R.freqlock = TRUE
+
 /datum/outfit/spec_ops
 	name = "Special Ops Officer"
 
@@ -249,15 +267,38 @@
 	suit = /obj/item/clothing/suit/space/officer
 	shoes = /obj/item/clothing/shoes/combat/swat
 	gloves = /obj/item/clothing/gloves/tackler/combat/insulated
-	glasses = /obj/item/clothing/glasses/thermal/eyepatch
-	ears = /obj/item/radio/headset/headset_cent/commander
+	glasses = /obj/item/clothing/glasses/hud/security/night/combat
+	ears = /obj/item/radio/headset/headset_cent/commander/alt/generic
 	mask = /obj/item/clothing/mask/cigarette/cigar/havana
 	head = /obj/item/clothing/head/helmet/space/beret
-	belt = /obj/item/gun/energy/pulse/pistol/m1911
+	belt = /obj/item/gun/energy/pulse/pistol/loyalpin
 	r_pocket = /obj/item/lighter
+	l_pocket = /obj/item/tank/internals/emergency_oxygen/double
 	back = /obj/item/storage/backpack/satchel/leather
-	id = /obj/item/card/id
+	id = /obj/item/card/id/ert
 
+	backpack_contents = list(/obj/item/storage/box/survival/centcom=1,
+		/obj/item/storage/box/ert_commander=1,
+		/obj/item/melee/classic_baton/telescopic/centcom/plus = 1,
+		)
+
+	implants = list(
+		/obj/item/implant/mindshield,
+		/obj/item/implant/deathrattle/centcom,
+	 	/obj/item/implant/weapons_auth,
+		/obj/item/implant/radio/centcom,
+	 	/obj/item/implant/cqc,
+	)
+
+	cybernetic_implants = list(
+		/obj/item/organ/cyberimp/eyes/hud/medical,
+		/obj/item/organ/cyberimp/chest/nutrimentextreme,
+		/obj/item/organ/cyberimp/chest/chem_implant/plus,
+		/obj/item/organ/cyberimp/arm/combat,
+		/obj/item/organ/eyes/robotic/thermals,
+		/obj/item/organ/cyberimp/mouth/breathing_tube,
+		/obj/item/organ/cyberimp/chest/thrusters,
+	)
 /datum/outfit/spec_ops/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE, client/preference_source)
 	if(visualsOnly)
 		return
@@ -385,25 +426,36 @@
 
 	uniform = /obj/item/clothing/under/syndicate
 	suit = /obj/item/clothing/suit/space/hardsuit/deathsquad
-	shoes = /obj/item/clothing/shoes/combat/swat
+	shoes = /obj/item/clothing/shoes/magboots/syndie/advance
 	gloves = /obj/item/clothing/gloves/tackler/combat/insulated
 	mask = /obj/item/clothing/mask/gas/sechailer/swat
-	glasses = /obj/item/clothing/glasses/hud/toggle/thermal
-	back = /obj/item/storage/backpack/rucksack
+	glasses = /obj/item/clothing/glasses/hud/health/night/syndicate
+	back = /obj/item/storage/backpack/ert_commander/ert_security
 	l_pocket = /obj/item/melee/transforming/energy/sword/saber
 	r_pocket = /obj/item/shield/energy
-	suit_store = /obj/item/tank/internals/emergency_oxygen
+	suit_store = /obj/item/tank/internals/emergency_oxygen/double
 	belt = /obj/item/storage/belt/grenade/full
-	r_hand = /obj/item/gun/energy/pulse/loyalpin
+	r_hand = /obj/item/gun/energy/pulse/destroyer
 	id = /obj/item/card/id/death
 	ears = /obj/item/radio/headset/headset_cent/alt
 
-	backpack_contents = list(/obj/item/storage/box/survival/security=1,\
+	backpack_contents = list(/obj/item/storage/box/survival/centcom=1,\
 		/obj/item/storage/box/syndie_kit/revolver=1,\
 		/obj/item/storage/firstaid/tactical/slaver=1,\
 		/obj/item/storage/box/flashbangs/super=1,\
 		/obj/item/pinpointer/nuke=1,\
 		/obj/item/grenade/plastic/x4=1)
+
+	implants = list(/obj/item/implant/mindshield, /obj/item/implant/deathrattle/centcom, /obj/item/implant/weapons_auth, /obj/item/implant/radio/centcom)
+
+	cybernetic_implants = list(
+		/obj/item/organ/cyberimp/eyes/hud/security,
+		/obj/item/organ/cyberimp/chest/nutrimentextreme,
+		/obj/item/organ/cyberimp/chest/chem_implant/plus,
+		/obj/item/organ/cyberimp/arm/shield,
+		/obj/item/organ/eyes/robotic/thermals,
+		/obj/item/organ/cyberimp/chest/thrusters,
+	)
 
 	give_space_cooler_if_synth = TRUE // BLUEMOON ADD
 
@@ -415,9 +467,6 @@
 	R.set_frequency(FREQ_CENTCOM)
 	R.freqlock = TRUE
 
-	var/obj/item/implant/mindshield/L = new //Here you go Deuryn
-	L.implant(H, null, 1)
-
 	var/obj/item/card/id/death/W = H.wear_id
 	W.access = get_all_accesses()//They get full station access.
 	W.access += get_centcom_access("Death Commando")//Let's add their alloted CentCom access.
@@ -428,6 +477,13 @@
 	name = "Death Commando Officer"
 	head = /obj/item/clothing/head/helmet/space/beret
 
+	backpack_contents = list(/obj/item/storage/box/survival/centcom=1,\
+		/obj/item/storage/box/ert_commander=1,
+		/obj/item/storage/box/syndie_kit/revolver=1,\
+		/obj/item/storage/firstaid/tactical/slaver=1,\
+		/obj/item/storage/box/flashbangs/super=1,\
+		/obj/item/pinpointer/nuke=1,\
+		/obj/item/grenade/plastic/x4=1)
 // BLUEMOON ADD START - командная коробочка для командира
 /datum/outfit/death_commando/officer/pre_equip(mob/living/carbon/human/H, visualsOnly, client/preference_source)
 	. = ..()

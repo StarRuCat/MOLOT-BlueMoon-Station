@@ -28,7 +28,7 @@
 /obj/item/clothing/head/rice_hat/cursed/equipped(mob/M, slot)
     . = ..()
     if (slot == ITEM_SLOT_HEAD)
-        RegisterSignal(M, COMSIG_MOB_SAY, .proc/handle_speech)
+        RegisterSignal(M, COMSIG_MOB_SAY, PROC_REF(handle_speech))
     else
         UnregisterSignal(M, COMSIG_MOB_SAY)
 
@@ -38,7 +38,7 @@
 
 /obj/item/clothing/head/rice_hat/cursed/proc/handle_speech(datum/source, list/speech_args)
 	var/message = speech_args[SPEECH_MESSAGE]
-	if(message[1] != "*")
+	if(message[1] != "*" && message[1] != "!")
 		var/list/temp_message = splittext(message, " ")
 		var/list/pick_list = list()
 		for(var/i in 1 to temp_message.len)

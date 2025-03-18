@@ -18,7 +18,7 @@
 	important_info = "Защищайте Тендрил своего племени. Охота на шахтёров допустима только в Динамик."
 	mob_species = /datum/species/lizard/ashwalker/western
 	gender_bias = FEMALE
-	canloadappearance = TRUE
+	can_load_appearance = TRUE
 
 /obj/effect/mob_spawn/human/ash_walker/eastern
 	job_description = "Eastern Ashwalker's"
@@ -33,7 +33,7 @@
 	important_info = "Защищайте Тендрил своего племени. Охота на шахтёров допустима только в Динамик."
 	mob_species = /datum/species/lizard/ashwalker/eastern
 	gender_bias = MALE
-	canloadappearance = TRUE
+	can_load_appearance = TRUE
 
 /obj/effect/mob_spawn/human/ash_walkers_slave
 	name = "Ashwalkers Slave"
@@ -47,8 +47,9 @@
 	roundstart = FALSE
 	death = FALSE
 	random = TRUE
-	canloadappearance = TRUE
+	can_load_appearance = TRUE
 	loadout_enabled = FALSE
+	category = "offstation"
 
 /obj/effect/mob_spawn/human/ash_walkers_slave/special_post_appearance(mob/living/new_spawn)
 	. = ..()
@@ -79,7 +80,9 @@
 	short_desc = "You are a hermit abandoned by fate."
 	flavour_text = "You've survived weeks in this hellish place. Maybe you want to live here with ash tribe or return to civilisation. \
 	Only you know how you got to this planetoid, whether this place in which you woke up was one of your shelters, or you just stumbled upon it."
-	canloadappearance = TRUE
+	can_load_appearance = TRUE
+	antagonist_type = /datum/antagonist/ghost_role/hermit
+	category = "offstation"
 
 /obj/effect/mob_spawn/human/wandering_hermit/Destroy()
 	var/obj/structure/fluff/empty_sleeper/S = new(drop_location())
@@ -108,7 +111,7 @@
 	roundstart = FALSE
 	random = TRUE
 	loadout_enabled = TRUE
-	canloadappearance = TRUE
+	can_load_appearance = TRUE
 	id_job = "Hotel Staff"
 	id = /obj/item/card/id/away/hotel/splurt
 	uniform = /obj/item/clothing/under/suit/red
@@ -116,13 +119,14 @@
 	head = /obj/item/clothing/head/hotel
 	/* BlueMoon Edit Start: Giving hotel staff their own version of bartender PDA - Flauros
 	r_pocket = /obj/item/pda
-	*/ 
+	*/
 	r_pocket = /obj/item/pda/hotelstaff
 	// BlueMoon Edit End
 	back = /obj/item/storage/backpack/satchel
 	ears = /obj/item/radio/headset/headset_srv/hotel
 	backpack_contents = list(/obj/item/storage/box/survival/engineer=1,\
 						/obj/item/storage/ifak=1)
+	make_bank_account = TRUE
 
 /obj/effect/mob_spawn/human/hotel_staff/splurt/security
 	name = "Hotel Security Sleeper"
@@ -147,6 +151,7 @@
 	short_desc = "Вы - менеджер космического отеля."
 	flavour_text = "Вы управляете одним из объектов успешной сети Космических Отелей. Недавно ваша материнская компания была выкуплена Nanotrasen и вам поручили обслуживать некоторые из их станций; в результате вы получили в свое распоряжение набор модных технологий! Защищайте интересы своей материнской компании и следите за тем, чтобы ваш персонал работал на должном уровне, и постарайтесь сделать так, чтобы ваши гости были довольны!"
 	important_info = "Персоналу отеля запрещается покидать его (кроме неординарных случаев или установки телепада)."
+	objectives = "Don't abandon your assigned hotel. Cater to visiting guests. Maintain good corporate relations and remember: The customer is always right!"
 	id_job = "Hotel Manager"
 	uniform = /obj/item/clothing/under/suit/black
 	suit = /obj/item/clothing/suit/toggle/lawyer/black
@@ -172,7 +177,8 @@
 	head = /obj/item/clothing/head/beret/black
 	r_pocket = /obj/item/pda
 	back = /obj/item/storage/backpack
-	r_hand = /obj/item/storage/secure/briefcase/syndie
+	make_bank_account = TRUE // BLUEMOON ADD
+	starting_money = 10000 // BLUEMOON ADD
 
 //Forgotten syndicate ship
 
@@ -181,14 +187,18 @@
 	roundstart = FALSE
 	death = FALSE
 	show_flavour = FALSE
+	loadout_enabled = TRUE
 	icon = 'icons/obj/machines/sleeper.dmi'
 	icon_state = "sleeper_s"
 	short_desc = "Вы - Оперативник Авангарда ИнтеКью на старом корабле, застрявшем во враждебном космосе."
 	flavour_text = "Ваш корабль причалил после долгого перерыва где-то во враждебном пространстве, сообщив о неисправности. Вы застряли здесь, зная, что рядом находится станция Nanotrasen. Почините корабль, найдите способ обеспечить его энергией и выполняйте приказы Капитана."
-	important_info = "Выполняйте приказы своего капитана. Не позвольте кораблю попасть в руки врага! | Экста - грубоватые наёмники, не знающие положения дел в Туманности Синие Луны. Динамика - полноценные оперативники ИнтеКью с поставленной задачей на защиту своего корабля и сектора."
-	canloadappearance = TRUE
+	important_info = "Установите полную власть над локальным сектором, защитите корабль и секретные документы в рюкзаке ценой своей жизни."
+	can_load_appearance = TRUE
 	outfit = /datum/outfit/inteqspace/inteq_crew
 	assignedrole = ROLE_GHOSTROLE_INTEQ
+	antagonist_type = /datum/antagonist/ghost_role/inteq
+	loadout_enabled = TRUE
+	category = "inteq"
 
 /datum/outfit/inteqspace/inteq_crew/post_equip(mob/living/carbon/human/H)
 	H.faction |= ROLE_INTEQ
@@ -200,20 +210,31 @@
 
 /obj/effect/mob_spawn/human/inteqspace/special(mob/living/new_spawn)
 	. = ..()
-	new_spawn.grant_language(/datum/language/codespeak, TRUE, TRUE, LANGUAGE_MIND)
+	new_spawn.grant_language(/datum/language/old_codes, TRUE, TRUE, LANGUAGE_MIND)
 
 	var/obj/item/implant/anchor/ghost_anchor = new
-	ghost_anchor.allowed_z_levels = list(1, 6, 12, src.z) // dynamic набор: цк, ксено межшатолье, инфдормы, сектор имплантации
-	if(GLOB.master_mode == "Extended")
-		ghost_anchor.allowed_z_levels.Add(2,5) // экстовая добавка: станционный, шахта
 	ghost_anchor.implant(new_spawn, null, TRUE)
+
+/obj/effect/mob_spawn/human/inteqspace/hostage
+	name = "InteQ Hostage"
+	short_desc = "Вы - оказались в больших неприятностях в плену."
+	flavour_text = "Вы плохо помните как вы тут оказались, возможно вас накачали чем то. Вы до конца не уверены, продали ли вас в рабство либо похитили, в любом случае у вас большие неприятности. Люди с оружием которые пришли сюда вряд ли собираются вас спасти, возможно это отряд головорезов, что избавляется от свидетелей, по всей видимости те выполняют приказ, им лучше не попадаться на глаза. Если вы находитесь тут то вряд ли похитители хотят вас убить, если дать им повод то вы пополните ряды ваших коллег по несчастью."
+	important_info = "Запрещено пытаться сбежать и сопротивляться без веских причин как серьёзная угроза жизни от агентов InteQ. Побег только с разрешения администрации."
+	can_load_appearance = TRUE
+	outfit = /datum/outfit/inteqspace/inteq_hostage
+
+/obj/effect/mob_spawn/human/inteqspace/hostage/New()
+	. = ..()
+	if(GLOB.master_mode == "Extended")
+		important_info = "Запрещено пытаться сбежать и сопротивляться без веских причин как серьёзная угроза жизни от сотрудников Космической Полиции и Солнечной. Побег только с разрешения администрации."
+		category = "sol"
 
 /obj/effect/mob_spawn/human/inteqspace/captain
 	name = "InteQ Ship Captain"
 	short_desc = "Вы - Лидер Авангарда ИнтеКью на старом корабле, застрявшем во враждебном космосе."
 	flavour_text = "Ваш корабль причалил после долгого перерыва где-то во враждебном пространстве, сообщив о неисправности. Вы застряли здесь, зная, что рядом находится станция Nanotrasen. Командуйте своим экипажем и исследуйте свой территорию, чтобы закрепить свое местоположение."
-	important_info = "Защитите корабль и секретные документы в рюкзаке ценой своей жизни. | Экста - грубоватые наёмники, не знающие положения дел в Туманности Синие Луны. Динамика - полноценные оперативники ИнтеКью с поставленной задачей на защиту своего корабля и сектора."
-	canloadappearance = TRUE
+	important_info = "Установите полную власть над локальным сектором, защитите корабль и секретные документы в рюкзаке ценой своей жизни."
+	can_load_appearance = TRUE
 	outfit = /datum/outfit/inteqspace/inteq_captain
 
 /datum/outfit/inteqspace/inteq_captain/post_equip(mob/living/carbon/human/H)
@@ -241,15 +262,23 @@
 	gloves = /obj/item/clothing/gloves/combat
 
 	head = /obj/item/clothing/head/helmet/swat/inteq
-	mask = /obj/item/clothing/mask/balaclava/breath/inteq
+	mask = /obj/item/clothing/mask/gas/inteq
 	ears = /obj/item/radio/headset/ghost_inteq
 	belt = /obj/item/storage/belt/military/assault/inteq_crew
 
 	l_pocket = /obj/item/extinguisher/mini
 	r_pocket = /obj/item/tank/internals/emergency_oxygen/double
 
-	id = /obj/item/card/id/inteq_command/crew_id
+	id = /obj/item/card/id/inteq/crew_id
 	backpack_contents = list(/obj/item/paper/fluff/ruins/forgottenship/password)
+	implants = list(/obj/item/implant/deathrattle/inteqcrew, /obj/item/implant/weapons_auth)
+/datum/outfit/inteqspace/inteq_hostage
+	name = "InteQ Hostage"
+
+	uniform = /obj/item/clothing/under/rank/prisoner
+	shoes = /obj/item/clothing/shoes/sneakers/orange
+	id = /obj/item/card/id/prisoner
+	ears = /obj/item/radio/headset/ghost_inteq
 
 /datum/outfit/inteqspace/inteq_captain
 	name = "InteQ Ship Captain"
@@ -260,12 +289,64 @@
 	gloves = /obj/item/clothing/gloves/combat
 
 	head = /obj/item/clothing/head/HoS/pmc_leader_beret
-	mask = /obj/item/clothing/mask/balaclava/breath/inteq
+	mask = /obj/item/clothing/mask/gas/inteq
 	ears = /obj/item/radio/headset/ghost_inteq/leader
 	belt = /obj/item/storage/belt/military/assault/inteq_captain
 
 	l_pocket = /obj/item/extinguisher/mini
 	r_pocket = /obj/item/tank/internals/emergency_oxygen/double
 
-	id = /obj/item/card/id/inteq_command/captain_id
+	id = /obj/item/card/id/inteq/captain_id
 	backpack_contents = list(/obj/item/documents/syndicate/red, /obj/item/paper/fluff/ruins/forgottenship/password)
+	implants = list(/obj/item/implant/deathrattle/inteqcrew, /obj/item/implant/weapons_auth)
+
+// Ghost Cafe Spawner (VR Version)
+
+/obj/effect/mob_spawn/human/ghostcafeVR
+	name = "Ghost Cafe VR Sleeper"
+	uses = -1
+	icon = 'icons/obj/machines/sleeper.dmi'
+	icon_state = "sleeper"
+	mob_name = "a ghost cafe VR visitor"
+	roundstart = FALSE
+	anchored = TRUE
+	density = FALSE
+	death = FALSE
+	assignedrole = "Ghost Cafe VR Visitor"
+	short_desc = "You are a Ghost Cafe VR Visitor!"
+	flavour_text = "You know one thing for sure. You arent actually alive. Are you in a simulation?"
+	skip_reentry_check = TRUE
+	banType = ROLE_GHOSTCAFE
+	can_load_appearance = 2 //(Forces player to load character appearance)
+	antagonist_type = /datum/antagonist/ghost_role/ghost_cafe
+
+/obj/effect/mob_spawn/human/ghostcafeVR/special(mob/living/carbon/human/new_spawn)
+	if(new_spawn.client)
+		new_spawn.client.prefs.copy_to(new_spawn)
+		var/datum/outfit/O = new /datum/outfit/ghostcafeVR()
+		O.equip(new_spawn, FALSE, new_spawn.client)
+		SSjob.equip_loadout(null, new_spawn)
+		SSjob.post_equip_loadout(null, new_spawn)
+		SSquirks.AssignQuirks(new_spawn, new_spawn.client, TRUE, TRUE, null, FALSE, new_spawn)
+		ADD_TRAIT(new_spawn, TRAIT_SIXTHSENSE, GHOSTROLE_TRAIT)
+		ADD_TRAIT(new_spawn, TRAIT_EXEMPT_HEALTH_EVENTS, GHOSTROLE_TRAIT)
+		ADD_TRAIT(new_spawn, TRAIT_NO_MIDROUND_ANTAG, GHOSTROLE_TRAIT) //The mob can't be made into a random antag, they are still eligible for ghost roles popups.
+
+/datum/outfit/ghostcafeVR
+	name = "ID, jumpsuit and shoes"
+	uniform = /obj/item/clothing/under/color/random
+	shoes = /obj/item/clothing/shoes/sneakers/black
+
+/datum/outfit/ghostcafeVR/pre_equip(mob/living/carbon/human/H, visualsOnly = FALSE, client/preference_source)
+	..()
+	if(isplasmaman(H))
+		head = /obj/item/clothing/head/helmet/space/plasmaman
+		uniform = /obj/item/clothing/under/plasmaman
+		l_hand= /obj/item/tank/internals/plasmaman/belt/full
+		mask = /obj/item/clothing/mask/breath
+		return
+
+/datum/outfit/ghostcafeVR/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE, client/preference_source)
+	H.internal = H.get_item_for_held_index(1)
+	H.update_internals_hud_icon(1)
+

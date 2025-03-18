@@ -21,8 +21,11 @@
 	paycheck = PAYCHECK_MEDIUM
 	paycheck_department = ACCOUNT_ENG
 	bounty_types = CIV_JOB_ENG
+	departments = DEPARTMENT_BITFLAG_ENGINEERING
 
-	starting_modifiers = list(/datum/skill_modifier/job/level/wiring, /datum/skill_modifier/job/affinity/wiring)
+	starting_modifiers = list(/datum/skill_modifier/job/level/wiring/expert, /datum/skill_modifier/job/affinity/wiring) //BLUEMOON CHANGE job/level to expert
+
+	mind_traits = list(TRAIT_KNOW_ENGI_WIRES) //BLUEMOON ADD use #define TRAIT system
 
 	display_order = JOB_DISPLAY_ORDER_STATION_ENGINEER
 
@@ -35,6 +38,13 @@
 		/obj/item/weldingtool/mini, // No brass family variant
 		/obj/item/crowbar/brass/family,
 		/obj/item/wirecutters/brass/family
+	)
+
+	mail_goodies = list(
+		/obj/item/storage/box/lights/mixed = 20,
+		/obj/item/lightreplacer = 10,
+		/obj/item/holosign_creator/engineering = 8,
+		/obj/item/clothing/head/hardhat/red/upgraded = 1
 	)
 
 /datum/outfit/job/engineer

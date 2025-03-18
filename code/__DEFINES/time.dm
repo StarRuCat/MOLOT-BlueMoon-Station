@@ -15,15 +15,15 @@
 
 //Select holiday names -- If you test for a holiday in the code, make the holiday's name a define and test for that instead
 #define NEW_YEAR				"Новогодний Сектор |"
-#define VALENTINES				"Сектор - День Святого Валентина |"
-#define APRIL_FOOLS				"Сектор - День дурака |"
-#define EASTER					"Сектор - Пасха |"
-#define PRIDE_MONTH				"Сектор - Гейский День Гейских Геев |"
-#define HALLOWEEN				"Сектор - Хэллоуин |"
-#define CHRISTMAS				"Сектор - Рождество |"
-#define FESTIVE_SEASON			"Сектор - Праздничный сезон |"
-#define GARBAGEDAY				"Сектор - Мусорный День |"
-#define MONKEYDAY				"Сектор - День Обезьяны |"
+#define VALENTINES				"День Святого Валентина |"
+#define APRIL_FOOLS				"День дурака |"
+#define EASTER					"Пасха |"
+#define PRIDE_MONTH				"Гейский День Гейских Геев |"
+#define HALLOWEEN				"Хэллоуин |"
+#define CHRISTMAS				"Рождество |"
+#define FESTIVE_SEASON			"Праздничный сезон |"
+#define GARBAGEDAY				"Мусорный День |"
+#define MONKEYDAY				"День Обезьяны |"
 /*
 
 Days of the week to make it easier to reference them.
@@ -50,6 +50,8 @@ When using time2text(), please use "DDD" to find the weekday. Refrain from using
 
 #define TICKS *world.tick_lag
 
+#define DECISECONDS *1
+
 #define MILLISECONDS * 0.01
 
 #define DS2TICKS(DS) ((DS)/world.tick_lag)
@@ -69,3 +71,5 @@ When using time2text(), please use "DDD" to find the weekday. Refrain from using
 //BLUEMOON CHANGE START
 #define STATION_TIME(display_only, wtime) (((wtime - SSticker.round_start_time) + SSticker.gametime_offset) % 864000) - (display_only? GLOB.timezoneOffset : 0)
 #define STATION_TIME_TIMESTAMP(format, wtime) time2text(STATION_TIME(TRUE, wtime), format)
+
+#define ROUND_TIME(...) ( "[world.time - SSticker.round_start_time > MIDNIGHT_ROLLOVER ? "[round((world.time - SSticker.round_start_time)/MIDNIGHT_ROLLOVER)]:[worldtime2text()]" : worldtime2text()]" )

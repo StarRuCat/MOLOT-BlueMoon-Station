@@ -161,6 +161,7 @@ Temporary Items
 
 #Visual studio stuff
 *.vscode/*
+/.vs
 /tools/MapAtmosFixer/MapAtmosFixer/obj/*
 /tools/MapAtmosFixer/MapAtmosFixer/bin/*
 /tools/CreditsTool/bin/*
@@ -198,3 +199,6 @@ Temporary Items
 /tools/LinuxOneShot/TGS_Logs
 tools/UnstandardnessTestForDM/UnstandardnessTestForDM/obj/x86/Debug/UnstandardnessTestForDM.csproj.AssemblyReference.cache
 tools/UnstandardnessTestForDM/UnstandardnessTestForDM/obj/x86/Debug/.NETFramework,Version=v4.0,Profile=Client.AssemblyAttributes.cs
+
+#Tracy profiler DLL
+/prof.dll

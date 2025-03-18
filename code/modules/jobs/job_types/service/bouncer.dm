@@ -21,7 +21,7 @@
 	display_order = JOB_DISPLAY_ORDER_BOUNCER
 	threat = 1
 	blacklisted_quirks = list(/datum/quirk/mute, /datum/quirk/brainproblems, /datum/quirk/nonviolent, /datum/quirk/blindness, /datum/quirk/monophobia)
-	custom_spawn_text = "<font color='red'>Вы — сервисный вышибала. Ваша задача — помогать сервисным сотрудникам в обеспечении порядка и спокойствия в их кабинетах и отделах, а также по небольшим поручениям. В основном вы успокаиваете буйных клиентов и неадекватов, не исполняйте работу СБ.</font>"
+	custom_spawn_text = "ваша задача — помогать сервисным сотрудникам обеспечивать порядок и спокойствие в их кабинетах и отделах, а также выполнять небольшие поручения. Не выполняйте работу офицеров за них самих."
 
 	family_heirlooms = list(
 		/obj/item/toy/plush/beeplushie,
@@ -53,8 +53,9 @@
 	ears = /obj/item/radio/headset/headset_srv
 	uniform = /obj/item/clothing/under/syndicate/tacticool
 	//suit =
-	backpack_contents = list(/obj/item/reagent_containers/spray/pepper=1, /obj/item/restraints/handcuffs/cable/zipties=2)
-	shoes = /obj/item/clothing/shoes/laceup
+	backpack_contents = list(/obj/item/reagent_containers/spray/pepper=1, /obj/item/gun/energy/civilian=1, /obj/item/restraints/legcuffs/bola/energy=1, /obj/item/restraints/handcuffs/cable/zipties=2)
+	shoes = /obj/item/clothing/shoes/jackboots
+	accessory = /obj/item/clothing/accessory/permit/special/bouncer
 
 /datum/outfit/job/bouncer/syndicate
 	name = "Syndicate Bouncer"
@@ -73,8 +74,16 @@
 	duffelbag = /obj/item/storage/backpack/duffelbag/syndie
 	box = /obj/item/storage/box/survival/syndie
 	pda_slot = ITEM_SLOT_BELT
+	accessory = /obj/item/clothing/accessory/permit/special/bouncer
+
 	backpack_contents = list(/obj/item/reagent_containers/spray/pepper=1, /obj/item/restraints/handcuffs/cable/zipties=2, /obj/item/syndicate_uplink=1)
 
+//BLUEMOON ADD
+/datum/martial_art/krav_maga/restricted/bouncer
+	name = "Krav Maga (bouncer edition)"
+	valid_areas = list(/area/service/bar/atrium, /area/service/bar)
+//BLUEMOON ADD END
+/*
 /datum/martial_art/bouncer
 	name = "Bouncer martial art"
 	id = MARTIALART_BOUNCER
@@ -134,10 +143,10 @@
 	if(check_streak(A,D))
 		return TRUE
 	..()
-
+*/
 /datum/outfit/job/bouncer/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE, client/preference_source)
 	..()
 	if(visualsOnly)
 		return
-	var/datum/martial_art/bouncer/B = new
+	var/datum/martial_art/krav_maga/restricted/bouncer/B = new //BLUEMOON CHANGE
 	B.teach(H)

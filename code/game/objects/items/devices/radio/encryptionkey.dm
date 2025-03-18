@@ -30,6 +30,24 @@
 	icon_state = "sec_cypherkey"
 	channels = list(RADIO_CHANNEL_SECURITY = 1)
 
+/obj/item/encryptionkey/headset_law // BlueMoon Fink added
+	name = "Law Radio Encryption Key"
+	icon = 'modular_bluemoon/icons/obj/radio.dmi'
+	icon_state = "law_cypherkey"
+	channels = list(RADIO_CHANNEL_LAW = 1, RADIO_CHANNEL_SECURITY = 1)
+
+/obj/item/encryptionkey/headset_ntr // BlueMoon Fink added
+	name = "NTR Radio Encryption Key"
+	icon = 'modular_bluemoon/icons/obj/radio.dmi'
+	icon_state = "ntr_cypherkey"
+	channels = list(RADIO_CHANNEL_LAW = 1,  RADIO_CHANNEL_SECURITY = 1, RADIO_CHANNEL_COMMAND = 1)
+
+/obj/item/encryptionkey/headset_most // BlueMoon Fink added
+	name = "Bridge Officer Radio Encryption Key"
+	icon = 'modular_bluemoon/icons/obj/radio.dmi'
+	icon_state = "most_cypherkey"
+	channels = list(RADIO_CHANNEL_LAW = 1, RADIO_CHANNEL_COMMAND = 1)
+
 /obj/item/encryptionkey/headset_eng
 	name = "Engineering Radio Encryption Key"
 	icon_state = "eng_cypherkey"
@@ -73,7 +91,7 @@
 /obj/item/encryptionkey/heads/captain
 	name = "\proper The Captain's Encryption Key"
 	icon_state = "cap_cypherkey"
-	channels = list(RADIO_CHANNEL_COMMAND = 1, RADIO_CHANNEL_SECURITY = 1, RADIO_CHANNEL_ENGINEERING = 0, RADIO_CHANNEL_SCIENCE = 0, RADIO_CHANNEL_MEDICAL = 0, RADIO_CHANNEL_SUPPLY = 0, RADIO_CHANNEL_SERVICE = 0)
+	channels = list(RADIO_CHANNEL_COMMAND = 1, RADIO_CHANNEL_SECURITY = 1, RADIO_CHANNEL_ENGINEERING = 1, RADIO_CHANNEL_SCIENCE = 1, RADIO_CHANNEL_MEDICAL = 1, RADIO_CHANNEL_SUPPLY = 1, RADIO_CHANNEL_SERVICE = 1, RADIO_CHANNEL_LAW = 1)
 
 /obj/item/encryptionkey/heads/rd
 	name = "\proper The Research Director's Encryption Key"
@@ -121,7 +139,7 @@
 /obj/item/encryptionkey/inteq
 	name = "inteQ Encryption Key"
 	icon_state = "inteq_cypherkey"
-	icon = 'modular_bluemoon/kovac_shitcode/icons/solfed/sol_misc.dmi'
+	icon = 'modular_bluemoon/icons/obj/radio.dmi'
 	channels = list(RADIO_CHANNEL_INTEQ = 1)
 	syndie = TRUE //Signifies that it de-crypts Syndicate transmissions
 
@@ -155,14 +173,14 @@
 	name = "SolFed Encryption Key"
 	channels = list(RADIO_CHANNEL_SOL = 1)
 	icon_state = "solgov_cypherkey"
-	icon = 'modular_bluemoon/kovac_shitcode/icons/solfed/sol_misc.dmi'
+	icon = 'modular_bluemoon/icons/obj/radio.dmi'
 	independent = TRUE
 
 /obj/item/encryptionkey/headset_syndicate/nri
 	name = "NRI Encryption Key"
 	channels = list(RADIO_CHANNEL_NRI = 1)
 	icon_state = "rus_cypherkey"
-	icon = 'modular_bluemoon/kovac_shitcode/icons/rus/rus_misc.dmi'
+	icon = 'modular_bluemoon/icons/obj/radio.dmi'
 	independent = TRUE
 
 /obj/item/encryptionkey/ai //ported from NT, this goes 'inside' the AI.

@@ -181,7 +181,15 @@ GLOBAL_LIST_INIT(ai_core_display_screens, list(
 	"Wasp",
 	"Weird",
 	"Xerxes",
-	"Yes-Man"
+	"Yes-Man",
+	"Anon",
+	"Cheese",
+	"Voiddonut",
+	"Darkmatrer",
+	"Nadburn",
+	"Rainbowslime",
+	"Catamari",
+	"Hippy"
 	))
 
 /proc/resolve_ai_icon(input, radial_preview = FALSE)
@@ -331,7 +339,7 @@ GLOBAL_LIST_INIT(roundstart_tongues, list("default","human tongue" = /obj/item/o
 //locked parts are those that your picked species requires to have
 //unlocked parts are those that anyone can choose on customisation regardless
 //parts not in unlocked, but in all, are thus locked
-GLOBAL_LIST_INIT(all_mutant_parts, list("tail_lizard" = "Tail", "mam_tail" = "Tail", "tail_human" = "Tail", "snout" = "Snout", "frills" = "Frills", "spines" = "Spines", "mam_body_markings" = "Species Markings" , "mam_ears" = "Ears", "ears" = "Ears", "mam_snouts" = "Snout", "legs" = "Legs", "deco_wings" = "Decorative Wings", "insect_wings" = "Insect Wings", "insect_fluff" = "Insect Fluff", "taur" = "Tauric Body", "insect_markings" = "Insect Markings", "wings" = "Wings", "arachnid_legs" = "Arachnid Legs", "arachnid_spinneret" = "Spinneret", "arachnid_mandibles" = "Mandibles", "xenohead" = "Caste Head", "xenotail" = "Tail", "xenodorsal" = "Dorsal Spines", "ipc_screen" = "Screen", "ipc_antenna" = "Antenna", "meat_type" = "Meat Type", "horns" = "Horns"))
+GLOBAL_LIST_INIT(all_mutant_parts, list("tail_lizard" = "Tail", "mam_tail" = "Tail", "tail_human" = "Tail", "snout" = "Snout", "frills" = "Frills", "spines" = "Spines", "mam_body_markings" = "Species Markings" , "mam_ears" = "Ears", "ears" = "Ears", "mam_snouts" = "Snout", "legs" = "Legs", "deco_wings" = "Decorative Wings", "insect_wings" = "Insect Wings", "insect_fluff" = "Neck And Spine", "taur" = "Tauric Body", "insect_markings" = "Insect Markings", "wings" = "Wings", "arachnid_legs" = "Arachnid Legs", "arachnid_spinneret" = "Spinneret", "arachnid_mandibles" = "Mandibles", "xenohead" = "Caste Head", "xenotail" = "Tail", "xenodorsal" = "Dorsal Spines", "ipc_screen" = "Screen", "ipc_antenna" = "Antenna", "meat_type" = "Meat Type", "horns" = "Horns"))
 GLOBAL_LIST_INIT(unlocked_mutant_parts, list("horns", "insect_fluff"))
 
 //parts in either of the above two lists that require a second option that allows them to be coloured
@@ -347,9 +355,11 @@ GLOBAL_LIST_INIT(prosthetic_limb_types, list("xion","bishop","cybersolutions","g
 GLOBAL_LIST_INIT(nongendered_limb_types, list("fly", "zombie" ,"synth", "shadow", "cultgolem", "agent", "plasmaman", "clockgolem", "clothgolem"))
 
 //list of eye types, corresponding to a respective left and right icon state for the set of eyes
-GLOBAL_LIST_INIT(eye_types, list("normal", "wide", "big", "insect", "moth", "double", "double2", "double3", "dragon", "spider", "cyclops", "bigcyclops", "skrell", "third", "thirdbig", "spectre", "vox", "shadekin", "teshari", "noodle", "none"))
+GLOBAL_LIST_INIT(eye_types, list("normal", "wide", "big", "insect", "moth", "double", "double2", "double3", "dragon", "spider", "cyclops", "bigcyclops", "skrell", "slime", "third", "thirdbig", "spectre", "vox", "shadekin", "teshari", "noodle", "none"))
 
 //list linking bodypart bitflags to their actual names
 GLOBAL_LIST_INIT(bodypart_names, list(num2text(HEAD) = "Head", num2text(CHEST) = "Chest", num2text(LEG_LEFT) = "Left Leg", num2text(LEG_RIGHT) = "Right Leg", num2text(ARM_LEFT) = "Left Arm", num2text(ARM_RIGHT) = "Right Arm"))
 // list linking bodypart names back to the bitflags
 GLOBAL_LIST_INIT(bodypart_values, list("Head" = num2text(HEAD), "Chest" = num2text(CHEST), "Left Leg" = num2text(LEG_LEFT), "Right Leg" = num2text(LEG_RIGHT), "Left Arm" = num2text(ARM_LEFT), "Right Arm" = num2text(ARM_RIGHT)))
+
+GLOBAL_LIST_INIT(junkmail_messages, world.file2list("strings/junkmail.txt"))

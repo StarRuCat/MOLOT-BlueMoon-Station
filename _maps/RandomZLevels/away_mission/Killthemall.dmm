@@ -66,7 +66,7 @@
 /area/awaymission/Killthemall/Level)
 "aJ" = (
 /obj/structure/destructible/cult/tome,
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Level)
 "aK" = (
 /obj/machinery/recharger,
@@ -76,11 +76,6 @@
 /obj/structure/sign/poster/contraband/nri_pistol,
 /turf/closed/indestructible/wall,
 /area/awaymission/Killthemall/start)
-"aW" = (
-/obj/effect/turf_decal/delivery,
-/obj/structure/shipping_container/donk_co,
-/turf/open/floor/mineral/plastitanium,
-/area/awaymission/Killthemall/Level)
 "aZ" = (
 /mob/living/simple_animal/hostile/jungle/mook{
 	stop_automated_movement = 1;
@@ -223,7 +218,7 @@
 /area/awaymission/Killthemall/Level)
 "cV" = (
 /obj/structure/showcase/mecha/marauder,
-/turf/open/floor/iron/kitchen/herringbone,
+/turf/open/floor/plasteel/kitchen/herringbone,
 /area/awaymission/Killthemall/start)
 "de" = (
 /obj/machinery/door/keycard,
@@ -280,7 +275,7 @@
 /area/awaymission/Killthemall/Level)
 "eB" = (
 /obj/machinery/modular_computer/console,
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "eL" = (
 /turf/closed/wall/mineral/titanium/spaceship,
@@ -289,12 +284,12 @@
 /obj/structure/destructible/cult/pylon{
 	max_integrity = 40
 	},
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Level)
 "eV" = (
 /obj/structure/table,
 /obj/item/documents/syndicate,
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "eW" = (
 /obj/structure/table,
@@ -416,7 +411,7 @@
 	id = "levelenn";
 	name = "\improper TOTALLY LEGIT PORTAL OF FUN"
 	},
-/turf/open/floor/iron/kitchen/herringbone,
+/turf/open/floor/plasteel/kitchen/herringbone,
 /area/awaymission/Killthemall/start)
 "gm" = (
 /obj/effect/mob_spawn/human/corpse/miner/explorer,
@@ -445,7 +440,7 @@
 	stop_automated_movement_when_pulled = 1;
 	turns_per_move = 0
 	},
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "gT" = (
 /obj/structure/stone_tile{
@@ -485,13 +480,13 @@
 "hD" = (
 /obj/structure/destructible/cult/talisman,
 /obj/effect/mob_spawn/human/corpse/miner/mod,
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "hN" = (
 /obj/effect/spawner/lootdrop/pizzaparty,
 /obj/structure/table,
 /obj/item/reagent_containers/food/drinks/beer,
-/turf/open/floor/iron/kitchen/herringbone,
+/turf/open/floor/plasteel/kitchen/herringbone,
 /area/awaymission/Killthemall/start)
 "hT" = (
 /obj/structure/chair/office,
@@ -528,7 +523,7 @@
 /obj/machinery/sleeper/party{
 	dir = 4
 	},
-/turf/open/floor/iron/kitchen/herringbone,
+/turf/open/floor/plasteel/kitchen/herringbone,
 /area/awaymission/Killthemall/start)
 "iv" = (
 /obj/structure/flora/rock/icy,
@@ -713,7 +708,7 @@
 /mob/living/simple_animal/hostile/construct/builder/hostile{
 	maxHealth = 40
 	},
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "mr" = (
 /obj/machinery/airalarm,
@@ -753,7 +748,7 @@
 /area/awaymission/Killthemall/Level)
 "nh" = (
 /obj/machinery/sleeper/syndie/fullupgrade,
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Level)
 "nn" = (
 /obj/structure/ladder/unbreakable/rune{
@@ -788,10 +783,10 @@
 /turf/open/indestructible/cobble,
 /area/awaymission/Killthemall/Level)
 "nE" = (
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Level)
 "nM" = (
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "nP" = (
 /mob/living/simple_animal/hostile/syndicate/ranged/smg{
@@ -816,11 +811,11 @@
 /area/awaymission/Killthemall/Level)
 "nX" = (
 /obj/structure/destructible/cult/pylon,
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "of" = (
 /obj/machinery/door/keycard/library,
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "ol" = (
 /obj/structure/spacevine,
@@ -850,7 +845,7 @@
 	id = "levelf";
 	name = "\improper TOTALLY LEGIT PORTAL OF FUN"
 	},
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Level)
 "oR" = (
 /obj/structure/flora/tree/jungle{
@@ -883,7 +878,7 @@
 	maxHealth = 120;
 	stop_automated_movement = 1
 	},
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Level)
 "pf" = (
 /obj/structure/shipping_container/gorlex/red,
@@ -919,7 +914,7 @@
 /obj/effect/spawner/structure/window{
 	max_integrity = 40
 	},
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "pG" = (
 /obj/structure/salvage/remains,
@@ -951,7 +946,7 @@
 /area/awaymission/Killthemall/Level)
 "qq" = (
 /obj/structure/destructible/cult/pylon,
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Level)
 "qu" = (
 /obj/structure/table,
@@ -967,7 +962,7 @@
 	pixel_x = -10
 	},
 /obj/item/clothing/suit/toggle/labcoat/mad/techcoat,
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "qA" = (
 /mob/living/simple_animal/hostile/russian/ranged/mosin,
@@ -990,7 +985,7 @@
 "qD" = (
 /obj/effect/spawner/lootdrop/pizzaparty,
 /obj/structure/table,
-/turf/open/floor/iron/kitchen/herringbone,
+/turf/open/floor/plasteel/kitchen/herringbone,
 /area/awaymission/Killthemall/start)
 "qF" = (
 /turf/open/lava,
@@ -1014,7 +1009,7 @@
 /area/awaymission/Killthemall/Level)
 "rc" = (
 /obj/machinery/gateway/away,
-/turf/open/floor/iron/kitchen/herringbone,
+/turf/open/floor/plasteel/kitchen/herringbone,
 /area/awaymission/Killthemall/start)
 "rf" = (
 /turf/open/water{
@@ -1035,7 +1030,7 @@
 /obj/structure/stone_tile/block/burnt{
 	dir = 1
 	},
-/obj/item/autosurgeon/syndicate/reviver,
+/obj/item/autosurgeon/syndicate/inteq/revitilzer,
 /obj/item/autosurgeon/syndicate/anti_drop,
 /obj/structure/anvil/obtainable/basalt,
 /turf/open/floor/plating/asteroid/basalt{
@@ -1050,7 +1045,7 @@
 /area/awaymission/Killthemall/Level)
 "rv" = (
 /obj/structure/showcase/horrific_experiment,
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "ry" = (
 /obj/structure/ladder/unbreakable/rune{
@@ -1081,7 +1076,7 @@
 	mouse_opacity = 0;
 	name = "\improper secret escape route"
 	},
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Level)
 "rS" = (
 /obj/structure/bed/secbed{
@@ -1160,7 +1155,7 @@
 	id = "levelg";
 	name = "\improper TOTALLY LEGIT PORTAL OF FUN"
 	},
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "tE" = (
 /obj/structure/cannon/trash,
@@ -1175,7 +1170,7 @@
 "tL" = (
 /obj/structure/destructible/cult/pylon,
 /obj/machinery/sleeper/syndie/fullupgrade,
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "ue" = (
 /obj/structure/flora/rock,
@@ -1209,7 +1204,7 @@
 /area/awaymission/Killthemall/Level)
 "uv" = (
 /obj/machinery/jukebox,
-/turf/open/floor/iron/kitchen/herringbone,
+/turf/open/floor/plasteel/kitchen/herringbone,
 /area/awaymission/Killthemall/start)
 "uy" = (
 /obj/structure/sign/poster/contraband/scum,
@@ -1222,11 +1217,11 @@
 /area/awaymission/Killthemall/Level)
 "uK" = (
 /obj/structure/reagent_dispensers/beerkeg,
-/turf/open/floor/iron/kitchen/herringbone,
+/turf/open/floor/plasteel/kitchen/herringbone,
 /area/awaymission/Killthemall/start)
 "uL" = (
 /obj/machinery/sleeper/syndie/fullupgrade,
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "uO" = (
 /obj/structure/closet/crate/trashcart,
@@ -1391,7 +1386,7 @@
 /turf/open/floor/mineral/plastitanium/red,
 /area/awaymission/Killthemall/Level)
 "wO" = (
-/turf/open/floor/iron/kitchen/herringbone,
+/turf/open/floor/plasteel/kitchen/herringbone,
 /area/awaymission/Killthemall/start)
 "wP" = (
 /obj/item/trash/cheesie,
@@ -1470,7 +1465,7 @@
 /obj/structure/fluff/paper/stack{
 	dir = 4
 	},
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "ye" = (
 /obj/structure/stone_tile/burnt{
@@ -1505,7 +1500,7 @@
 /obj/structure/fluff/paper/stack{
 	dir = 8
 	},
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "yF" = (
 /obj/structure/ladder/unbreakable/rune{
@@ -1571,8 +1566,10 @@
 /turf/open/floor/circuit/green,
 /area/awaymission/Killthemall/Boss)
 "zC" = (
-/obj/structure/shipping_container/nakamura,
 /obj/effect/turf_decal/delivery,
+/obj/structure/closet/crate/secure/weapon{
+	anchored = 1
+	},
 /turf/open/floor/mineral/plastitanium,
 /area/awaymission/Killthemall/Level)
 "zU" = (
@@ -1615,12 +1612,7 @@
 "AE" = (
 /obj/effect/decal/cleanable/blood/gibs/human/limb,
 /obj/effect/decal/cleanable/blood/gibs,
-/turf/open/floor/iron/kitchen,
-/area/awaymission/Killthemall/Level)
-"AK" = (
-/obj/structure/shipping_container/gorlex/red,
-/obj/effect/turf_decal/delivery,
-/turf/open/floor/mineral/plastitanium,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "AM" = (
 /obj/structure/shipping_container/gorlex,
@@ -1629,7 +1621,7 @@
 "AR" = (
 /obj/structure/destructible/cult/talisman,
 /obj/effect/mob_spawn/human/corpse/geneticist,
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "AS" = (
 /obj/structure/closet/crate/secure/soviet,
@@ -1645,11 +1637,6 @@
 /obj/item/storage/box/lethalslugs,
 /obj/item/storage/toolbox/ammo,
 /turf/open/floor/mineral/plastitanium/red,
-/area/awaymission/Killthemall/Level)
-"AT" = (
-/obj/structure/shipping_container/kosmologistika,
-/obj/effect/turf_decal/delivery,
-/turf/open/floor/mineral/plastitanium,
 /area/awaymission/Killthemall/Level)
 "AX" = (
 /turf/closed/wall/mineral/plastitanium,
@@ -1672,7 +1659,7 @@
 /area/awaymission/Killthemall/Level)
 "Bs" = (
 /obj/machinery/recharger,
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "Bv" = (
 /obj/structure/extinguisher_cabinet,
@@ -1724,7 +1711,7 @@
 "BW" = (
 /obj/effect/decal/cleanable/blood/gibs/core,
 /obj/effect/decal/cleanable/blood/gibs,
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "BY" = (
 /obj/item/storage/toolbox,
@@ -1746,7 +1733,7 @@
 /area/awaymission/Killthemall/Level)
 "CK" = (
 /obj/structure/destructible/cult/talisman,
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "CQ" = (
 /obj/structure/closet/crate/bin,
@@ -1781,7 +1768,7 @@
 "CW" = (
 /obj/structure/destructible/cult/talisman,
 /obj/effect/mob_spawn/human/corpse/miner/explorer,
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "Dc" = (
 /mob/living/simple_animal/hostile/pirate/ranged/space{
@@ -1843,7 +1830,7 @@
 "DV" = (
 /obj/structure/destructible/cult/forge,
 /obj/structure/constructshell,
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "Ea" = (
 /obj/structure/sign/flag/skull,
@@ -1880,7 +1867,7 @@
 /mob/living/simple_animal/hostile/cult/warrior{
 	stop_automated_movement = 1
 	},
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Level)
 "EK" = (
 /obj/structure/statue/bronze/marx{
@@ -1915,7 +1902,7 @@
 	id = "levele";
 	name = "\improper TOTALLY LEGIT PORTAL OF FUN"
 	},
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "Fc" = (
 /obj/structure/fluff/big_chain,
@@ -1927,7 +1914,7 @@
 "Ff" = (
 /obj/machinery/clonepod/experimental,
 /obj/effect/decal/cleanable/blood,
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "Fl" = (
 /obj/structure/table,
@@ -1946,7 +1933,7 @@
 	pixel_x = -5
 	},
 /obj/machinery/recharger,
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "Fo" = (
 /obj/structure/shipping_container/vitezstvi,
@@ -1969,7 +1956,7 @@
 /obj/structure/fluff/paper/stack{
 	dir = 9
 	},
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "FF" = (
 /obj/structure/ladder/unbreakable/rune{
@@ -2016,7 +2003,7 @@
 	next_move_modifier = 0;
 	stop_automated_movement_when_pulled = 1
 	},
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "Gk" = (
 /obj/structure/ladder/unbreakable/rune{
@@ -2045,7 +2032,7 @@
 	dir = 6
 	},
 /obj/item/clipboard,
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "Gw" = (
 /obj/structure/flora/tree/jungle/small,
@@ -2072,7 +2059,7 @@
 "GG" = (
 /obj/structure/destructible/cult/talisman,
 /obj/effect/mob_spawn/human/corpse/clown,
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Level)
 "GQ" = (
 /obj/item/chainsaw{
@@ -2099,7 +2086,7 @@
 /obj/structure/fluff/paper/stack{
 	dir = 5
 	},
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "Hq" = (
 /obj/item/stack/ore/gold,
@@ -2127,14 +2114,10 @@
 /obj/structure/noticeboard/rd,
 /turf/closed/wall/r_wall/syndicate/nosmooth,
 /area/awaymission/Killthemall/Level)
-"HT" = (
-/obj/effect/turf_decal/delivery,
-/turf/open/floor/mineral/plastitanium,
-/area/awaymission/Killthemall/Level)
 "HU" = (
 /obj/structure/destructible/cult/talisman,
 /obj/item/book/granter/spell/random,
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "HW" = (
 /obj/structure/flora/ausbushes/sparsegrass,
@@ -2176,7 +2159,7 @@
 	mouse_opacity = 0;
 	name = "\improper secret escape route"
 	},
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "IL" = (
 /obj/structure/chair/office/dark{
@@ -2190,11 +2173,6 @@
 "IO" = (
 /obj/structure/flora/grass/green,
 /turf/open/floor/holofloor/snow,
-/area/awaymission/Killthemall/Level)
-"IT" = (
-/obj/structure/shipping_container,
-/obj/effect/turf_decal/delivery,
-/turf/open/floor/mineral/plastitanium,
 /area/awaymission/Killthemall/Level)
 "Jr" = (
 /obj/structure/ladder/unbreakable/rune{
@@ -2212,7 +2190,7 @@
 "JD" = (
 /obj/structure/destructible/cult/talisman,
 /obj/effect/mob_spawn/human/corpse/cook,
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "JK" = (
 /obj/structure/ladder/unbreakable/rune{
@@ -2245,7 +2223,7 @@
 /obj/structure/fluff/paper/stack{
 	dir = 1
 	},
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "JU" = (
 /obj/effect/decal/cleanable/blood,
@@ -2356,7 +2334,7 @@
 "Lx" = (
 /obj/structure/destructible/cult/talisman,
 /obj/item/clothing/suit/cultrobes,
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Level)
 "LA" = (
 /obj/structure/stone_tile/slab/cracked,
@@ -2388,7 +2366,7 @@
 	stop_automated_movement_when_pulled = 1;
 	stop_automated_movement = 1
 	},
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "LO" = (
 /obj/structure/flora/ash/stem_shroom,
@@ -2452,7 +2430,7 @@
 	mouse_opacity = 0;
 	name = "\improper secret escape route"
 	},
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "Mr" = (
 /obj/effect/decal/cleanable/shreds,
@@ -2495,7 +2473,7 @@
 	stop_automated_movement = 1;
 	maxHealth = 80
 	},
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "NK" = (
 /obj/structure/anvil,
@@ -2591,7 +2569,7 @@
 "Pj" = (
 /obj/effect/decal/cleanable/blood/gibs/body,
 /obj/effect/decal/cleanable/blood/gibs,
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "Pn" = (
 /obj/machinery/recharger,
@@ -2622,7 +2600,7 @@
 	mouse_opacity = 0;
 	name = "This is the end"
 	},
-/turf/open/floor/iron/kitchen/herringbone,
+/turf/open/floor/plasteel/kitchen/herringbone,
 /area/awaymission/Killthemall/start)
 "PB" = (
 /obj/machinery/door/airlock/medical/glass,
@@ -2756,7 +2734,7 @@
 	stop_automated_movement_when_pulled = 1;
 	turns_per_move = 0
 	},
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "Rs" = (
 /turf/open/floor/catwalk_floor,
@@ -2882,7 +2860,7 @@
 /area/awaymission/Killthemall/start)
 "Tp" = (
 /obj/structure/destructible/cult/tome,
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "Tz" = (
 /obj/machinery/door/airlock/medical/glass,
@@ -2892,13 +2870,13 @@
 /area/awaymission/Killthemall/Level)
 "TB" = (
 /obj/machinery/recharger,
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Level)
 "TG" = (
 /turf/closed/wall/mineral/plastitanium,
 /area/awaymission/Killthemall/Level)
 "TH" = (
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "TK" = (
 /obj/structure/flora/tree/jungle{
@@ -2952,7 +2930,7 @@
 /obj/item/clothing/glasses/hud/health/night/syndicate,
 /obj/item/clothing/neck/cloak/healer,
 /obj/item/clothing/head/soft/inteq_med,
-/obj/item/clothing/under/inteq_med,
+/obj/item/clothing/under/inteq/med,
 /turf/open/floor/padded,
 /area/awaymission/Killthemall/Level)
 "UB" = (
@@ -3020,7 +2998,7 @@
 	stop_automated_movement_when_pulled = 1;
 	turns_per_move = 0
 	},
-/turf/open/floor/iron/kitchen,
+/turf/open/floor/plasteel/kitchen,
 /area/awaymission/Killthemall/Level)
 "VN" = (
 /obj/structure/ladder/unbreakable/rune{
@@ -3080,11 +3058,6 @@
 /obj/structure/table,
 /turf/open/floor/mineral/plastitanium/red,
 /area/awaymission/Killthemall/Level)
-"WH" = (
-/obj/structure/shipping_container/cybersun,
-/obj/effect/turf_decal/delivery,
-/turf/open/floor/mineral/plastitanium,
-/area/awaymission/Killthemall/Level)
 "WK" = (
 /obj/effect/turf_decal/delivery/blue,
 /obj/effect/decal/cleanable/wrapping,
@@ -3108,7 +3081,7 @@
 	name = "\proper Netherworld Link";
 	question = "Are you giving up so early? Useless toy"
 	},
-/turf/open/floor/iron/cult,
+/turf/open/floor/plasteel/cult,
 /area/awaymission/Killthemall/Boss)
 "WV" = (
 /turf/open/floor/mech_bay_recharge_floor,
@@ -4533,7 +4506,7 @@ Vf
 Kt
 Kt
 Kt
-aW
+zC
 pY
 Kt
 Kt
@@ -4790,7 +4763,7 @@ Kt
 Kt
 Kt
 Kt
-HT
+zC
 Kq
 Kt
 Kt
@@ -5042,12 +5015,12 @@ Kt
 Kt
 Kt
 Kt
-AK
+zC
 JX
 Kt
 Kt
 Kt
-HT
+zC
 iE
 Kt
 Kt
@@ -5299,7 +5272,7 @@ Kt
 Kt
 Kt
 Kt
-HT
+zC
 kU
 Kt
 Pi
@@ -5556,10 +5529,10 @@ Kt
 AM
 Kt
 Kt
-HT
+zC
 JX
 Kt
-AT
+zC
 WK
 Kt
 Kt
@@ -5816,7 +5789,7 @@ Kt
 Kt
 Kt
 Kt
-HT
+zC
 LV
 Kt
 Vf
@@ -6073,7 +6046,7 @@ hU
 Kt
 Kt
 Kt
-HT
+zC
 LV
 Kt
 Kt
@@ -6847,7 +6820,7 @@ Kt
 Kt
 Kt
 Kt
-HT
+zC
 JN
 Kt
 Kt
@@ -7104,7 +7077,7 @@ Kt
 Kt
 Kt
 Kt
-HT
+zC
 WK
 Kt
 ak
@@ -7356,7 +7329,7 @@ Kt
 Kt
 Kt
 Kt
-WH
+zC
 nP
 Kt
 Pi
@@ -7613,10 +7586,10 @@ Kt
 Kt
 Kt
 Kt
-HT
+zC
 WK
 Kt
-IT
+zC
 kv
 Kt
 Kt
@@ -7870,10 +7843,10 @@ bZ
 Kt
 Kt
 Kt
-HT
+zC
 WK
 Kt
-HT
+zC
 ru
 Kt
 Kt
@@ -8130,7 +8103,7 @@ Kt
 Kt
 Kt
 Kt
-HT
+zC
 Dp
 Kt
 Kt

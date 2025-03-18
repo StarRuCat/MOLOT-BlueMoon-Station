@@ -5,16 +5,20 @@ GLOBAL_VAR(restart_counter)
 GLOBAL_VAR(topic_status_lastcache)
 GLOBAL_LIST(topic_status_cache)
 
-
 //This happens after the Master subsystem new(s) (it's a global datum)
 //So subsystems globals exist, but are not initialised
 
 /world/New()
-	var/debug_server = world.GetConfig("env", "AUXTOOLS_DEBUG_DLL")
-	if (debug_server)
-		call(debug_server, "auxtools_init")()
+	var/dll = GetConfig("env", "AUXTOOLS_DEBUG_DLL")
+	if (dll)
+		LIBCALL(dll, "auxtools_init")()
 		enable_debugging()
-	AUXTOOLS_CHECK(AUXMOS)
+
+#ifdef USE_BYOND_TRACY
+	#warn USE_BYOND_TRACY is enabled
+	init_byond_tracy()
+#endif
+
 	world.Profile(PROFILE_START)
 	log_world("World loaded at [TIME_STAMP("hh:mm:ss", FALSE)]!")
 
@@ -35,7 +39,7 @@ GLOBAL_LIST(topic_status_cache)
 	config.Load(params[OVERRIDE_CONFIG_DIRECTORY_PARAMETER])
 
 	load_admins()
-	load_mentors()
+	//load_mentors() BLUEMOON EDIT
 
 	//SetupLogs depends on the RoundID, so lets check
 	//DB schema and set RoundID if we can
@@ -82,11 +86,11 @@ GLOBAL_LIST(topic_status_cache)
 	CONFIG_SET(number/round_end_countdown, 0)
 	var/datum/callback/cb
 #ifdef UNIT_TESTS
-	cb = CALLBACK(GLOBAL_PROC, /proc/RunUnitTests)
+	cb = CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(RunUnitTests))
 #else
 	cb = VARSET_CALLBACK(SSticker, force_ending, TRUE)
 #endif
-	SSticker.OnRoundstart(CALLBACK(GLOBAL_PROC, /proc/_addtimer, cb, 10 SECONDS))
+	SSticker.OnRoundstart(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(_addtimer), cb, 10 SECONDS))
 
 /world/proc/SetupLogs()
 	var/override_dir = params[OVERRIDE_LOG_DIRECTORY_PARAMETER]
@@ -177,31 +181,68 @@ GLOBAL_LIST(topic_status_cache)
 /world/Topic(T, addr, master, key)
 	TGS_TOPIC	//redirect to server tools if necessary
 
-	if(!SSfail2topic)
-		return "Server not initialized."
-	if(SSfail2topic.IsRateLimited(addr))
-		return "Rate limited."
+	var/list/response = list()
 
 	if(length(T) > CONFIG_GET(number/topic_max_size))
-		return "Payload too large!"
+		response["statuscode"] = 413
+		response["response"] = "Payload too large"
+		return json_encode(response)
 
-	var/static/list/topic_handlers = TopicHandlers()
+	var/logging = CONFIG_GET(flag/log_world_topic)
+	var/topic_decoded = rustg_url_decode(T)
+	if(!rustg_json_is_valid(topic_decoded))
+		if(logging)
+			log_topic("(NON-JSON) \"[topic_decoded]\", from:[addr], master:[master], key:[key]")
+		// Fallback check for spacestation13.com requests
+		if(topic_decoded == "status")
+			return list2params(list("players" = length(GLOB.clients)))
+		response["statuscode"] = 400
+		response["response"] = "Bad Request - Invalid JSON format"
+		return json_encode(response)
 
-	var/list/input = params2list(T)
-	var/datum/world_topic/handler
-	for(var/I in topic_handlers)
-		if(I in input)
-			handler = topic_handlers[I]
-			break
+	var/list/params = json_decode(topic_decoded)
+	params["addr"] = addr
+	var/query = params["query"]
+	var/auth = params["auth"]
+	var/source = params["source"]
 
-	if((!handler || initial(handler.log)) && config && CONFIG_GET(flag/log_world_topic))
-		log_topic("\"[T]\", from:[addr], master:[master], key:[key]")
+	if(logging)
+		var/list/censored_params = params.Copy()
+		censored_params["auth"] = "***[copytext(params["auth"], -4)]"
+		log_topic("\"[json_encode(censored_params)]\", from:[addr], master:[master], auth:[censored_params["auth"]], key:[key], source:[source]")
 
-	if(!handler)
-		return
+	if(!source)
+		response["statuscode"] = 400
+		response["response"] = "Bad Request - No source specified"
+		return json_encode(response)
 
-	handler = new handler()
-	return handler.TryRun(input, addr)
+	if(!query)
+		response["statuscode"] = 400
+		response["response"] = "Bad Request - No endpoint specified"
+		return json_encode(response)
+
+	if(!LAZYACCESS(GLOB.topic_tokens["[auth]"], "[query]"))
+		response["statuscode"] = 401
+		response["response"] = "Unauthorized - Bad auth"
+		return json_encode(response)
+
+	var/datum/world_topic/command = GLOB.topic_commands["[query]"]
+	if(!command)
+		response["statuscode"] = 501
+		response["response"] = "Not Implemented"
+		return json_encode(response)
+
+	if(command.CheckParams(params))
+		response["statuscode"] = command.statuscode
+		response["response"] = command.response
+		response["data"] = command.data
+		return json_encode(response)
+	else
+		command.Run(params)
+		response["statuscode"] = command.statuscode
+		response["response"] = command.response
+		response["data"] = command.data
+		return json_encode(response)
 
 /world/proc/AnnouncePR(announcement, list/payload)
 	var/static/list/PRcounts = list()	//PR id -> number of times announced this round
@@ -243,15 +284,19 @@ GLOBAL_LIST(topic_status_cache)
 		if (usr)
 			log_admin("[key_name(usr)] Has requested an immediate world restart via client side debugging tools")
 			message_admins("[key_name_admin(usr)] Has requested an immediate world restart via client side debugging tools")
-		to_chat(world, span_boldannounce("Rebooting World immediately due to host request."))
+		to_chat(world, "<span class='boldannounce'>Rebooting World immediately due to host request.</span>")
 	else
-		to_chat(world, span_boldannounce("Ведётся перезагрузка Игрового Мира..."))
-		Master.Shutdown() //run SS shutdowns
+		to_chat(world, "<span class='boldannounce'>Rebooting world...</span>")
+		Master.Shutdown()	//run SS shutdowns
+	SSpersistence.RecordGracefulEnding() // BLUEMOON ADD - система запоминает, успешно ли завершился прошлый раунд, или крашнулся
+
+	TgsReboot()
 
 	#ifdef UNIT_TESTS
 	FinishTestRun()
 	return
-	#else
+	#endif
+
 	if(TgsAvailable())
 		var/do_hard_reboot
 		// check the hard reboot counter
@@ -269,32 +314,27 @@ GLOBAL_LIST(topic_status_cache)
 					do_hard_reboot = FALSE
 
 		if(do_hard_reboot)
-			log_world("Игровой Мир будет перезагружен в [TIME_STAMP("hh:mm:ss", FALSE)]")
+			log_world("World hard rebooted at [TIME_STAMP("hh:mm:ss", FALSE)]")
 			shutdown_logging() // See comment below.
-			auxcleanup()
+			var/debug_server = world.GetConfig("env", "AUXTOOLS_DEBUG_DLL")
+			if (debug_server)
+				LIBCALL(debug_server, "auxtools_shutdown")()
 			TgsEndProcess()
 			return ..()
 
-	log_world("Игровой Мир будет перезагружен в [TIME_STAMP("hh:mm:ss", FALSE)]")
-
+	log_world("World rebooted at [TIME_STAMP("hh:mm:ss", FALSE)]")
 	shutdown_logging() // Past this point, no logging procs can be used, at risk of data loss.
-	auxcleanup()
-
-	TgsReboot() // TGS can decide to kill us right here, so it's important to do it last
-
-	..()
-	#endif
-
-/world/proc/auxcleanup()
-	AUXTOOLS_SHUTDOWN(AUXMOS)
 	var/debug_server = world.GetConfig("env", "AUXTOOLS_DEBUG_DLL")
 	if (debug_server)
-		call(debug_server, "auxtools_shutdown")()
+		LIBCALL(debug_server, "auxtools_shutdown")()
+	..()
 
 /world/Del()
 	shutdown_logging() // makes sure the thread is closed before end, else we terminate
-	auxcleanup()
-	. = ..()
+	var/debug_server = world.GetConfig("env", "AUXTOOLS_DEBUG_DLL")
+	if (debug_server)
+		LIBCALL(debug_server, "auxtools_shutdown")()
+	..()
 
 /world/proc/update_status()
 	. = ""
@@ -310,7 +350,7 @@ GLOBAL_LIST(topic_status_cache)
 	var/defaultstation = CONFIG_GET(string/stationname)
 	if(servername || stationname != defaultstation)
 		. += (servername ? "<b>[servername]" : "<b>")
-		. += (stationname != defaultstation ? "[servername ? " - " : ""][stationname]</b>\] " : "</b>\] ")
+		. += (stationname != defaultstation ? "[servername ? " &#8212 " : ""][stationname]</b>\] " : "</b>\] ")
 
 	var/communityname = CONFIG_GET(string/communityshortname)
 	var/communitylink = CONFIG_GET(string/communitylink)
@@ -335,7 +375,7 @@ GLOBAL_LIST(topic_status_cache)
 	if(NUM2SECLEVEL(GLOB.security_level))
 		. += "[NUM2SECLEVEL(GLOB.security_level)] alert, "
 
-	. += "[get_active_player_count(afk_check = TRUE)] playing"
+	. += "[get_total_player_count()] playing"
 
 	status = .
 
@@ -358,7 +398,7 @@ GLOBAL_LIST(topic_status_cache)
 /// Auxtools atmos
 /world/proc/refresh_atmos_grid()
 
-/world/proc/change_fps(new_value = 60)
+/world/proc/change_fps(new_value = 20)
 	if(new_value <= 0)
 		CRASH("change_fps() called with [new_value] new_value.")
 	if(fps == new_value)
@@ -380,3 +420,18 @@ GLOBAL_LIST(topic_status_cache)
 
 /world/proc/on_tickrate_change()
 	SStimer?.reset_buckets()
+
+/world/proc/init_byond_tracy()
+	var/library
+
+	switch (system_type)
+		if (MS_WINDOWS)
+			library = "prof.dll"
+		if (UNIX)
+			library = "libprof.so"
+		else
+			CRASH("Unsupported platform: [system_type]")
+
+	var/init_result = call_ext(library, "init")("block")
+	if (init_result != "0")
+		CRASH("Error initializing byond-tracy: [init_result]")

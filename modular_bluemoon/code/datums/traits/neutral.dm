@@ -15,7 +15,7 @@
 
 /datum/quirk/awoo/add()
 	// Set timer
-	//timer = addtimer(CALLBACK(src, .proc/do_awoo), timer_trigger, TIMER_STOPPABLE)
+	//timer = addtimer(CALLBACK(src, PROC_REF(do_awoo), timer_trigger, TIMER_STOPPABLE)
 	last_awoo = world.time
 	chance = default_chance
 
@@ -53,4 +53,118 @@
 	//deltimer(timer)
 	//timer = null
 	// Add new timer
-	//timer = addtimer(CALLBACK(src, .proc/do_awoo), timer_trigger, TIMER_STOPPABLE)
+	//timer = addtimer(CALLBACK(src, PROC_REF(do_awoo), timer_trigger, TIMER_STOPPABLE)
+
+/datum/emote/sound/human/awoo
+	emote_volume = 100
+	emote_range = MEDIUM_RANGE_SOUND_EXTRARANGE
+	emote_falloff_exponent = 1
+	emote_distance_multiplier_min_range = 12
+
+/datum/emote/sound/human/awoo/run_emote(mob/user, params)
+	. = ..()
+	if(!.)
+		return
+	if (HAS_TRAIT(user, TRAIT_AWOO))
+		var/mob/living/carbon/M = user
+		var/datum/quirk/awoo/quirk_target = locate() in M.roundstart_quirks
+		quirk_target.last_awoo = world.time
+		quirk_target.chance = quirk_target.default_chance
+		SEND_SIGNAL(user, COMSIG_ADD_MOOD_EVENT, "to_awoo", /datum/mood_event/to_awoo)
+
+/datum/emote/sound/human/howl
+	emote_volume = 100
+	emote_range = MEDIUM_RANGE_SOUND_EXTRARANGE
+	emote_falloff_exponent = 1
+	emote_distance_multiplier_min_range = 12
+
+/datum/emote/sound/human/howl/run_emote(mob/user, params)
+	. = ..()
+	if(!.)
+		return
+	if (HAS_TRAIT(user, TRAIT_AWOO))
+		var/mob/living/carbon/M = user
+		var/datum/quirk/awoo/quirk_target = locate() in M.roundstart_quirks
+		quirk_target.last_awoo = world.time
+		quirk_target.chance = quirk_target.default_chance
+		SEND_SIGNAL(user, COMSIG_ADD_MOOD_EVENT, "to_awoo", /datum/mood_event/to_awoo)
+
+/datum/quirk/light
+	name = "Лёгкий"
+	desc = "Вы в разы легче того, чем вы выглядите! Хотя и размеры теперь не особо помогают в выживании."
+	value = 0
+	mob_trait = TRAIT_BLUEMOON_LIGHT
+	gain_text = "<span class='notice'>Вы ощущаете себя легче пёрышка!</span>"
+	lose_text = "<span class='danger'>Вы ощёщаете себя тяжелее.</span>"
+	medical_record_text = "Пациент имеет аномально низкий вес."
+	antag_removal_text // Text will be given to the quirk holder if they get an antag that has it blacklisted.
+
+/datum/quirk/clearly_audible
+	name = "Хорошо слышимый"
+	desc = "Объясняя вашу маленькость вас уж точно услышат (позволяет при маленьком размере иметь хорошо слышимую речь)"
+	value = 0
+	mob_trait = TRAIT_BLUEMOON_CLEARLY_AUDIBLE
+	gain_text = "<span class='notice'>Ваш голос звучит ещё более звонко!</span>"
+	lose_text = "<span class='danger'>Кхе-кхе...</span>"
+
+/datum/quirk/clearly_audible/add()
+	quirk_holder.RemoveElement(/datum/element/smalltalk)
+
+/datum/quirk/clearly_audible/remove()
+	quirk_holder.adjust_mobsize() //ленивое добавление /datum/element/smalltalk если нужно
+
+/datum/quirk/anti_normalizer
+	name = "Невосприимчивость к нормалайзеру"
+	desc = "Syntech производит устройства-нормалайзеры, подводящие параметры размера существ к человеческим. \
+	По тем или иным причинам, на вас эта технология не работает, как и их size tool."
+	value = 0
+	mob_trait = TRAIT_BLUEMOON_ANTI_NORMALIZER
+	gain_text = "<span class='notice'>В последний раз, когда вы пытались надеть нормалайзер, он не работал.</span>"
+	lose_text = "<span class='notice'>Может быть стоит попробовать надеть нормалайзер и теперь он будет работать?</span>"
+	medical_record_text = "Пациент обладает параметрами, которые делают его неподходящим кандидатом для нормалайзеров и части других девайсов от Syntech."
+
+/datum/quirk/spiky
+	name = "Колючий"
+	desc = "Ваше тело частично или полностью покрыто острыми иглами. Любой, кто попытается вас потрогать, рискует пораниться."
+	value = 0
+	mob_trait = TRAIT_SPIKY
+
+/datum/quirk/nt_employee
+	name = "Сотрудник НаноТрейзен"
+	desc = "Вы обычный сотрудник НаноТрейзен. В начале смены вы получаете корпоративный бейдж и знание корпоративного языка."
+	value = 0
+	mood_quirk = FALSE
+	processing_quirk = FALSE
+
+/datum/quirk/nt_employee/on_spawn()
+	. = ..()
+
+	quirk_holder.grant_language(/datum/language/corpspeak, TRUE, TRUE, LANGUAGE_MIND)
+	give_item(/obj/item/clothing/accessory/badge_nt, quirk_holder)
+
+/datum/quirk/syndi_employee
+	name = "Сотрудник Синдиката"
+	desc = "Вы обычный сотрудник Синдиката. В начале смены вы получаете корпоративный бейдж и знание кодового языка."
+	value = 0
+	mood_quirk = FALSE
+	processing_quirk = FALSE
+
+/datum/quirk/syndi_employee/on_spawn()
+	. = ..()
+
+	quirk_holder.grant_language(/datum/language/codespeak, TRUE, TRUE, LANGUAGE_MIND)
+	give_item(/obj/item/clothing/accessory/badge_syndi, quirk_holder)
+
+/datum/quirk/lewdjob
+	name = "Секс это работа"
+	desc = "Ничего личного, просто бизнес. В моменты интимной близости у вас над головой не будут появляться сердечки."
+	mob_trait = TRAIT_LEWD_JOB
+
+/datum/preferences
+	var/summon_nickname = null
+
+/datum/quirk/lewdsummon
+	name = "Призываемый"
+	desc = "Вы были одарены силой демонов похоти или же сами являлись её источником, что давала возможность осмелившимся безумцам призывать вас при помощи рун. Сможете ли вы исполнить их фантазии?."
+	mob_trait = TRAIT_LEWD_SUMMON
+	gain_text = "<span class='notice'>Призываемый - ЕРП квирк. Использование его для абуза механик, будет крайне строго наказываться ©️. </span>"

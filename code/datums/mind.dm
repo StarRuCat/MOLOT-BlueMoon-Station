@@ -35,6 +35,11 @@
 #define ADMIN_PING_COOLDOWN_TIME (10 MINUTES)
 //ambition end
 
+// BLUEMOON ADD START
+/// Cooldown between rolling random character ambitions
+#define BLUEMOON_AMBITION_COOLDOWN_TIME (10 SECONDS)
+// BLUEMOON ADD END
+
 /datum/mind
 	var/key
 	var/name				//replaces mob/var/original_name
@@ -88,10 +93,18 @@
 	/// A lazy list of statuses to add next to this mind in the traitor panel
 	var/list/special_statuses
 
-	var/list/ambition_objectives = list()
-	var/ambition_limit = 6 //Лимит амбиций
+	// BLUEMOON ADD START
 
-/datum/mind/New(var/key)
+	/// Character ambitions
+	var/list/ambition_objectives = list()
+	/// Maximum amount of random ambitions
+	var/ambition_limit = 6
+	/// Time when new ambition can be rolled
+	var/ambition_cooldown_end = 0
+
+	// BLUEMOON ADD END
+
+/datum/mind/New(key)
 	skill_holder = new(src)
 	src.key = key
 	soulOwner = src
@@ -179,7 +192,7 @@
 	SEND_SIGNAL(src, COMSIG_MIND_TRANSFER, new_character, old_character)
 	SEND_SIGNAL(new_character, COMSIG_MOB_ON_NEW_MIND)
 //splurt change
-	INVOKE_ASYNC(GLOBAL_PROC, .proc/_paci_check, new_character, old_character)
+	INVOKE_ASYNC(GLOBAL_PROC, GLOBAL_PROC_REF(_paci_check), new_character, old_character)
 //end change
 
 /datum/mind/proc/store_memory(new_text)
@@ -871,7 +884,7 @@ GLOBAL_LIST(objective_choices)
 			do_edit_objectives_ambitions()
 			return
 		S_TIMER_COOLDOWN_START(src, COOLDOWN_OBJ_ADMIN_PING, ADMIN_PING_COOLDOWN_TIME)
-		RegisterSignal(src, list(COMSIG_CD_STOP(COOLDOWN_OBJ_ADMIN_PING), COMSIG_CD_RESET(COOLDOWN_OBJ_ADMIN_PING)), .proc/on_objectives_request_cd_end)
+		RegisterSignal(src, list(COMSIG_CD_STOP(COOLDOWN_OBJ_ADMIN_PING), COMSIG_CD_RESET(COOLDOWN_OBJ_ADMIN_PING)), PROC_REF(on_objectives_request_cd_end))
 		log_admin("Objectives review request - [key_name(usr)] has requested a review of their objective changes, pinging the admins.")
 		for(var/a in GLOB.admins)
 			var/client/admin_client = a
@@ -1602,11 +1615,14 @@ GLOBAL_LIST(objective_choices)
 
 	if(href_list["amb_add"])
 		ambition_func = TRUE
-		if (ambition_objectives.len < ambition_limit)
-			to_chat(usr, "<span class='notice'>Новая амбиция: [assign_random_ambition()].</span>")
-		else
+		if (world.time < ambition_cooldown_end)
+			to_chat(usr, "<span class='warning'>Вы можете роллить амбиции не чаще, чем раз в [BLUEMOON_AMBITION_COOLDOWN_TIME / 10] секунд!</span>")
+		else if (ambition_objectives.len > ambition_limit)
 			to_chat(usr, "<span class='warning'>МНОГОВАТО АМБИЦИЙ!</span>")
-		log_game("[key_name(usr)] has added [key_name(current)]'s ambition.")
+		else
+			to_chat(usr, "<span class='notice'>Новая амбиция: [assign_random_ambition()].</span>")
+			ambition_cooldown_end = world.time + BLUEMOON_AMBITION_COOLDOWN_TIME
+			log_game("[key_name(usr)] has added [key_name(current)]'s ambition.")
 
 	else if(href_list["amb_delete"])
 		ambition_func = TRUE
@@ -1694,6 +1710,13 @@ GLOBAL_LIST(objective_choices)
 		special_role = ROLE_CHANGELING
 	return C
 
+/datum/mind/proc/make_XenoChangeling()
+	var/datum/antagonist/changeling/C = has_antag_datum(/datum/antagonist/changeling/xenobio)
+	if(!C)
+		C = add_antag_datum(/datum/antagonist/changeling/xenobio)
+		special_role = ROLE_CHANGELING
+	return C
+
 /datum/mind/proc/make_Wizard()
 	if(!has_antag_datum(/datum/antagonist/wizard))
 		special_role = ROLE_WIZARD
@@ -1764,8 +1787,8 @@ GLOBAL_LIST(objective_choices)
 			if(istype(S, type))
 				continue
 		S.charge_counter = delay
-		S.updateButtonIcon()
-		INVOKE_ASYNC(S, /obj/effect/proc_holder/spell.proc/start_recharge)
+		S.UpdateButton()
+		INVOKE_ASYNC(S, TYPE_PROC_REF(/obj/effect/proc_holder/spell, start_recharge))
 
 /datum/mind/proc/get_ghost(even_if_they_cant_reenter)
 	for(var/mob/dead/observer/G in GLOB.dead_mob_list)
@@ -1850,3 +1873,7 @@ GLOBAL_LIST(objective_choices)
 //ambition start
 #undef AMBITION_COOLDOWN_TIME
 //ambition end
+
+/// BLUEMOON ADD START
+#undef BLUEMOON_AMBITION_COOLDOWN_TIME
+/// BLUEMOON ADD END

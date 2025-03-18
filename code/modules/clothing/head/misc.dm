@@ -9,6 +9,12 @@
 	armor = list(MELEE = 30, BULLET = 15, LASER = 30, ENERGY = 10, BOMB = 25, BIO = 0, RAD = 0, FIRE = 50, ACID = 50)
 	strip_delay = 80
 
+
+/obj/item/clothing/head/centhat/cap
+	name = "\improper CentCom Cap"
+	icon_state = "centcom_cap"
+
+
 /obj/item/clothing/head/spacepolice
 	name = "space police cap"
 	desc = "A blue cap for patrolling the daily beat."
@@ -214,7 +220,7 @@
 
 /obj/item/clothing/head/fedora/suicide_act(mob/user)
 	if(user.gender == FEMALE)
-		return 0
+		return FALSE
 	var/mob/living/carbon/human/H = user
 	user.visible_message("<span class='suicide'>[user] is donning [src]! It looks like [user.ru_who()] trying to be nice to girls.</span>")
 	user.say("M'lady.", forced = "fedora suicide")
@@ -367,7 +373,7 @@
 /obj/item/clothing/head/frenchberet/equipped(mob/M, slot)
 	. = ..()
 	if (slot == ITEM_SLOT_HEAD)
-		RegisterSignal(M, COMSIG_MOB_SAY, .proc/handle_speech)
+		RegisterSignal(M, COMSIG_MOB_SAY, PROC_REF(handle_speech))
 	else
 		UnregisterSignal(M, COMSIG_MOB_SAY)
 
@@ -377,7 +383,7 @@
 
 /obj/item/clothing/head/frenchberet/proc/handle_speech(datum/source, mob/speech_args)
 	var/message = speech_args[SPEECH_MESSAGE]
-	if(message[1] != "*")
+	if(message[1] != "*" && message[1] != "!")
 		message = " [message]"
 		var/list/french_words = strings("french_replacement.json", "french")
 

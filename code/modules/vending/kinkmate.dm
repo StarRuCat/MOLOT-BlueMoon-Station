@@ -1,3 +1,4 @@
+/* BLUEMOON EDIT - CODE OVERRIDDEN IN 'modular_bluemoon\code\modules\vending\kinkmate.dm'
 /obj/machinery/vending/kink
 	name = "KinkMate"
 	desc = "A vending machine for all your unmentionable desires."
@@ -32,6 +33,7 @@
 				/obj/item/clothing/neck/stole/black = 2,
 				/obj/item/restraints/handcuffs/fake/kinky = 5,
 				/obj/item/clothing/glasses/sunglasses/blindfold = 4,
+				/obj/item/clothing/glasses/hud/slaver = 8,
 				/obj/item/clothing/mask/muzzle = 4,
 				/obj/item/clothing/mask/gas/sechailer/slut = 4,
 				/obj/item/clothing/shoes/highheels = 3,
@@ -77,3 +79,12 @@
 /obj/item/vending_refill/kink
 	machine_name 	= "KinkMate"
 	icon_state 		= "refill_kink"
+
+/obj/machinery/vending/kink/Initialize(mapload)
+	. = ..()
+	if(mapload && prob(0.1))
+		var/turf/T = get_turf(src)
+		if(T)
+			qdel(src)
+			new /obj/machinery/vending/sexmachine(T)
+*/

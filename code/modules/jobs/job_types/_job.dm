@@ -63,6 +63,9 @@
 	var/list/mind_traits // Traits added to the mind of the mob assigned this job
 	var/list/blacklisted_quirks		//list of quirk typepaths blacklisted.
 
+	/// What alternate titles does this job currently have?
+	var/list/alt_titles = list()
+
 /// Should this job be allowed to be picked for the bureaucratic error event?
 	var/allow_bureaucratic_error = TRUE
 
@@ -75,6 +78,17 @@
 	var/display_order = JOB_DISPLAY_ORDER_DEFAULT
 
 	var/bounty_types = CIV_JOB_BASIC
+
+	///Bitfield of departments this job belongs wit
+	var/departments = NONE
+
+	/// Goodies that can be received via the mail system.
+	// this is a weighted list.
+	/// Keep the _job definition for this empty and use /obj/item/mail to define general gifts.
+	var/list/mail_goodies = list()
+
+	/// If this job's mail goodies compete with generic goodies.
+	var/exclusive_mail_goodies = FALSE
 
 	//If a job complies with dresscodes, loadout items will not be equipped instead of the job's outfit, instead placing the items into the player's backpack.
 	var/dresscodecompliant = TRUE
@@ -203,7 +217,7 @@
 /datum/job/proc/announce_head(var/mob/living/carbon/human/H, var/channels) //tells the given channel that the given mob is the new department head. See communications.dm for valid channels.
 	if(H && GLOB.announcement_systems.len)
 		//timer because these should come after the captain announcement
-		SSticker.OnRoundstart(CALLBACK(GLOBAL_PROC, .proc/_addtimer, CALLBACK(pick(GLOB.announcement_systems), /obj/machinery/announcement_system/proc/announce, "NEWHEAD", H.real_name, H.job, channels), 1))
+		SSticker.OnRoundstart(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(_addtimer), CALLBACK(pick(GLOB.announcement_systems), TYPE_PROC_REF(/obj/machinery/announcement_system, announce), "NEWHEAD", H.real_name, H.job, H.client?.prefs.alt_titles_preferences[H.job], channels), 1))
 
 //If the configuration option is set to require players to be logged as old enough to play certain jobs, then this proc checks that they are, otherwise it just returns 1
 /datum/job/proc/player_old_enough(client/C)
@@ -213,15 +227,15 @@
 
 /datum/job/proc/available_in_days(client/C)
 	if(!C)
-		return 0
+		return FALSE
 	if(!CONFIG_GET(flag/use_age_restriction_for_jobs))
-		return 0
+		return FALSE
 	if(!SSdbcore.Connect())
-		return 0 //Without a database connection we can't get a player's age so we'll assume they're old enough for all jobs
+		return FALSE //Without a database connection we can't get a player's age so we'll assume they're old enough for all jobs
 	if(C.prefs.db_flags & DB_FLAG_EXEMPT)
-		return 0
+		return FALSE
 	if(!isnum(minimal_player_age))
-		return 0
+		return FALSE
 
 	return max(0, minimal_player_age - C.player_age)
 
@@ -230,6 +244,11 @@
 
 /datum/job/proc/radio_help_message(mob/M)
 	to_chat(M, "<b>Prefix your message with :h to speak on your department's radio. To see other prefixes, look closely at your headset.</b>")
+
+// BLUEMOON ADD 
+/datum/job/proc/jobname_to_ru(mob/M, jobname)
+	var/static/list/joblist = list()
+// BLUEMOON ADD END
 
 /datum/job/proc/standard_assign_skills(datum/mind/M)
 	if(!starting_modifiers)
@@ -305,14 +324,13 @@
 		C.access = J.get_access()
 		shuffle_inplace(C.access) // Shuffle access list to make NTNet passkeys less predictable
 		C.registered_name = H.real_name
-		//Skyrat change
+		C.assignment = J.title
 		if(preference_source && preference_source.prefs && preference_source.prefs.alt_titles_preferences[J.title])
-			C.assignment = preference_source.prefs.alt_titles_preferences[J.title]
+			C.update_label(C.registered_name, preference_source.prefs.alt_titles_preferences[J.title])
 		else
-			C.assignment = J.title
-		//End of skyrat change
-		C.update_label()
-		if(J.title != "Stowaway")
+			C.update_label()
+
+		if(J.title != "Stowaway") //SPLURT EDIT
 			for(var/A in SSeconomy.bank_accounts)
 				var/datum/bank_account/B = A
 				if(B.account_id == H.account_id)
@@ -324,12 +342,10 @@
 	var/obj/item/pda/PDA = H.get_item_by_slot(pda_slot)
 	if(istype(PDA))
 		PDA.owner = H.real_name
-		//Skyrat change
 		if(preference_source && preference_source.prefs && preference_source.prefs.alt_titles_preferences[J.title])
 			PDA.ownjob = preference_source.prefs.alt_titles_preferences[J.title]
 		else
 			PDA.ownjob = J.title
-		//End of skyrat change
 		PDA.update_label()
 		if(preference_source && !PDA.equipped) //PDA's screen color, font style and look depend on client preferences.
 			PDA.update_style(preference_source)
@@ -410,3 +426,7 @@
 /datum/job/proc/after_latejoin_spawn(mob/living/spawning)
 	SHOULD_CALL_PARENT(TRUE)
 	SEND_GLOBAL_SIGNAL(COMSIG_GLOB_JOB_AFTER_LATEJOIN_SPAWN, src, spawning)
+
+/// An overridable getter for more dynamic goodies.
+/datum/job/proc/get_mail_goodies(mob/recipient)
+	return mail_goodies

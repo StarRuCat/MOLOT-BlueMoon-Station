@@ -188,6 +188,7 @@
 	resistance_flags = FIRE_PROOF | ACID_PROOF
 	var/id_type_name = "Identification Card"
 	var/mining_points = 0 //For redeeming at mining equipment vendors
+	var/mining_points_total = 0 //Для отслеживания рабты шахтёров
 	var/list/access = list()
 	var/registered_name = null // The name registered_name on the card
 	var/assignment = null
@@ -198,6 +199,8 @@
 	var/obj/machinery/paystand/my_store
 	var/uses_overlays = TRUE
 	var/icon/cached_flat_icon
+	var/card_sticker = FALSE //BLUEMOON ADD часть карт можно навешивать на другие карты
+	var/list/previous_icon_data[3] //BLUEMOON ADD лист для наклеек на карты, порядок icon, icon_state, assignment
 
 /obj/item/card/id/Initialize(mapload)
 	. = ..()
@@ -237,6 +240,23 @@
 		add_fingerprint(user)
 
 /obj/item/card/id/attackby(obj/item/W, mob/user, params)
+	//BLUEMOON ADD стикеры на карту
+	if(istype(W, /obj/item/card/id) && !src.card_sticker && !contents.len)
+		var/obj/item/card/id/ID = W
+		if(ID.card_sticker)
+			to_chat(user, "<span class='notice'>You start to wrap the card...</span>")
+			if(!do_after(user, 15, target = user))
+				return
+			ID.forceMove(src)
+			previous_icon_data[1] = icon
+			previous_icon_data[2] = icon_state
+			previous_icon_data[3] = assignment
+			icon = ID.icon
+			icon_state = ID.icon_state
+			assignment = ID.assignment
+			return
+		//BLUEMOON ADD END
+
 	if(!bank_support)
 		return ..()
 	if(istype(W, /obj/item/holochip))
@@ -336,6 +356,22 @@
 
 /obj/item/card/id/AltClick(mob/living/user)
 	. = ..()
+	//BLUEMOON ADD стикеры на карту
+	if(src.contents)
+		for(var/obj/item/card/id/ID in contents)
+			if(ID.card_sticker)
+				var/response = alert(user, "What you want to do?","[src.name]", "remove sticker", "[prob(1)? "do some tax evasion" : "withdraw money"]")
+				if(response == "remove sticker")
+					to_chat(user, "<span class='notice'>You start to unwrap the card...</span>")
+					if(!do_after(user, 15, target = user))
+						return
+					user.put_in_hands(ID)
+					icon = previous_icon_data[1]
+					icon_state = previous_icon_data[2]
+					assignment = previous_icon_data[3]
+					return
+	//BLUEMOON ADD END
+
 	if(!bank_support || !alt_click_can_use_id(user))
 		return
 
@@ -364,7 +400,7 @@
 /obj/item/card/id/examine(mob/user)
 	. = ..()
 	if(mining_points)
-		. += "There's [mining_points] mining equipment redemption point\s loaded onto this card."
+		. += "There's [mining_points] mining equipment redemption point\s loaded onto this card and [mining_points_total] were earned in total."
 	if(!bank_support || (bank_support == ID_LOCKED_BANK_ACCOUNT && !registered_account))
 		. += "<span class='info'>This ID has no banking support whatsover, must be an older model...</span>"
 	else if(registered_account)
@@ -384,6 +420,10 @@
 			. += "<span class='boldnotice'>If you lose this ID card, you can reclaim your account by Alt-Clicking a blank ID card while holding it and entering your account ID number.</span>"
 	else
 		. += "<span class='info'>There is no registered account linked to this card. Alt-Click to add one.</span>"
+	//BLUEMOON ADD
+	if(card_sticker)
+		. += "<span class='info'>Can be used like a card sticker on another card.</span>"
+	//BLUEMOON ADD END
 
 /obj/item/card/id/GetAccess()
 	return access
@@ -452,7 +492,7 @@
 
 /obj/item/card/id/syndicate
 	name = "Agent Card"
-	icon_state = "syndie"
+	icon_state = "card_black"
 	assignment = "Syndicate Operative"
 	access = list(ACCESS_MAINT_TUNNELS, ACCESS_SYNDICATE)
 	var/anyone = FALSE //Can anyone forge the ID or just syndicate?
@@ -584,24 +624,6 @@
 	icon_state = "retro"
 	assignment = "Trader"
 	access = list(ACCESS_SYNDICATE)
-
-/obj/item/card/id/syndicate/inteq
-	name = "Mercenary Card"
-	icon_state = "inteq"
-	assignment = "Mercenary"
-	access = list(ACCESS_MAINT_TUNNELS, ACCESS_INTEQ)
-
-/obj/item/card/id/syndicate/anyone/inteq
-	name = "Vanguard Mercenary Card"
-	icon_state = "inteq"
-	assignment = "Vanguard Mercenary"
-	access = list(ACCESS_MAINT_TUNNELS, ACCESS_INTEQ, ACCESS_INTEQ_LEADER)
-
-/obj/item/card/id/syndicate/nuke_leader/inteq
-	name = "Nuclear Vanguard Mercenary Card"
-	icon_state = "inteq"
-	assignment = "Vanguard Mercenary"
-	access = list(ACCESS_MAINT_TUNNELS, ACCESS_INTEQ, ACCESS_INTEQ_LEADER)
 
 /obj/item/card/id/captains_spare
 	name = "captain's spare ID"

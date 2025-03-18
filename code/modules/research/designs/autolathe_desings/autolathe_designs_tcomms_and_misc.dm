@@ -40,6 +40,13 @@
 /////////////
 ////MISC/////
 /////////////
+/datum/design/toner
+	name = "Printer Toner"
+	id = "toner"
+	build_type = AUTOLATHE
+	materials = list(/datum/material/iron = 10, /datum/material/glass = 20)
+	build_path = /obj/item/toner
+	category = list("initial", "Misc")
 
 /datum/design/camera
 	name = "Camera"
@@ -98,7 +105,7 @@
 	build_type = AUTOLATHE | PROTOLATHE
 	materials = list(/datum/material/iron = 50, /datum/material/glass = 50)
 	build_path = /obj/item/airlock_painter
-	category = list("initial", "Misc","Tool Designs")
+	category = list("initial","Tools","Tool Designs")
 	departmental_flags = DEPARTMENTAL_FLAG_ENGINEERING | DEPARTMENTAL_FLAG_SERVICE
 
 /datum/design/airlock_painter/decal
@@ -262,6 +269,15 @@
 	build_type = AUTOLATHE | PROTOLATHE
 	materials = list(/datum/material/iron = 200, /datum/material/glass = 200)
 	build_path = /obj/item/stack/packageWrap
+	category = list("initial", "Misc","Equipment")
+	maxstack = 30
+
+/datum/design/wrapping_paper
+	name = "Wrapping Paper"
+	id = "wrappingpaper"
+	build_type = AUTOLATHE | PROTOLATHE
+	materials = list(/datum/material/iron = 200, /datum/material/glass = 200)
+	build_path = /obj/item/stack/wrapping_paper
 	category = list("initial", "Misc","Equipment")
 	maxstack = 30
 

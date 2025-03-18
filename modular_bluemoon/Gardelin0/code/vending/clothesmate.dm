@@ -1,3 +1,4 @@
+/* BLUEMOON EDIT - CODE OVERRIDDEN IN 'modular_bluemoon\code\modules\vending\clothesmate.dm'
 /obj/machinery/vending/clothing/Initialize()
 	var/list/extra_products = list(
 		/obj/item/clothing/under/dress/skirt/blackjumpskirt = 3,
@@ -94,6 +95,8 @@
 		/obj/item/clothing/ears/earring/single/dangle/ruby = 3,
 		/obj/item/clothing/ears/earring/single/dangle/sapphire = 3,
 		/obj/item/clothing/ears/earring/single/dangle/diamond = 3,
+		/obj/item/clothing/wrists/armwarmer/transparent = 3,
+		/obj/item/clothing/wrists/armwarmer/transparent_long = 3,
 	)
 	var/list/extra_contraband = list()
 	var/list/extra_premium = list()
@@ -102,3 +105,4 @@
 	LAZYADD(contraband, extra_contraband)
 	LAZYADD(premium, extra_premium)
 	. = ..()
+*/

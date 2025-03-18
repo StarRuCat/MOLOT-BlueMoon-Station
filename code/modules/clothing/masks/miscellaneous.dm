@@ -76,7 +76,7 @@
 
 /obj/item/clothing/mask/fakemoustache/italian/handle_speech(datum/source, list/speech_args)
 	var/message = speech_args[SPEECH_MESSAGE]
-	if(message[1] != "*")
+	if(message[1] != "*" && message[1] != "!")
 		message = " [message]"
 		var/list/italian_words = strings("italian_replacement.json", "italian")
 
@@ -125,9 +125,9 @@
 		user.update_inv_wear_mask()
 		for(var/X in actions)
 			var/datum/action/A = X
-			A.UpdateButtonIcon()
+			A.UpdateButtons()
 		to_chat(user, "<span class='notice'>Your Joy mask now has a [choice] Emotion!</span>")
-		return 1
+		return TRUE
 
 /obj/item/clothing/mask/kitsuneblk
 	name = "Black Kitsune Mask"
@@ -438,7 +438,7 @@
 
 /obj/item/clothing/mask/gondola/handle_speech(datum/source, list/speech_args)
 	var/message = speech_args[SPEECH_MESSAGE]
-	if(message[1] != "*")
+	if(message[1] != "*" && message[1] != "!")
 		message = " [message]"
 		var/list/spurdo_words = strings("spurdo_replacement.json", "spurdo")
 		for(var/key in spurdo_words)
@@ -504,6 +504,6 @@
 		user.update_inv_wear_mask()
 		for(var/X in actions)
 			var/datum/action/A = X
-			A.UpdateButtonIcon()
+			A.UpdateButtons()
 		to_chat(user, "<span class='notice'>Your paper mask now has a [choice] symbol!</span>")
-		return 1
+		return TRUE

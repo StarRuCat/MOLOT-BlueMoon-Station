@@ -3,9 +3,9 @@
 /mob/verb/say_typing_indicator()
 	set name = "say_indicator"
 	set hidden = TRUE
-	set category = "IC"
+	set category = "Say"
 	client?.last_activity = world.time
-	display_typing_indicator()
+	display_typing_indicator(isSay = TRUE)
 	var/message = input(usr, "", "say") as text|null
 	// If they don't type anything just drop the message.
 	clear_typing_indicator()		// clear it immediately!
@@ -15,7 +15,7 @@
 
 /mob/verb/say_verb(message as text)
 	set name = "say"
-	set category = "IC"
+	set category = "Say"
 	if(!length(message))
 		return
 	if(GLOB.say_disabled)	//This is here to try to identify lag problems
@@ -30,9 +30,9 @@
 /mob/verb/me_typing_indicator()
 	set name = "me_indicator"
 	set hidden = TRUE
-	set category = "IC"
+	set category = "Say"
 	client?.last_activity = world.time
-	display_typing_indicator()
+	display_typing_indicator(isMe = TRUE)
 	var/message = input(usr, "", "me") as message|null
 	// If they don't type anything just drop the message.
 	clear_typing_indicator()		// clear it immediately!
@@ -42,7 +42,7 @@
 
 /mob/verb/me_verb(message as message)
 	set name = "me"
-	set category = "IC"
+	set category = "Say"
 	if(!length(message))
 		return
 	if(GLOB.say_disabled)	//This is here to try to identify lag problems
@@ -88,7 +88,7 @@
 
 /mob/verb/whisper_verb(message as text)
 	set name = "Whisper"
-	set category = "IC"
+	set category = "Say"
 	if(!length(message))
 		return
 	if(GLOB.say_disabled)	//This is here to try to identify lag problems
@@ -154,7 +154,7 @@
 		return TRUE
 
 /mob/proc/hivecheck()
-	return 0
+	return FALSE
 
 /mob/proc/lingcheck()
 	return LINGHIVE_NONE

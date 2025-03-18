@@ -97,8 +97,8 @@
 		if(C == must_be_alone)
 			continue
 		if(our_area == get_area(C))
-			return 0
-	return 1
+			return FALSE
+	return TRUE
 
 //We used to use linear regression to approximate the answer, but Mloc realized this was actually faster.
 //And lo and behold, it is, and it's more accurate to boot.
@@ -310,14 +310,14 @@
 	var/turf/T
 	if(X1==X2)
 		if(Y1==Y2)
-			return 1 //Light cannot be blocked on same tile
+			return TRUE //Light cannot be blocked on same tile
 		else
 			var/s = SIGN(Y2-Y1)
 			Y1+=s
 			while(Y1!=Y2)
 				T=locate(X1,Y1,Z)
 				if(T.opacity)
-					return 0
+					return FALSE
 				Y1+=s
 	else
 		var/m=(32*(Y2-Y1)+(PY2-PY1))/(32*(X2-X1)+(PX2-PX1))
@@ -333,8 +333,8 @@
 				X1+=signX //Line exits tile horizontally
 			T=locate(X1,Y1,Z)
 			if(T.opacity)
-				return 0
-	return 1
+				return FALSE
+	return TRUE
 #undef SIGNV
 
 
@@ -343,13 +343,13 @@
 	var/turf/Bturf = get_turf(B)
 
 	if(!Aturf || !Bturf)
-		return 0
+		return FALSE
 
 	if(inLineOfSight(Aturf.x,Aturf.y, Bturf.x,Bturf.y,Aturf.z))
-		return 1
+		return TRUE
 
 	else
-		return 0
+		return FALSE
 
 
 /proc/get_cardinal_step_away(atom/start, atom/finish) //returns the position of a step from start away from finish, in one of the cardinal directions
@@ -416,7 +416,7 @@
 /proc/flick_overlay(image/I, list/show_to, duration)
 	for(var/client/C in show_to)
 		C.images += I
-	addtimer(CALLBACK(GLOBAL_PROC, /proc/remove_images_from_clients, I, show_to), duration, TIMER_CLIENT_TIME)
+	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(remove_images_from_clients), I, show_to), duration, TIMER_CLIENT_TIME)
 
 /proc/flick_overlay_view(image/I, atom/target, duration) //wrapper for the above, flicks to everyone who can see the target atom
 	var/list/viewing = list()
@@ -447,13 +447,20 @@
 			active_players++
 	return active_players
 
+/proc/get_total_player_count()
+	var/total_players = 0
+	for(var/mob/M in GLOB.player_list)
+		if(M && M.client)
+			total_players++
+	return total_players
+
 /proc/showCandidatePollWindow(mob/M, poll_time, Question, list/candidates, ignore_category, time_passed, flashwindow = TRUE)
 	set waitfor = 0
 
 	SEND_SOUND(M, 'sound/misc/notice2.ogg') //Alerting them to their consideration
 	if(flashwindow)
 		window_flash(M.client)
-	switch(ignore_category ? askuser(M,Question,"Please answer in [DisplayTimeText(poll_time)]!","Да","Нет","Never for this round", StealFocus=0, Timeout=poll_time) : askuser(M,Question,"Please answer in [DisplayTimeText(poll_time)]!","Да","Нет", StealFocus=0, Timeout=poll_time))
+	switch(ignore_category ? askuser(M,Question,"Please answer in [DisplayTimeText(poll_time)]!","Yes","No","Never for this round", StealFocus=0, Timeout=poll_time) : askuser(M,Question,"Please answer in [DisplayTimeText(poll_time)]!","Yes","No", StealFocus=0, Timeout=poll_time))
 		if(1)
 			to_chat(M, "<span class='notice'>Choice registered: Yes.</span>")
 			if(time_passed + poll_time <= world.time)
@@ -581,13 +588,11 @@
 	if((character.mind.assigned_role == "Cyborg") || (character.mind.assigned_role == character.mind.special_role) || (character.mind.assigned_role == "Stowaway"))
 		return
 
-	//Skyrat changes
 	var/displayed_rank = rank
-	if(character.client && character.client.prefs && character.client.prefs.alt_titles_preferences[rank])
-		displayed_rank = character.client.prefs.alt_titles_preferences[rank]
+	if(character.client && character.client.prefs && character.client?.prefs?.alt_titles_preferences[rank])
+		displayed_rank = character.client?.prefs?.alt_titles_preferences[rank]
 	var/obj/machinery/announcement_system/announcer = pick(GLOB.announcement_systems)
-	announcer.announce("ARRIVAL", character.real_name, displayed_rank, list()) //make the list empty to make it announce it in common
-	//End of skyrat changes
+	announcer.announce("ARRIVAL", character.real_name, rank, displayed_rank, list()) //make the list empty to make it announce it in common
 
 /proc/lavaland_equipment_pressure_check(turf/T)
 	. = FALSE
@@ -631,4 +636,4 @@
 			var/area/A = C.area
 			if(GLOB.typecache_powerfailure_safe_areas[A.type])
 				continue
-			INVOKE_ASYNC(C, TYPE_PROC_REF(/obj/machinery/power/apc, energy_fail), rand(duration_min,duration_max))
+			C.energy_fail(rand(duration_min,duration_max))

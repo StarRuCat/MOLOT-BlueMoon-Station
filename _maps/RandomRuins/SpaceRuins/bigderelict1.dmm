@@ -13,7 +13,7 @@
 /area/ruin/space/has_grav/derelictoutpost/cargobay)
 "ad" = (
 /turf/open/floor/plating/asteroid/airless,
-/area/ruin/unpowered/no_grav)
+/area/ruin/space)
 "ae" = (
 /turf/open/floor/plating,
 /area/ruin/space/has_grav/derelictoutpost/cargobay)
@@ -156,11 +156,12 @@
 "aB" = (
 /obj/machinery/door/airlock/external,
 /obj/effect/mapping_helpers/airlock/cyclelink_helper,
+/obj/structure/fans/tiny,
 /turf/open/floor/plating,
 /area/ruin/space/has_grav/derelictoutpost/powerstorage)
 "aC" = (
 /turf/closed/mineral,
-/area/ruin/unpowered/no_grav)
+/area/ruin/space)
 "aD" = (
 /obj/machinery/door/poddoor{
 	id = "bigderelictship"
@@ -206,6 +207,7 @@
 "aL" = (
 /obj/machinery/door/airlock/external,
 /obj/effect/mapping_helpers/airlock/cyclelink_helper,
+/obj/structure/fans/tiny,
 /turf/open/floor/plating,
 /area/ruin/space/has_grav/derelictoutpost)
 "aM" = (
@@ -1413,7 +1415,7 @@
 /area/ruin/space/has_grav/derelictoutpost/cargostorage)
 "em" = (
 /turf/closed/wall,
-/area/ruin/unpowered/no_grav)
+/area/ruin/space)
 "en" = (
 /obj/structure/alien/resin/wall{
 	color = "#8EC127";
@@ -1422,7 +1424,7 @@
 	name = "gelatinous wall"
 	},
 /turf/open/floor/plating/asteroid,
-/area/ruin/unpowered/no_grav)
+/area/ruin/space)
 "eo" = (
 /obj/structure/closet/crate/internals,
 /obj/item/storage/toolbox/emergency,
@@ -1752,6 +1754,7 @@
 /obj/effect/mapping_helpers/airlock/cyclelink_helper{
 	dir = 1
 	},
+/obj/structure/fans/tiny,
 /turf/open/floor/plating,
 /area/ruin/space/has_grav/derelictoutpost/powerstorage)
 "uW" = (
@@ -2086,6 +2089,7 @@
 /obj/effect/mapping_helpers/airlock/cyclelink_helper{
 	dir = 1
 	},
+/obj/structure/fans/tiny,
 /turf/open/floor/plating,
 /area/ruin/space/has_grav/derelictoutpost)
 "Ml" = (

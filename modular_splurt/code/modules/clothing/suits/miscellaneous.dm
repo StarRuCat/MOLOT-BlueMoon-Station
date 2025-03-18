@@ -5,6 +5,9 @@
 /obj/item/clothing/suit/toggle/wbreakpoly
 	mutantrace_variation = STYLE_DIGITIGRADE|STYLE_NO_ANTHRO_ICON
 
+/obj/item/clothing/suit/apron/overalls
+	mob_overlay_icon = 'modular_splurt/icons/mob/clothing/suit.dmi'
+
 //Own stuff
 
 /* Already exists
@@ -43,7 +46,7 @@
 	item_state = "jacket_yellow"
 	body_parts_covered = CHEST|ARMS
 	cold_protection = CHEST|ARMS
-	mutantrace_variation = NONE
+	mutantrace_variation = STYLE_DIGITIGRADE|STYLE_NO_ANTHRO_ICON
 	min_cold_protection_temperature = FIRE_SUIT_MIN_TEMP_PROTECT
 
 /obj/item/clothing/suit/toggle/rp_jacket/orange
@@ -77,7 +80,7 @@
 	mob_overlay_icon = 'modular_splurt/icons/mob/clothing/suit.dmi'
 	icon_state = "baroness"
 	item_state = "baroness"
-	body_parts_covered = CHEST|GROIN|LEGS|FEET
+	body_parts_covered = CHEST|GROIN|LEGS
 	mutantrace_variation = STYLE_DIGITIGRADE|STYLE_NO_ANTHRO_ICON
 	flags_inv = HIDESHOES|HIDEUNDERWEAR
 

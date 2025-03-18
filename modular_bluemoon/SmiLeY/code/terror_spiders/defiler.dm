@@ -14,19 +14,21 @@
 	icon_state = "terror_white"
 	icon_living = "terror_white"
 	icon_dead = "terror_white_dead"
-	maxHealth = 200
-	health = 200
+	maxHealth = 220
+	health = 220
 	death_sound = 'sound/creatures/terrorspiders/death2.ogg'
 	speed = -0.3
 	melee_damage_lower = 1
 	melee_damage_upper = 1
+	obj_damage = 50
+	wall_destroy_hardness = 40
 	spider_opens_doors = 2
 	spider_tier = TS_TIER_3
 	gender = MALE
 	web_type = /obj/structure/spider/terrorweb/white
 	delay_web = 10
-	special_abillity = list(/obj/effect/proc_holder/spell/aoe_turf/terror_smoke,
-							/obj/effect/proc_holder/spell/aoe_turf/terror_parasmoke,
+	special_abillity = list(/obj/effect/proc_holder/spell/targeted/smoke/terror_smoke,
+							/obj/effect/proc_holder/spell/targeted/smoke/terror_parasmoke,
 							/obj/effect/proc_holder/spell/aoe_turf/terror_shriek)
 	spider_intro_text = "Будучи Осквернителем Ужаса, ваша цель - атаковать ничего не подозревающих гуманоидов, чтобы заразить их яйцами. Вы наносите мало урона, но можете парализовать цель за три укуса, а ваш яд заставит её замолчать. Вы также можете генерировать различные дымы вредящие противникам. И помните, не нужно убивать заражённых, они послужат носителями для новых пауков!"
 
@@ -50,11 +52,11 @@
 		return ..()
 	var/inject_target = pick("chest", "head")
 	if(L.IsParalyzed() || L.can_inject(null, FALSE, inject_target, FALSE) && prob(50))
-		new /obj/item/organ/internal/body_egg/terror_eggs(L)
+		new /obj/item/organ/body_egg/terror_eggs(L)
 		visible_message("<span class='danger'>[src] buries its long fangs deep into the [inject_target] of [target]!</span>")
 	else
-		if(prob(20))
-			new /obj/item/organ/internal/body_egg/terror_eggs(L)
+		if(prob(15))
+			new /obj/item/organ/body_egg/terror_eggs(L)
 			visible_message("<span class='danger'>[src] pierces armour and buries its long fangs deep into the [inject_target] of [target]!</span>")
 	if(!ckey && !IsTSInfected(L))
 		step_away(src, L)
@@ -64,7 +66,7 @@
 		visible_message("<span class='notice'>[src] jumps away from [L]!</span>")
 
 /proc/IsTSInfected(mob/living/carbon/C) // Terror AI requires this
-	if(C.getorgan(/obj/item/organ/internal/body_egg))
+	if(C.getorgan(/obj/item/organ/body_egg))
 		return 1
 	return 0
 
@@ -78,4 +80,4 @@
 			var/inject_target = pick("chest","head")
 			if(C.can_inject(null, FALSE, inject_target, FALSE))
 				to_chat(C, "<span class='danger'>[src] slices into you!</span>")
-				new /obj/item/organ/internal/body_egg/terror_eggs(C)
+				new /obj/item/organ/body_egg/terror_eggs(C)

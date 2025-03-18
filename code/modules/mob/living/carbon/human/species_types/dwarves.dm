@@ -37,7 +37,7 @@ GLOBAL_LIST_INIT(dwarf_last, world.file2list("strings/names/dwarf_last.txt")) //
 	. = ..()
 	var/mob/living/carbon/human/H = C
 	H.AddElement(/datum/element/dwarfism, COMSIG_SPECIES_LOSS, src)
-	RegisterSignal(C, COMSIG_MOB_SAY, .proc/handle_speech) //We register handle_speech is being used.
+	RegisterSignal(C, COMSIG_MOB_SAY, PROC_REF(handle_speech)) //We register handle_speech is being used.
 
 /datum/species/dwarf/on_species_loss(mob/living/carbon/H, datum/species/new_species)
 	. = ..()
@@ -53,7 +53,7 @@ GLOBAL_LIST_INIT(dwarf_last, world.file2list("strings/names/dwarf_last.txt")) //
 //Dwarf Speech handling - Basically a filter/forces them to say things. The IC helper
 /datum/species/dwarf/proc/handle_speech(datum/source, list/speech_args)
 	var/message = speech_args[SPEECH_MESSAGE]
-	if(speech_args[SPEECH_LANGUAGE] != /datum/language/dwarf && message[1] != "*") // No accent if they speak their language
+	if(speech_args[SPEECH_LANGUAGE] != /datum/language/dwarf && message[1] != "*" && message[1] != "!") // No accent if they speak their language
 		message = " [message]" //Credits to goonstation for the strings list.
 		var/list/dwarf_words = strings("dwarf_replacement.json", "dwarf") //thanks to regex too.
 		for(var/word in splittext(message," "))

@@ -2,6 +2,7 @@
 	holder_type = /obj/machinery/autolathe
 	proper_name = "Autolathe"
 	req_knowledge = JOB_SKILL_EXPERT
+	visibility_trait = TRAIT_KNOW_ENGI_WIRES // BLUEMOON ADD
 
 /datum/wires/autolathe/New(atom/holder)
 	wires = list(
@@ -28,14 +29,14 @@
 	switch(wire)
 		if(WIRE_HACK)
 			A.adjust_hacked(!A.hacked)
-			addtimer(CALLBACK(A, /obj/machinery/autolathe.proc/reset, wire), 60)
+			addtimer(CALLBACK(A, TYPE_PROC_REF(/obj/machinery/autolathe, reset), wire), 60)
 		if(WIRE_SHOCK)
 			A.shocked = !A.shocked
 			A.shock(usr, 50)
-			addtimer(CALLBACK(A, /obj/machinery/autolathe.proc/reset, wire), 60)
+			addtimer(CALLBACK(A, TYPE_PROC_REF(/obj/machinery/autolathe, reset), wire), 60)
 		if(WIRE_DISABLE)
 			A.disabled = !A.disabled
-			addtimer(CALLBACK(A, /obj/machinery/autolathe.proc/reset, wire), 60)
+			addtimer(CALLBACK(A, TYPE_PROC_REF(/obj/machinery/autolathe, reset), wire), 60)
 
 /datum/wires/autolathe/on_cut(wire, mend)
 	var/obj/machinery/autolathe/A = holder

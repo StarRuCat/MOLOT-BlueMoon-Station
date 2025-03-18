@@ -50,6 +50,10 @@
 
 //#define UNIT_TESTS //If this is uncommented, we do a single run though of the game setup and tear down process with unit tests in between
 
+// If this is uncommented, will attempt to load and initialize prof.dll/libprof.so.
+// We do not ship byond-tracy. Build it yourself here: https://github.com/mafemergency/byond-tracy/
+//#define USE_BYOND_TRACY
+
 #ifndef PRELOAD_RSC //set to:
 #define PRELOAD_RSC 0 // 0 to allow using external resources or on-demand behaviour;
 #endif // 1 to use the default behaviour;
@@ -57,15 +61,6 @@
 
 #ifdef LOWMEMORYMODE
 #define FORCE_MAP "_maps/runtimestation.json"
-#endif
-
-//Update this whenever you need to take advantage of more recent byond features
-#define MIN_COMPILER_VERSION 513
-#define MIN_COMPILER_BUILD 1514
-#if (DM_VERSION < MIN_COMPILER_VERSION || DM_BUILD < MIN_COMPILER_BUILD) && !defined(SPACEMAN_DMM)
-//Don't forget to update this part
-#error Your version of BYOND is too out-of-date to compile this project. Go to https://secure.byond.com/download and update.
-#error You need version 513.1514 or higher
 #endif
 
 //Additional code for the above flags.
@@ -94,12 +89,13 @@
 #define CBT
 #endif
 
-// A reasonable number of maximum overlays an object needs
-// If you think you need more, rethink it
-#define MAX_ATOM_OVERLAYS 100
-
 #if !defined(CBT) && !defined(SPACEMAN_DMM)
 #warn Building with Dream Maker is no longer supported and will result in errors.
 #warn In order to build, run BUILD.bat in the root directory.
 #warn Consider switching to VSCode editor instead, where you can press Ctrl+Shift+B to build.
 #endif
+
+// Uncomment this to enable profiling via Tracy.
+// You will need to compile your own copy of prof.dll in order to use it.
+// Find the source code and build instructions here: https://github.com/mafemergency/byond-tracy/
+// #define TRACY_PROFILING

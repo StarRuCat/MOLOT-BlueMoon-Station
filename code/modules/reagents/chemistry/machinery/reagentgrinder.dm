@@ -85,6 +85,9 @@
 	return TRUE
 
 /obj/machinery/reagentgrinder/attackby(obj/item/I, mob/user, params)
+	if(user.a_intent == INTENT_HARM) //BLUEMOON FIX невозможность атаковать пока панель открыта
+		return ..()
+
 	//You can only screw open empty grinder
 	if(!beaker && !length(holdingitems) && default_deconstruction_screwdriver(user, icon_state, icon_state, I))
 		return
@@ -97,7 +100,11 @@
 
 	if(panel_open) //Can't insert objects when its screwed open
 		return TRUE
-
+	//BLUEMOON CHANGE в блендер ничего нельзя запихать пока он работает
+	if(operating)
+		to_chat(user, "<span class='warning'>[src] currently working!</span>")
+		return TRUE
+	//BLUEMOON CHANGE END
 	if (istype(I, /obj/item/reagent_containers) && !(I.item_flags & ABSTRACT) && I.is_open_container())
 		var/obj/item/reagent_containers/B = I
 		. = TRUE
@@ -125,11 +132,8 @@
 		return TRUE
 
 	if(!I.grind_results && !I.juice_results)
-		if(user.a_intent == INTENT_HARM)
-			return ..()
-		else
-			to_chat(user, "<span class='warning'>You cannot grind [I] into reagents!</span>")
-			return TRUE
+		to_chat(user, "<span class='warning'>You cannot grind [I] into reagents!</span>") //BLUEMOON CHANGE перенесено взаимодействие на харм в самое начало
+		return TRUE
 
 	if(!I.grind_requirements(src)) //Error messages should be in the objects' definitions
 		return
@@ -151,7 +155,7 @@
 		options["eject"] = radial_eject
 
 	if(isAI(user))
-		if(stat & NOPOWER)
+		if(machine_stat & NOPOWER)
 			return
 		options["examine"] = radial_examine
 
@@ -173,7 +177,7 @@
 		choice = show_radial_menu(user, src, options, require_near = !hasSiliconAccessInArea(user))
 
 	// post choice verification
-	if(operating || (isAI(user) && stat & NOPOWER) || !user.canUseTopic(src, !hasSiliconAccessInArea(user)))
+	if(operating || (isAI(user) && machine_stat & NOPOWER) || !user.canUseTopic(src, !hasSiliconAccessInArea(user)))
 		return
 
 	switch(choice)
@@ -206,7 +210,7 @@
 			var/obj/item/O = i
 			. += "<span class='notice'>- \A [O.name].</span>"
 
-	if(!(stat & (NOPOWER|BROKEN)))
+	if(!(machine_stat & (NOPOWER|BROKEN)))
 		. += "<span class='notice'>The status display reads:</span>"
 		. += "<span class='notice'>- Grinding reagents at <b>[speed*100]%</b>.<span>"
 		if(beaker)
@@ -216,7 +220,12 @@
 /obj/machinery/reagentgrinder/AltClick(mob/user)
 	. = ..()
 	if(istype(user) && user.canUseTopic(src, BE_CLOSE, FALSE, NO_TK))
-		replace_beaker(user)
+	//BLUEMOON CHANGE нельзя вытащить из блендера банку когда он работает
+		if(operating)
+			to_chat(user, "<span class='warning'>[src] currently working!</span>")
+		else
+			replace_beaker(user)
+	//BLUEMOON CHANGE END
 
 /obj/machinery/reagentgrinder/proc/eject(mob/user)
 	for(var/i in holdingitems)
@@ -234,7 +243,7 @@
 	var/offset = prob(50) ? -2 : 2
 	var/old_pixel_x = pixel_x
 	animate(src, pixel_x = pixel_x + offset, time = 0.2, loop = -1) //start shaking
-	addtimer(CALLBACK(src, .proc/stop_shaking, old_pixel_x), duration)
+	addtimer(CALLBACK(src, PROC_REF(stop_shaking), old_pixel_x), duration)
 
 /obj/machinery/reagentgrinder/proc/stop_shaking(old_px)
 	animate(src)
@@ -248,14 +257,14 @@
 			playsound(src, 'sound/machines/blender.ogg', 50, 1)
 		else
 			playsound(src, 'sound/machines/juicer.ogg', 20, 1)
-	addtimer(CALLBACK(src, .proc/stop_operating), time / speed)
+	addtimer(CALLBACK(src, PROC_REF(stop_operating)), time / speed)
 
 /obj/machinery/reagentgrinder/proc/stop_operating()
 	operating = FALSE
 
 /obj/machinery/reagentgrinder/proc/juice()
 	power_change()
-	if(!beaker || stat & (NOPOWER|BROKEN) || beaker.reagents.total_volume >= beaker.reagents.maximum_volume)
+	if(!beaker || machine_stat & (NOPOWER|BROKEN) || beaker.reagents.total_volume >= beaker.reagents.maximum_volume)
 		return
 	operate_for(50, juicing = TRUE)
 	for(var/obj/item/i in holdingitems)
@@ -274,7 +283,7 @@
 
 /obj/machinery/reagentgrinder/proc/grind()
 	power_change()
-	if(!beaker || stat & (NOPOWER|BROKEN) || beaker.reagents.total_volume >= beaker.reagents.maximum_volume)
+	if(!beaker || machine_stat & (NOPOWER|BROKEN) || beaker.reagents.total_volume >= beaker.reagents.maximum_volume)
 		return
 	operate_for(60)
 	for(var/i in holdingitems)
@@ -296,10 +305,10 @@
 /obj/machinery/reagentgrinder/proc/mix(mob/user)
 	//For butter and other things that would change upon shaking or mixing
 	power_change()
-	if(!beaker || stat & (NOPOWER|BROKEN))
+	if(!beaker || machine_stat & (NOPOWER|BROKEN))
 		return
 	operate_for(50, juicing = TRUE)
-	addtimer(CALLBACK(src, /obj/machinery/reagentgrinder/proc/mix_complete), 50)
+	addtimer(CALLBACK(src, TYPE_PROC_REF(/obj/machinery/reagentgrinder, mix_complete)), 50)
 
 /obj/machinery/reagentgrinder/proc/mix_complete()
 	if(beaker?.reagents.total_volume)

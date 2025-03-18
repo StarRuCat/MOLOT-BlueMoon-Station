@@ -26,6 +26,10 @@
 	D.set_vehicle_dir_offsets(SOUTH, -16, -16)
 	D.set_vehicle_dir_offsets(EAST, -18, 0)
 	D.set_vehicle_dir_offsets(WEST, -18, 0)
+	D.set_vehicle_dir_layer(SOUTH, ABOVE_MOB_LAYER)
+	D.set_vehicle_dir_layer(NORTH, OBJ_LAYER)
+	D.set_vehicle_dir_layer(EAST, OBJ_LAYER)
+	D.set_vehicle_dir_layer(WEST, OBJ_LAYER)
 
 /obj/vehicle/ridden/space/speedbike/Move(newloc,move_dir)
 	if(has_buckled_mobs())
@@ -44,7 +48,7 @@
 	icon = 'icons/obj/car.dmi'
 	icon_state = "speedwagon"
 	layer = LYING_MOB_LAYER
-	var/static/mutable_appearance/overlay = mutable_appearance(icon, "speedwagon_cover", ABOVE_MOB_LAYER)
+	var/static/mutable_appearance/overlay
 	max_buckled_mobs = 4
 	var/crash_all = FALSE //CHAOS
 	pixel_y = -48
@@ -52,6 +56,7 @@
 
 /obj/vehicle/ridden/space/speedwagon/Initialize(mapload)
 	. = ..()
+	overlay = mutable_appearance(icon, "speedwagon_cover", ABOVE_MOB_LAYER)
 	add_overlay(overlay)
 	var/datum/component/riding/D = LoadComponent(/datum/component/riding)
 	D.vehicle_move_delay = 0

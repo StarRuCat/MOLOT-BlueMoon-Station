@@ -72,12 +72,48 @@
 
 //InteQ
 
+/obj/structure/sign/flag/fake_inteq
+	name = "Flag of PMC InteQ"
+	desc = "Коричнево-Оранжевый флаг с щитом по центру. Флаг пахнет кровью."
+	icon = 'modular_bluemoon/krashly/icons/obj/inteq_flag.dmi'
+	icon_state = "full"
+	item_flag = /obj/item/sign/flag/fake_inteq
+
+/obj/item/sign/flag/fake_inteq
+	name = "Folded Flag of the PMC InteQ"
+	desc = "Сложенный флаг ЧВК 'InteQ'."
+	flag_type = "inteq"
+	icon = 'modular_bluemoon/krashly/icons/obj/inteq_flag.dmi'
+	icon_state = "mini"
+	sign_path = /obj/structure/sign/flag/fake_inteq
+
 /obj/structure/sign/flag/inteq
 	name = "flag of PMC InteQ"
 	desc = "Коричнево-Оранжевый флаг с щитом по центру. Флаг пахнет кровью."
 	icon = 'modular_bluemoon/krashly/icons/obj/inteq_flag.dmi'
 	icon_state = "full"
 	item_flag = /obj/item/sign/flag/inteq
+	var/datum/proximity_monitor/advanced/demoraliser/demotivator
+
+/obj/structure/sign/flag/inteq/Initialize(mapload)
+	demotivator = new(src, 7, TRUE)
+	START_PROCESSING(SSobj,src)
+	return ..()
+
+/obj/structure/sign/flag/inteq/process()
+	if(world.time < demotivator.next_scare)
+		return
+	var/scared_someone = FALSE
+	for(var/mob/living/viewer in view(5, src))
+		demotivator.pugach(viewer)
+		scared_someone = TRUE
+	if(scared_someone)
+		demotivator.next_scare = world.time + 120
+
+
+/obj/structure/sign/flag/inteq/Destroy()
+	QDEL_NULL(demotivator)
+	return ..()
 
 /obj/item/sign/flag/inteq
 	name = "folded flag of the PMC InteQ"
@@ -87,52 +123,30 @@
 	icon_state = "mini"
 	sign_path = /obj/structure/sign/flag/inteq
 
-/obj/item/poster/random_inteq
-	name = "random InteQ poster"
-	poster_type = /obj/structure/sign/poster/contraband/inteq/random
-	icon_state = "rolled_contraband"
+/obj/item/sign/flag/inteq/afterattack(atom/target, mob/user, proximity)
+	if(!iswallturf(target) || !proximity)
+		return ..()
+	if(!ishuman(user))
+		return FALSE
+	var/mob/living/carbon/human/placer = user
+	if(!IS_INTEQ(placer) && !placer.mind?.antag_datums)
+		to_chat(placer, span_warning("Вы разворачиваете флаг, и тут замечаете, что это пропаганда InteQ! Ну его, от греха подальше!"))
+		placer.drop_all_held_items()
+		return
+	. = ..()
 
-/obj/structure/sign/poster/contraband/inteq/random
-	name = "random contraband poster"
-	icon_state = "random_contraband"
-	never_random = TRUE
-	random_basetype = /obj/structure/sign/poster/contraband/inteq
+/obj/item/storage/box/inteq_box/posters
+	name = "InteQ Posters Box"
+	desc = "Каробочка. Крутая."
 
-/obj/structure/sign/poster/contraband/inteq/inteq_recruitment
-	name = "InteQ Recruitment"
-	desc = "Увидь Галактику! Заработай денег! Вступай сегодня!"
-	icon = 'modular_bluemoon/krashly/icons/obj/poster.dmi'
-	icon_state = "poster_inteq"
-
-/obj/structure/sign/poster/contraband/inteq/inteq_sign
-	name = "InteQ poster"
-	desc = "Частная Военная Компания, занимающаяся обороной частных предприятий и выполнением заказов. В данный момент они хотят уничтожить Пакт между НТ и Синдикатом..."
-	icon = 'modular_bluemoon/krashly/icons/obj/poster.dmi'
-	icon_state = "poster_inteq_baza"
-
-/obj/structure/sign/poster/contraband/inteq/inteq_better_dead
-	name = "Better Dead!"
-	desc = "Сокрушим врагов!"
-	icon = 'modular_bluemoon/krashly/icons/obj/poster.dmi'
-	icon_state = "poster_inteq_better_dead"
-
-/obj/structure/sign/poster/contraband/inteq/inteq_no_peace
-	name = "No peace!"
-	desc = "Не имей сто друзей, а имей сто рублей, Вступай в ЧВК 'InteQ'!"
-	icon = 'modular_bluemoon/krashly/icons/obj/poster.dmi'
-	icon_state = "poster_inteq_no_love"
-
-/obj/structure/sign/poster/contraband/inteq/inteq_no_sex
-	name = "No SEX"
-	desc = "Хватит дрочить, вступай в ЧВК 'InteQ'!"
-	icon = 'modular_bluemoon/krashly/icons/obj/poster.dmi'
-	icon_state = "poster_inteq_no_sex"
-
-/obj/structure/sign/poster/contraband/inteq/inteq_vulp
-	name = "InteQ Recruitment"
-	desc = "Коричневый постер. На нём написано: 'Даже если ты дрочишь на вульп, вступай в ЧВК 'InteQ'. Сокрушим врагов вместе!'."
-	icon = 'modular_bluemoon/krashly/icons/obj/poster.dmi'
-	icon_state = "poster_inteq_vulp"
+/obj/item/storage/box/inteq_box/posters/PopulateContents()
+	new	/obj/item/poster/random_inteq(src)
+	new	/obj/item/poster/random_inteq(src)
+	new	/obj/item/poster/random_inteq(src)
+	new	/obj/item/poster/random_inteq(src)
+	new	/obj/item/poster/random_inteq(src)
+	new	/obj/item/poster/random_inteq(src)
+	new	/obj/item/poster/random_inteq(src)
 
 /obj/item/storage/box/inteq_box
 	name = "brown box"
@@ -151,7 +165,7 @@
 	new /obj/item/storage/belt/military/inteq(src)
 	new /obj/item/clothing/glasses/hud/security/sunglasses/inteq(src)
 	new /obj/item/clothing/head/helmet/swat/inteq(src)
-	new /obj/item/clothing/mask/balaclava/breath/inteq(src)
+	new /obj/item/clothing/mask/gas/inteq(src)
 	new /obj/item/storage/backpack/security/inteq(src)
 
 /obj/item/soap/inteq
@@ -212,29 +226,7 @@
 	path = /obj/item/hand_mirror
 	loadout_flags = LOADOUT_CAN_NAME | LOADOUT_CAN_DESCRIPTION
 
-/datum/gear/neck/windy_scarf
-	name = "A windy scarf"
-	path = /obj/item/clothing/neck/windy_scarf
-	loadout_flags = LOADOUT_CAN_NAME | LOADOUT_CAN_DESCRIPTION
-
-/datum/gear/head/bow
-	name = "A polychromic bow"
-	path = /obj/item/toy/fluff/bant
-	loadout_flags = LOADOUT_CAN_NAME | LOADOUT_CAN_DESCRIPTION
-
 /////// Заказ Алхимика. ///////
-// Общие шмотки в лодаут:
-
-/datum/gear/mask/pipe
-	name = "Smoking Pipe"
-	path = /obj/item/clothing/mask/cigarette/pipe
-	loadout_flags = LOADOUT_CAN_NAME | LOADOUT_CAN_DESCRIPTION
-
-/datum/gear/head/rose
-	name = "Rose"
-	path = /obj/item/grown/rose
-	loadout_flags = LOADOUT_CAN_NAME | LOADOUT_CAN_DESCRIPTION
-
 // Рескин шмоток:
 
 /obj/item/paper/book_alch

@@ -1,6 +1,6 @@
 /obj/effect/eldritch
-	name = "Generic rune"
-	desc = "A flowing circle of shapes and runes is etched into the floor, filled with a thick black tar-like fluid."
+	name = "Руна"
+	desc = "На полу выгравирован плавный круг фигур и рун, наполненный густой черной смолистой жидкостью."
 	anchored = TRUE
 	icon_state = ""
 	resistance_flags = FIRE_PROOF | UNACIDABLE | ACID_PROOF
@@ -24,7 +24,7 @@
 	if(!IS_HERETIC(user))
 		return
 	if(!is_in_use)
-		INVOKE_ASYNC(src, .proc/activate , user)
+		INVOKE_ASYNC(src, PROC_REF(activate) , user)
 
 /obj/effect/eldritch/attackby(obj/item/I, mob/living/user)
 	. = ..()
@@ -99,11 +99,11 @@
 		is_in_use = FALSE
 		return
 	is_in_use = FALSE
-	to_chat(user,"<span class='warning'>Your ritual failed! You either used the wrong components or are missing something important!</span>")
+	to_chat(user,"<span class='warning'>Ритуал провалился! Либо использованы неправильные компоненты, либо я упустил что-то важное!</span>")
 
 // BlueMoon edit. Transforming 3x3 runes into the regular dull variants
 /obj/effect/eldritch/big
-	name = "transmutation rune"
+	name = "Руна трансмутации"
 	icon = 'icons/obj/rune.dmi'
 	icon_state = "eld"
 	//pixel_x = -32 // BlueMoon edit
@@ -198,7 +198,7 @@
  * Use this whenever you want to add someone to the list
  */
 /datum/reality_smash_tracker/proc/AddMind(datum/mind/e_cultists)
-	RegisterSignal(e_cultists.current,COMSIG_MOB_CLIENT_LOGIN,.proc/ReworkNetwork)
+	RegisterSignal(e_cultists.current,COMSIG_MOB_CLIENT_LOGIN, PROC_REF(ReworkNetwork))
 	targets |= e_cultists
 	Generate()
 	for(var/obj/effect/reality_smash/reality_smash in smashes)
@@ -217,7 +217,7 @@
 		reality_smash.RemoveMind(e_cultists)
 
 /obj/effect/broken_illusion
-	name = "pierced reality"
+	name = "Разлом в реальности"
 	icon = 'icons/effects/eldritch.dmi'
 	icon_state = "pierced_illusion"
 	anchored = TRUE
@@ -226,8 +226,8 @@
 
 /obj/effect/broken_illusion/Initialize(mapload)
 	. = ..()
-	addtimer(CALLBACK(src,.proc/show_presence),15 SECONDS)
-	addtimer(CALLBACK(src,.proc/remove_presence),195 SECONDS)
+	addtimer(CALLBACK(src,PROC_REF(show_presence)),15 SECONDS)
+	addtimer(CALLBACK(src,PROC_REF(remove_presence)),195 SECONDS)
 
 	var/image/I = image('icons/effects/eldritch.dmi',src,null,OBJ_LAYER)
 	I.override = TRUE
@@ -249,15 +249,15 @@
 		return ..()
 	var/mob/living/carbon/human/human_user = user
 	if(IS_HERETIC(human_user))
-		to_chat(human_user,"<span class='boldwarning'>You know better than to tempt forces out of your control!</span>")
+		to_chat(human_user,"<span class='boldwarning'>Я знаю, что лучше не тревожить силы, вышедшие из-под моего контроля!</span>")
 	else
 		var/obj/item/bodypart/arm = human_user.get_active_hand()
 		if(prob(25))
-			to_chat(human_user,"<span class='userdanger'>An otherwordly presence tears and atomizes your arm as you try to touch the hole in the very fabric of reality!</span>")
+			to_chat(human_user,"<span class='userdanger'>Потусторонние силы разрывают и распыляют мою руку, когда я пытаюсь прикоснуться к разлому в самой ткани реальности!</span>")
 			arm.dismember()
 			qdel(arm)
 		else
-			to_chat(human_user,"<span class='danger'>You pull your hand away from the hole as the eldritch energy flails trying to latch onto existance itself!</span>")
+			to_chat(human_user,"<span class='danger'>Я отдергиваю руку от разлома, когда начинаю ощущать жуткую энергию что пыталась ухватиться за неё!</span>")
 
 
 /obj/effect/broken_illusion/attack_tk(mob/user)
@@ -265,10 +265,10 @@
 		return
 	var/mob/living/carbon/human/human_user = user
 	if(IS_HERETIC(human_user))
-		to_chat(human_user,"<span class='boldwarning'>You know better than to tempt forces out of your control!</span>")
+		to_chat(human_user,"<span class='boldwarning'>Я знаю, что лучше не тревожить силы, вышедшие из-под моего контроля!</span>")
 		return
 	//a very elaborate way to suicide
-	to_chat(human_user,"<span class='userdanger'>Eldritch energy lashes out, piercing your fragile mind, tearing it to pieces!</span>")
+	to_chat(human_user,"<span class='userdanger'>Жуткая энергия пронзает пространство, увеча мой хрупкий разум и разрывая его на клочки!</span>")
 	human_user.ghostize()
 	var/obj/item/bodypart/head/head = locate() in human_user.bodyparts
 	if(head)
@@ -286,12 +286,12 @@
 	. = ..()
 	if(!IS_HERETIC(user) && ishuman(user))
 		var/mob/living/carbon/human/human_user = user
-		to_chat(human_user,"<span class='warning'>Your mind burns as you stare at the tear!</span>")
+		to_chat(human_user,"<span class='warning'>Мой разум горит когда я смотрю на разлом!</span>")
 		human_user.adjustOrganLoss(ORGAN_SLOT_BRAIN,10,190)
 		SEND_SIGNAL(human_user, COMSIG_ADD_MOOD_EVENT, "gates_of_mansus", /datum/mood_event/gates_of_mansus)
 
 /obj/effect/reality_smash
-	name = "reality smash"
+	name = "Разлом в реальности"
 	icon = 'icons/effects/eldritch.dmi'
 	anchored = TRUE
 	resistance_flags = FIRE_PROOF | UNACIDABLE | ACID_PROOF
@@ -323,7 +323,7 @@
 		minds -= e_cultie
 	img = null
 	var/obj/effect/broken_illusion/illusion = new /obj/effect/broken_illusion(drop_location())
-	illusion.name = pick("Researched","Siphoned","Analyzed","Emptied","Drained") + " " + name
+	illusion.name = pick("Исследовано","Высосано","Проанализировано","Осушено","Высвобождено") + " " + name
 
 ///Makes the mind able to see this effect
 /obj/effect/reality_smash/proc/AddMind(datum/mind/e_cultie)
@@ -339,7 +339,7 @@
 
 ///Generates random name
 /obj/effect/reality_smash/proc/generate_name()
-	var/static/list/prefix = list("Omniscient","Thundering","Enlightening","Intrusive","Rejectful","Atomized","Subtle","Rising","Lowering","Fleeting","Towering","Blissful","Arrogant","Threatening","Peaceful","Aggressive")
-	var/static/list/postfix = list("Flaw","Presence","Crack","Heat","Cold","Memory","Reminder","Breeze","Grasp","Sight","Whisper","Flow","Touch","Veil","Thought","Imperfection","Blemish","Blush")
+	var/static/list/prefix = list("Всевидящий","Громовой","Просветляющий","Навязчивый","Отвратительный","Распыленный","Тонкий","Восходящий","Низший","Мимолетный","Пернатый","Возвышающийся","Чашуйчатый","Блаженный","Высокомерный","Угрожающий","Пушистый","Миролюбивый","Агрессивный")
+	var/static/list/postfix = list("Недостаток","Присутствие","Трещина","Тепло","Холод","Память","Напоминание","Ветерок","Хватка","Взгляд","Шепот","Поток","Прикосновение","Вуаль","Мысль","Несовершенство","Пятно","Румянец")
 
 	name = "\improper" + pick(prefix) + " " + pick(postfix)

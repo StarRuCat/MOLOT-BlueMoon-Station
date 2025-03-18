@@ -41,6 +41,7 @@
 	fire_delay = 0
 	fire_select_modes = list(SELECT_SEMI_AUTOMATIC)
 	casing_ejector = FALSE
+	automatic_burst_overlay = FALSE
 
 /obj/item/gun/ballistic/automatic/gyropistol/update_icon_state()
 	icon_state = "[initial(icon_state)][magazine ? "loaded" : ""]"
@@ -92,6 +93,7 @@
 	casing_ejector = FALSE
 	weapon_weight = WEAPON_HEAVY
 	magazine_wording = "rocket"
+	slot_flags = ITEM_SLOT_BELT|ITEM_SLOT_BACK
 
 /obj/item/gun/ballistic/rocketlauncher/unrestricted
 	pin = /obj/item/firing_pin

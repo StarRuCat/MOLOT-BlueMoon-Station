@@ -478,7 +478,7 @@
 
 /obj/item/reagent_containers/food/snacks/lollipop/cyborg/Initialize(mapload)
 	. = ..()
-	addtimer(CALLBACK(src, .proc/spamcheck), 1200)
+	addtimer(CALLBACK(src, PROC_REF(spamcheck)), 1200)
 
 /obj/item/reagent_containers/food/snacks/lollipop/cyborg/equipped(mob/living/user, slot)
 	. = ..(user, slot)
@@ -488,11 +488,13 @@
 	if(spamchecking)
 		qdel(src)
 
+// Gum
 /obj/item/reagent_containers/food/snacks/bubblegum
 	name = "bubblegum"
 	desc = "A rubbery strip of gum. Not exactly filling, but it keeps you busy."
 	icon = 'icons/obj/lollipop.dmi'
 	icon_state = "bubblegum"
+	color = "#E48AB5" // craftable custom gums someday?
 	list_reagents = list(/datum/reagent/consumable/sugar = 10, /datum/reagent/medicine/bicaridine = 2, /datum/reagent/medicine/kelotane = 2) //Ржака.
 	tastes = list("candy" = 1)
 	foodtype = JUNKFOOD
@@ -509,12 +511,14 @@
 
 /obj/item/reagent_containers/food/snacks/bubblegum/Initialize(mapload)
 	. = ..()
-	color = rgb(rand(0, 255), rand(0, 255), rand(0, 255))
 	AddElement(/datum/element/chewable, metabolization_amount = metabolization_amount)
 
 /obj/item/reagent_containers/food/snacks/bubblegum/nicotine
 	name = "nicotine gum"
-	list_reagents = list(/datum/reagent/drug/nicotine = 10, /datum/reagent/consumable/menthol = 5)
+	list_reagents = list(
+		/datum/reagent/drug/nicotine = 10,
+		/datum/reagent/consumable/menthol = 5,
+	)
 	tastes = list("mint" = 1)
 	color = "#60A584"
 
@@ -529,34 +533,31 @@
 	name = "bubblegum gum"
 	desc = "A rubbery strip of gum. You don't feel like eating it is a good idea."
 	color = "#913D3D"
-	list_reagents = list(/datum/reagent/blood = 15)
+	list_reagents = null // Кровь добавляем конкретную, поэтому не добавляем реагенты базово
 	tastes = list("hell" = 1, "people" = 1)
 	metabolization_amount = REAGENTS_METABOLISM
 
-/obj/item/reagent_containers/food/snacks/bubblegum/bubblegum/process()
+/obj/item/reagent_containers/food/snacks/bubblegum/bubblegum/add_initial_reagents()
+	reagents.add_reagent(/datum/reagent/blood, 15, list("donor"=null,"viruses"=null,"blood_DNA"=null,"bloodcolor"=bloodtype_to_color("O-"), "bloodblend" = BLEND_MULTIPLY, "blood_type"="O-","resistances"=null,"trace_chem"=null))
+
+/obj/item/reagent_containers/food/snacks/bubblegum/bubblegum/On_Consume(mob/living/eater)
 	. = ..()
-	if(iscarbon(loc))
-		hallucinate(loc)
-
-/obj/item/reagent_containers/food/snacks/bubblegum/bubblegum/proc/on_removed(atom/source, material_flags)
-	AddComponent(/datum/component/edible)
-
-/obj/item/reagent_containers/food/snacks/bubblegum/bubblegum/proc/OnConsume(mob/living/eater, mob/living/feeder)
 	if(iscarbon(eater))
 		hallucinate(eater)
 
-///This proc has a 5% chance to have a bubblegum line appear, with an 85% chance for just text and 15% for a bubblegum hallucination and scarier text.
+///This proc has a 50% chance to have a bubblegum line appear, with an 85% chance for just text and 15% for a bubblegum hallucination and scarier text.
 /obj/item/reagent_containers/food/snacks/bubblegum/bubblegum/proc/hallucinate(mob/living/carbon/victim)
-	if(!victim.client || !istype(victim))
+	if(isbloodfledge(victim)) //BLUEMOON ADD вполне жевательная жвачка для кровососов
 		return
-	if(prob(95)) //cursed by bubblegum
+	if(prob(50)) //cursed by bubblegum
 		return
 	if(prob(15))
-		new /datum/hallucination/oh_yeah(victim)
-		to_chat(victim, span_warning("[pick("Вы слышите слабый шепот.", "Вы чувствуете запах пепла.", "Вы чувствуете жар.", "Вы слышите громкий рев вдалеке.")]"))
+		new /datum/hallucination/oh_yeah(victim, TRUE)
+	else
+		to_chat(victim, span_warning("[pick("Вы слышите слабый шепот.", "Вы чувствуете запах пепла.", "Вы чувствуете жар.", "Вы слышите громкий рёв вдалеке.")]"))
 
 /obj/item/reagent_containers/food/snacks/bubblegum/bubblegum/suicide_act(mob/living/user)
-	user.say("Я БЕССМЕРТНЫЙ!!", "Я ЗАХВАЧУ ВЕСЬ МИР!!", "Я ВИЖУ ТЕБЯ!", "НИКТО МЕНЯ НЕ ОСТАНОВИТ", "ТЫ НЕ СМОЖЕШЬ БЕЖАТЬ ВЕЧНО!!!")
+	user.say(";[pick(BUBBLEGUM_HALLUCINATION_LINES)]")
 	return ..()
 
 /obj/item/reagent_containers/food/snacks/gumball
@@ -579,7 +580,7 @@
 
 /obj/item/reagent_containers/food/snacks/gumball/cyborg/Initialize(mapload)
 	. = ..()
-	addtimer(CALLBACK(src, .proc/spamcheck), 1200)
+	addtimer(CALLBACK(src, PROC_REF(spamcheck)), 1200)
 
 /obj/item/reagent_containers/food/snacks/gumball/cyborg/equipped(mob/living/user, slot)
 	. = ..(user, slot)

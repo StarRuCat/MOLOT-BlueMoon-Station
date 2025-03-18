@@ -2038,7 +2038,7 @@
 /area/awaymission/research/interior/security)
 "eq" = (
 /obj/structure/rack,
-/obj/item/clothing/suit/armor/laserproof,
+/obj/item/clothing/suit/hooded/ablative,
 /obj/effect/turf_decal/tile/red{
 	dir = 1
 	},
@@ -4686,7 +4686,7 @@
 /turf/open/floor/plasteel/white,
 /area/awaymission/research/interior/medbay)
 "ji" = (
-/obj/machinery/door/airlock/glass_large,
+/obj/machinery/door/airlock/multi_tile/glass,
 /turf/closed/mineral,
 /area/awaymission/research/exterior)
 "jj" = (

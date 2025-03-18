@@ -5,7 +5,7 @@
 	department_flag = ENGSEC
 	faction = "Station"
 	head_announce = list(RADIO_CHANNEL_COMMAND)
-	supervisors = "Central Command"
+	supervisors = "Центрального Командования"
 	total_positions = 2
 	spawn_positions = 2
 	selection_color = "#aac1ee"
@@ -14,8 +14,8 @@
 	exp_type = EXP_TYPE_SECURITY
 	considered_combat_role = TRUE //Brigger then shit yes it is
 	exp_type_department = EXP_TYPE_SECURITY
-	alt_titles = list("Command Security", "Command Guard", "Command Bodyguard", "Sweet Boy", "Sweet Girl", "Penis Case", "Blueguard", "Blueshit", "Captain Mattress", "Syndicate Prime-Defender", "Blueslut", "Red Shield")
-	custom_spawn_text = "<font color='red' size='4'><b> Синий Щит является представителем Сторон из Отдела по Защите Главенствующего Персонала и оказывает защиту Главам по соответственному приоритету - начиная от Секретаря Мостика, продолжая на обычных Главах и заканчивая на Капитане с ЦК. Синий Щит подчиняется ВРИО, Капитану и Центральному Командованию.</b></font>"
+	alt_titles = list("NT Management Defender", "Syndicate Prime-Defender", "Command Security", "Command Guard", "Command Bodyguard", "Sweet Boy", "Sweet Girl", "Combat Maid", "Syndicate Combat Maid", "Penis Case", "Blueguard", "Blueshit", "Captain Mattress", "Blueslut", "Red Shield")
+	custom_spawn_text = "офицер Синего Щита является представителем сторон отдела по защите Главенствующего Персонала в соответствии приоритету - от <b>секретаря мостика</b> до <b>капитана</b>. Офицер Синего Щита подчиняется <b>ВрИО капитана</b>, <b>капитану</b> и Центральному Командованию."
 
 	outfit = /datum/outfit/job/blueshield
 	plasma_outfit = /datum/outfit/plasmaman/blueshield
@@ -28,6 +28,7 @@
 	mind_traits = list(TRAIT_LAW_ENFORCEMENT_METABOLISM)
 
 	display_order = JOB_DISPLAY_ORDER_BLUESHIELD
+	departments = DEPARTMENT_BITFLAG_COMMAND
 	blacklisted_quirks = list(/datum/quirk/mute, /datum/quirk/brainproblems, /datum/quirk/nonviolent, /datum/quirk/blindness, /datum/quirk/monophobia, /datum/quirk/insanity, /datum/quirk/bluemoon_criminal)
 	threat = 3
 
@@ -45,9 +46,10 @@
 	suit = /obj/item/clothing/suit/armor/vest/bluesheid
 	shoes = /obj/item/clothing/shoes/jackboots
 	suit_store = /obj/item/kitchen/knife/combat
-	l_pocket = /obj/item/restraints/handcuffs
-	r_pocket = /obj/item/assembly/flash/handheld
-	backpack_contents = list(/obj/item/storage/firstaid/regular, /obj/item/reagent_containers/spray/pepper, /obj/item/clothing/accessory/badge/holo, /obj/item/choice_beacon/hosgun, /obj/item/choice_beacon/bsbaton, /obj/item/flashlight/seclite)
+	l_pocket = /obj/item/clothing/accessory/badge/holo
+	r_pocket = /obj/item/sensor_device_command
+	backpack_contents = list(/obj/item/storage/firstaid/regular, /obj/item/storage/box/death_alert, /obj/item/storage/box/blue_shield_hs, /obj/item/storage/box/sec_kit,  /obj/item/choice_beacon/hosgun, /obj/item/choice_beacon/bsbaton)
+	accessory = /obj/item/clothing/accessory/permit/special/blueshield
 
 	backpack = /obj/item/storage/backpack/blueshield
 	satchel = /obj/item/storage/backpack/satchel/blueshield
@@ -71,14 +73,14 @@
 	suit = /obj/item/clothing/suit/armor/vest/bluesheid
 	shoes = /obj/item/clothing/shoes/jackboots/tall_default
 	suit_store = /obj/item/kitchen/knife/combat
-	l_pocket = /obj/item/restraints/handcuffs
-	r_pocket = /obj/item/assembly/flash/handheld
-
-	backpack_contents = list(/obj/item/storage/firstaid/regular, /obj/item/reagent_containers/spray/pepper, /obj/item/clothing/accessory/badge/holo, /obj/item/choice_beacon/hosgun, /obj/item/choice_beacon/bsbaton, /obj/item/flashlight/seclite, /obj/item/syndicate_uplink_high=1)
+	l_pocket = /obj/item/sensor_device_command
+	r_pocket = /obj/item/clothing/accessory/badge/holo
+	backpack_contents = list(/obj/item/storage/firstaid/regular, /obj/item/storage/box/death_alert, /obj/item/storage/box/blue_shield_hs, /obj/item/storage/box/sec_kit,  /obj/item/choice_beacon/hosgun, /obj/item/choice_beacon/bsbaton, /obj/item/syndicate_uplink_high)
 	backpack = /obj/item/storage/backpack/duffelbag/syndie
 	satchel = /obj/item/storage/backpack/duffelbag/syndie
 	duffelbag = /obj/item/storage/backpack/duffelbag/syndie
 	box = /obj/item/storage/box/survival/syndie
+	accessory = /obj/item/clothing/accessory/permit/special/blueshield
 	pda_slot = ITEM_SLOT_BELT
 
 /datum/outfit/plasmaman/blueshield
@@ -87,6 +89,7 @@
 	head = /obj/item/clothing/head/helmet/space/plasmaman/security/blueshield //Ported the ones from fucking Skyrat
 	uniform = /obj/item/clothing/under/plasmaman/security/blueshield
 	ears = /obj/item/radio/headset/headset_blueshield
+	accessory = /obj/item/clothing/accessory/permit/special/blueshield
 
 /obj/item/radio/headset/headset_blueshield
 	name = "blueshield bowman headset"
@@ -123,25 +126,21 @@
 	name = "Blueshield's Quarters"
 	icon_state = "bridge"
 
+//BLUEMOON CHANGE однородность для cqc с ограниченой зоной использования
 ///Subtype of CQC. Only used for the Blueshield.
-/datum/martial_art/cqc/blueshield
+/datum/martial_art/cqc/restricted/blueshield
 	name = "Close Quarters Combat, Blueshield Edition"
-	var/list/valid_areas = list(/area/command, /area/command/bridge, /area/command/meeting_room, /area/command/meeting_room/council,
+	valid_areas = list(/area/command, /area/command/bridge, /area/command/meeting_room, /area/command/meeting_room/council,
 								/area/command/heads_quarters/captain, /area/command/heads_quarters/ce, /area/command/heads_quarters/ce/private,
 								/area/command/heads_quarters/cmo, /area/command/heads_quarters/cmo/private, /area/command/heads_quarters/hop,
 								/area/command/heads_quarters/hop/private, /area/command/heads_quarters/hos, /area/command/heads_quarters/hos/private,
 								/area/command/heads_quarters/rd, /area/command/heads_quarters/rd/private, /area/command/teleporter, /area/command/gateway,
 								/area/command/corporate_showroom)
 
-/datum/martial_art/cqc/blueshield/can_use(mob/living/owner)
-	if(!is_type_in_list(get_area(owner), valid_areas))
-		return FALSE
-	return ..()
-
-
 /datum/outfit/job/blueshield/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE, client/preference_source)
 	..()
 	if(visualsOnly)
 		return
-	var/datum/martial_art/cqc/blueshield/justablue = new
+	var/datum/martial_art/cqc/restricted/blueshield/justablue = new
 	justablue.teach(H)
+//BLUEMOON CHANGE END

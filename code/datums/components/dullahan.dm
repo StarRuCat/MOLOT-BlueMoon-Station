@@ -17,7 +17,7 @@
 	update_name()
 
 	dullahan_head.owner = H
-	RegisterSignal(H, COMSIG_LIVING_REGENERATE_LIMBS, .proc/unlist_head)
+	RegisterSignal(H, COMSIG_LIVING_REGENERATE_LIMBS, PROC_REF(unlist_head))
 
 	// make sure the brain can't decay or fall out
 	var/obj/item/organ/brain/B = H.getorganslot(ORGAN_SLOT_BRAIN)
@@ -57,7 +57,7 @@
 
 	H.flags_1 &= ~(HEAR_1)
 
-	RegisterSignal(dullahan_head, COMSIG_ATOM_HEARER_IN_VIEW, .proc/include_owner)
+	RegisterSignal(dullahan_head, COMSIG_ATOM_HEARER_IN_VIEW, PROC_REF(include_owner))
 
 	dullahan_head.update_appearance()
 
@@ -69,7 +69,7 @@
 		dullahan_head.name = "[H.name]'s head"
 		dullahan_head.desc = "the decapitated head of [H.name]"
 		return TRUE
-	addtimer(CALLBACK(src, .proc/update_name, retries + 1), 2 SECONDS)
+	addtimer(CALLBACK(src, PROC_REF(update_name), retries + 1), 2 SECONDS)
 
 /datum/component/dullahan/proc/include_owner(datum/source, list/processing_list, list/hearers)
 	if(!QDELETED(parent))
@@ -99,6 +99,7 @@
 	// this is for keeping track of the overlays because you can't read the actual overlays list as it's a special byond var
 	var/list/overlays_standing
 	var/obj/item/organ/brain/B
+	var/in_update_appearance = FALSE
 	w_class = WEIGHT_CLASS_BULKY
 
 /obj/item/dullahan_head/Destroy()
@@ -118,10 +119,9 @@
 	add_overlay(overlay)
 
 /obj/item/dullahan_head/update_appearance()
-	if(owner && !HAS_TRAIT(owner, TRAIT_HUMAN_NO_RENDER))
-		//remove_head_overlays() //SPLURT edit
-		// to do this without duplicating large amounts of code
-		// it's best to regenerate the head, then remove it once we have the overlays we want
+	if(owner && !HAS_TRAIT(owner, TRAIT_HUMAN_NO_RENDER) && !in_update_appearance)
+		remove_head_overlays()
+		in_update_appearance = TRUE
 		owner.regenerate_limb(BODY_ZONE_HEAD, TRUE) // don't heal them
 		//owner.cut_overlays() //SPLURT edit
 		//owner.regenerate_icons(TRUE) // yes i know it's expensive but do you want me to rewrite our entire overlay system, also block recursive calls here by passing in TRUE (it wont go back to call update_appearance this way) //SPLURT edit
@@ -143,6 +143,7 @@
 									add_head_overlay(mutable)
 			head.drop_limb()
 			qdel(head)
+		in_update_appearance = FALSE
 
 /obj/item/dullahan_head/proc/unlist_head(datum/source, noheal = FALSE, list/excluded_limbs)
 	excluded_limbs |= BODY_ZONE_HEAD // So we don't gib when regenerating limbs.

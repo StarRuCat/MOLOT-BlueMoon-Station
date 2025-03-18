@@ -51,6 +51,11 @@
 /obj/machinery/atmospherics/pipe/return_air()
 	return parent.air
 
+/obj/machinery/atmospherics/pipe/return_analyzable_air()
+	if(air_temporary)
+		return air_temporary
+	return parent.air
+
 /obj/machinery/atmospherics/pipe/remove_air(amount)
 	return parent.air.remove(amount)
 
@@ -76,7 +81,7 @@
 	parent = P
 
 /obj/machinery/atmospherics/pipe/zap_act(power, zap_flags)
-	return 0 // they're not really machines in the normal sense, probably shouldn't explode
+	return FALSE // they're not really machines in the normal sense, probably shouldn't explode
 
 /obj/machinery/atmospherics/pipe/Destroy()
 	QDEL_NULL(parent)
@@ -110,7 +115,7 @@
 
 /obj/machinery/atmospherics/pipe/run_obj_armor(damage_amount, damage_type, damage_flag = 0, attack_dir)
 	if(damage_flag == MELEE && damage_amount < 12)
-		return 0
+		return FALSE
 	. = ..()
 
 /obj/machinery/atmospherics/pipe/proc/paint(paint_color)

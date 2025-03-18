@@ -145,6 +145,9 @@ GLOBAL_LIST_INIT(blacklisted_automated_baseturfs, typecacheof(list(
 	return W
 
 /turf/open/ChangeTurf(path, list/new_baseturfs, flags)
+	//don't
+	if(!SSair.initialized)
+		return ..()
 	if ((flags & CHANGETURF_INHERIT_AIR) && ispath(path, /turf/open))
 		var/datum/gas_mixture/stashed_air = new()
 		stashed_air.copy_from(air)
@@ -161,18 +164,28 @@ GLOBAL_LIST_INIT(blacklisted_automated_baseturfs, typecacheof(list(
 		newTurf.air.copy_from(stashed_air)
 		newTurf.update_air_ref(planetary_atmos ? 1 : 2)
 		QDEL_NULL(stashed_air)
-	else
+	else if (!(flags & CHANGETURF_SKIP))
 		flags |= CHANGETURF_RECALC_ADJACENT
 		if(turf_fire)
 			qdel(turf_fire)
 		if(ispath(path,/turf/closed))
 			. = ..()
+			// BLUEMOON EDIT START: Invalid Space Turfs
+			if (!.)
+				return
 			var/turf/open/newTurf = .
-			newTurf.update_air_ref(-1)
+			if (newTurf)
+				newTurf.update_air_ref(-1)
 		else
 			. = ..()
+			if (!.)
+				return
 			var/turf/open/newTurf = .
-			newTurf.Initalize_Atmos(0)
+			if (newTurf)
+				newTurf.Initalize_Atmos(0)
+			// BLUEMOON EDIT END: Invalid Space Turfs
+	else
+		. = ..()
 
 // Take off the top layer turf and replace it with the next baseturf down
 /turf/proc/ScrapeAway(amount=1, flags)

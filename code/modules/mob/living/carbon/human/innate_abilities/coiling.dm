@@ -7,6 +7,7 @@
 	background_icon_state = "bg_alien"
 	required_mobility_flags = MOBILITY_STAND
 	var/currently_coiling = FALSE
+	var/originally_coiled_body = FALSE
 	var/mob/living/carbon/human/currently_coiled
 	var/mutable_appearance/tracked_overlay
 
@@ -37,7 +38,7 @@
 		if(WEST)
 			currently_coiled.pixel_x = 12
 
-/datum/action/innate/ability/coiling/proc/coil_mob(var/mob/living/carbon/human/H)
+/datum/action/innate/ability/coiling/proc/coil_mob(mob/living/carbon/human/H)
 	if(currently_coiling)
 		to_chat(owner, span_warning("You are already coiling someone!"))
 		return
@@ -47,7 +48,7 @@
 						"<span class='userdanger'>[owner] coils you with their tail!</span>")
 	currently_coiling = TRUE
 	currently_coiled = H
-
+	
 	H.layer -= 0.1 // LISTEN I HATE TOUCHING MOB LAYERS TOO BUT THIS IS JUST SO THEY RENDER UNDER THE OTHER PLAYER SDFHSDFHDSFHDSH
 	var/prev_grab_state = owner.grab_state
 	// move user to same tile
@@ -56,20 +57,25 @@
 	var/i
 	for (i=1; i<prev_grab_state+1;i++)
 		currently_coiled.grabbedby(owner)
+
 	// cancel the coiling action if certain things are done
-	RegisterSignal(owner, COMSIG_MOVABLE_MOVED, .proc/cancel_coil)
-	RegisterSignal(owner, COMSIG_LIVING_RESTING, .proc/cancel_coil)
-	RegisterSignal(owner, COMSIG_LIVING_STOPPED_PULLING, .proc/cancel_coil)
+	RegisterSignal(owner, COMSIG_LIVING_RESTING, PROC_REF(cancel_coil))
+	RegisterSignal(owner, COMSIG_LIVING_STOPPED_PULLING, PROC_REF(cancel_coil))
 
 	// update the coil offset, update again if owner changes direction
-	RegisterSignal(owner, COMSIG_ATOM_DIR_CHANGE, .proc/update_coil_offset)
+	RegisterSignal(owner, COMSIG_ATOM_DIR_CHANGE, PROC_REF(update_coil_offset))
 	update_coil_offset(null, null, owner.dir)
 
 	// set our overlay to new image
+	
 	var/mob/living/carbon/human/user = owner
-	user.dna.species.mutant_bodyparts["taur"] = "Naga (coiled)"
-	user.dna.features["taur"] = "Naga (coiled)"
-	user.update_mutant_bodyparts()
+
+	originally_coiled_body = user.dna.features["taur"] == "Naga (coiled)"
+
+	if(!originally_coiled_body)
+		user.dna.species.mutant_bodyparts["taur"] = "Naga (coiled)"
+		user.dna.features["taur"] = "Naga (coiled)"
+		user.update_mutant_bodyparts()
 
 /datum/action/innate/ability/coiling/proc/cancel_coil()
 	if (!currently_coiled)
@@ -86,14 +92,15 @@
 	currently_coiled = null
 
 	// unregister signals
-	UnregisterSignal(owner, COMSIG_MOVABLE_MOVED)
 	UnregisterSignal(owner, COMSIG_LIVING_RESTING)
 	UnregisterSignal(owner, COMSIG_LIVING_STOPPED_PULLING)
+	UnregisterSignal(owner, COMSIG_ATOM_DIR_CHANGE)
 
 	// change overlay back to original image
-	H.dna.species.mutant_bodyparts["taur"] = "Naga"
-	H.dna.features["taur"] = "Naga"
-	H.update_mutant_bodyparts()
+	if(!originally_coiled_body)
+		H.dna.species.mutant_bodyparts["taur"] = "Naga"
+		H.dna.features["taur"] = "Naga"
+		H.update_mutant_bodyparts()
 
 	H.update_body()
 

@@ -16,40 +16,49 @@
 	to_chat(user, span_notice("Я целюсь в... [hole]."))
 
 /obj/item/melee/attack(mob/living/target, mob/living/user)
-	user.DelayNextAction()
-	if (user.zone_selected == BODY_ZONE_PRECISE_GROIN && user.a_intent == INTENT_HELP)
+	if(user.zone_selected == BODY_ZONE_PRECISE_GROIN && user.a_intent == INTENT_HELP)
 		do_eblya(target, user)
-	return ..()
+	else
+		. = ..()
 
 /obj/item/melee/baton/attack(mob/living/target, mob/living/user)
-	user.DelayNextAction()
-	if (user.zone_selected == BODY_ZONE_PRECISE_GROIN && user.a_intent == INTENT_HELP)
+	if(user.zone_selected == BODY_ZONE_PRECISE_GROIN && user.a_intent == INTENT_HELP)
 		do_eblya(target, user)
-	return ..()
+	else
+		. = ..()
 
 /obj/item/melee/proc/do_eblya(mob/living/target, mob/living/user)
 	var/message = ""
 	var/lust_amt = 0
+	if(!user.canUseTopic(target, BE_CLOSE))
+		return
+	user.DelayNextAction(CLICK_CD_MELEE)
 	if(ishuman(target) && (target?.client?.prefs?.toggles & VERB_CONSENT))
 		if(user.zone_selected == BODY_ZONE_PRECISE_GROIN)
 			switch(hole)
 				if(CUM_TARGET_VAGINA)
-					if(target.has_vagina(REQUIRE_EXPOSED))
+					if(target.has_vagina() == HAS_EXPOSED_GENITAL)
 						message = (user == target) ? pick("крепко обхватывает '\the [src]' и начинает пихать это прямо в свою киску.", "запихивает '\the [src]' в свою киску", "постанывает и садится на '\the [src]'.") : pick("трахает <b>[target]</b> прямо в киску с помощью '\the [src]'.", "засовывает '\the [src]' прямо в киску <b>[target]</b>.")
 						lust_amt = NORMAL_LUST
 				if(CUM_TARGET_ANUS)
-					if(target.has_anus(REQUIRE_EXPOSED))
+					if(target.has_anus() == HAS_EXPOSED_GENITAL)
 						message = (user == target) ? pick("крепко обхватывает '\the [src]' и начинает пихать это прямо в свою попку.","запихивает '\the [src]' прямо в свою собственную попку.", "постанывает и садится на '\the [src]'.") : pick("трахает <b>[target]</b> прямо в попку '\the [src]'.", "активно суёт '\the [src]' прямо в попку <b>[target]</b>.")
 						lust_amt = NORMAL_LUST
 	if(message)
 		user.visible_message(span_lewd("<b>[user]</b> [message]"))
 		target.handle_post_sex(lust_amt, null, user)
+
+		switch (hole)
+			if (CUM_TARGET_VAGINA)
+				user.client?.plug13.send_emote(PLUG13_EMOTE_VAGINA, min(lust_amt*3, 100), PLUG13_DURATION_NORMAL)
+			if (CUM_TARGET_ANUS)
+				user.client?.plug13.send_emote(PLUG13_EMOTE_ANUS, min(lust_amt*3, 100), PLUG13_DURATION_NORMAL)
+
 		playsound(loc, pick('modular_sand/sound/interactions/bang4.ogg',
 							'modular_sand/sound/interactions/bang5.ogg',
 							'modular_sand/sound/interactions/bang6.ogg'), 70, 1, -1)
 		if(!HAS_TRAIT(target, TRAIT_LEWD_JOB))
 			new /obj/effect/temp_visual/heart(target.loc)
-
 
 /obj/item/melee/chainofcommand
 	name = "Chain Of Command"
@@ -106,6 +115,7 @@
 	force = 18
 	throwforce = 15
 	w_class = WEIGHT_CLASS_BULKY
+	block_chance = 50
 	armour_penetration = 75
 	sharpness = WOUND_SLASH
 	attack_verb = list("slashed", "cut")
@@ -113,7 +123,7 @@
 	custom_materials = list(/datum/material/iron = 1000)
 	total_mass = 3.4
 	item_flags = NEEDS_PERMIT | ITEM_CAN_PARRY
-	block_parry_data = /datum/block_parry_data/shield
+	block_parry_data = /datum/block_parry_data/captain_saber
 
 /datum/block_parry_data/captain_saber
 	can_block_directions = BLOCK_DIR_NORTH | BLOCK_DIR_NORTHEAST | BLOCK_DIR_NORTHWEST | BLOCK_DIR_WEST | BLOCK_DIR_EAST
@@ -158,6 +168,14 @@
 	if(parry_efficiency >= 90)		// perfect parry
 		block_return[BLOCK_RETURN_REDIRECT_METHOD] = REDIRECT_METHOD_DEFLECT
 		. |= BLOCK_SHOULD_REDIRECT
+
+/obj/item/melee/sabre/run_block(mob/living/owner, atom/object, damage, attack_text, attack_type, armour_penetration, mob/attacker, def_zone, final_block_chance, list/block_return)
+	if(!is_energy_reflectable_projectile(object) && (attack_type & ATTACK_TYPE_PROJECTILE))
+		block_return[BLOCK_RETURN_REDIRECT_METHOD] = REDIRECT_METHOD_RETURN_TO_SENDER			//no you
+		owner.visible_message("<span class='danger'>Ranged attacks just make [owner] angrier!</span>")
+		playsound(src, pick('sound/weapons/bulletflyby.ogg', 'sound/weapons/bulletflyby2.ogg', 'sound/weapons/bulletflyby3.ogg'), 75, 1)
+		return BLOCK_SHOULD_REDIRECT | BLOCK_SUCCESS | BLOCK_REDIRECTED
+	return ..()
 
 /obj/item/melee/sabre/Initialize(mapload)
 	. = ..()
@@ -209,8 +227,8 @@
 		var/speedbase = abs((4 SECONDS) / limbs_to_dismember.len)
 		for(bodypart in limbs_to_dismember)
 			i++
-			addtimer(CALLBACK(src, .proc/suicide_dismember, user, bodypart), speedbase * i)
-	addtimer(CALLBACK(src, .proc/manual_suicide, user), (5 SECONDS) * i)
+			addtimer(CALLBACK(src, PROC_REF(suicide_dismember), user, bodypart), speedbase * i)
+	addtimer(CALLBACK(src, PROC_REF(manual_suicide), user), (5 SECONDS) * i)
 	return MANUAL_SUICIDE
 
 /obj/item/melee/sabre/proc/suicide_dismember(mob/living/user, obj/item/bodypart/affecting)
@@ -345,6 +363,8 @@
 	var/weight_class_on // What is the new size class when turned on
 	var/sword_point = TRUE
 
+	var/full_effect_on_superheavy_characters = FALSE // BLUEMOON ADD - если включено, то оглушение и падение от удара этим оружием работает в полную силу.
+
 	wound_bonus = 5
 
 /obj/item/melee/classic_baton/Initialize(mapload)
@@ -444,8 +464,12 @@
 			// BLUEMOON ADD START - больших и тяжёлых существ проблематично нормально оглушить
 			var/final_stun_damage = stam_dmg
 			if(HAS_TRAIT(target, TRAIT_BLUEMOON_HEAVY_SUPER))
-				final_stun_damage *= 0.5
-				countered = 1
+				if(!full_effect_on_superheavy_characters)
+					var/target_size_mod = 1
+					if(get_size(target) > 1)
+						target_size_mod = 1 / get_size(target) // я за час не придумал, как из 1 получить 1 и из 2 получить 0.5 - сделайте вы
+					final_stun_damage *= target_size_mod
+					countered = target_size_mod <= 0.6 ? 1 : 0 // если модификатор стана 0.6 или менее, то считается законтренным от падения
 			// BLUEMOON ADD END
 			target.DefaultCombatKnockdown(softstun_ds, TRUE, FALSE, countered? 0 : hardstun_ds, final_stun_damage, !countered) // BLUEMOON EDIT - заменено stam_dmg на final_stun_damage
 			additional_effects_carbon(target, user)
@@ -533,6 +557,16 @@
 	playsound(src.loc, on_sound, 50, 1)
 	add_fingerprint(user)
 
+/**
+  * # Fancy Cane
+  */
+/obj/item/melee/classic_baton/ntcane
+	name = "Fancy Cane"
+	desc = "A cane with special engraving on it. It seems well suited for fending off assailants..."
+	icon_state = "cane_nt"
+	item_state = "cane_nt"
+	item_flags = ITEM_CAN_PARRY | NEEDS_PERMIT
+
 /obj/item/melee/classic_baton/telescopic/centcom
 	name = "Tactical Covenant Bat"
 	desc = "Выдвижная тактическая бита Центрального Командования Nanotrasen. \
@@ -543,6 +577,15 @@
 	off_icon_state = "centcom_bat_0"
 	on_icon_state = "centcom_bat_1"
 	on_item_state = "centcom_bat_1"
+
+/obj/item/melee/classic_baton/telescopic/centcom/plus
+	name = "Tactical Centcom Bat"
+	force = 5
+	throwforce = 20
+	force_on = 50
+	force_off = 10
+	sharpness = 1
+	armour_penetration = 100
 
 /obj/item/melee/classic_baton/telescopic/newspaper
 	name = "The Daily Whiplash"
@@ -580,6 +623,7 @@
 	force_off = 5
 	weight_class_on = WEIGHT_CLASS_NORMAL
 	silent = TRUE
+	full_effect_on_superheavy_characters = TRUE // BLUEMOON ADD - дубинка контрактника работает на сверхтяжей в полную силу
 
 /obj/item/melee/classic_baton/telescopic/contractor_baton/get_wait_description()
 	return "<span class='danger'>The baton is still charging!</span>"

@@ -337,6 +337,15 @@
 	category = list("Equipment")
 	departmental_flags = DEPARTMENTAL_FLAG_SERVICE
 
+/datum/design/Dirtscanner
+	name = "Dirt Scanner (Sniffer)"
+	id = "dirtscanner"
+	build_type = AUTOLATHE | PROTOLATHE
+	materials = list(/datum/material/iron = 150)
+	build_path = /obj/item/t_scanner/dirt_scanner
+	category = list("initial", "Equipment", "Misc")
+	departmental_flags = DEPARTMENTAL_FLAG_SERVICE
+
 /datum/design/advbroom
 	name = "Advanced Broom"
 	desc = "Новейшая разработка отдела РнД. Позволяет вам эффективно подметать мусор, не вставая с кресла.."
@@ -619,6 +628,16 @@
 	build_type = PROTOLATHE
 	materials = list(/datum/material/silver = 500, /datum/material/plasma = 500, /datum/material/titanium = 500)
 	build_path = /obj/item/restraints/legcuffs/bola/energy
+	category = list("Equipment")
+	departmental_flags = DEPARTMENTAL_FLAG_SECURITY
+
+/datum/design/body_camera
+	name = "Body Camera"
+	desc = "A specialized camera to carry on your suit"
+	id = "body_camera"
+	build_type = PROTOLATHE
+	materials = list(/datum/material/iron = 1000, /datum/material/glass = 400, /datum/material/gold = 200)
+	build_path = /obj/item/clothing/accessory/bodycamera
 	category = list("Equipment")
 	departmental_flags = DEPARTMENTAL_FLAG_SECURITY
 

@@ -167,10 +167,10 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	Click(target, target.loc, null, "[button];[href_list["statpanel_item_shiftclick"]?"shift=1;":null][href_list["statpanel_item_ctrlclick"]?"ctrl=1;":null]&alt=[href_list["statpanel_item_altclick"]?"alt=1;":null]", FALSE, "statpanel")
 
 /client/proc/is_content_unlocked()
-	if(!prefs.unlock_content)
+	if(!prefs.unlock_content && !IS_CKEY_DONATOR_GROUP(key, DONATOR_GROUP_TIER_1))
 		to_chat(src, "Become a BYOND member to access member-perks and features, as well as support the engine that makes this game possible. Only 10 bucks for 3 months! <a href=\"https://secure.byond.com/membership\">Click Here to find out more</a>.")
-		return 0
-	return 1
+		return FALSE
+	return TRUE
 /*
  * Call back proc that should be checked in all paths where a client can send messages
  *
@@ -302,7 +302,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 		prefs = new /datum/preferences(src)
 		GLOB.preferences_datums[ckey] = prefs
 
-	addtimer(CALLBACK(src, .proc/ensure_keys_set, prefs), 10)	//prevents possible race conditions
+	addtimer(CALLBACK(src, PROC_REF(ensure_keys_set), prefs), 10)	//prevents possible race conditions
 
 	prefs.last_ip = address				//these are gonna be used for banning
 	prefs.last_id = computer_id			//these are gonna be used for banning
@@ -372,7 +372,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 
 	// Initialize tgui panel
 	src << browse(file('html/statbrowser.html'), "window=statbrowser")
-	addtimer(CALLBACK(src, .proc/check_panel_loaded), 30 SECONDS)
+	addtimer(CALLBACK(src, PROC_REF(check_panel_loaded)), 30 SECONDS)
 	tgui_panel.initialize()
 
 	if(alert_mob_dupe_login && !holder)
@@ -389,44 +389,45 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	connection_realtime = world.realtime
 	connection_timeofday = world.timeofday
 	winset(src, null, "command=\".configure graphics-hwmode on\"")
-	var/cev = CONFIG_GET(number/client_error_version)
-	var/ceb = CONFIG_GET(number/client_error_build)
-	var/cwv = CONFIG_GET(number/client_warn_version)
-	if (byond_version < cev || (byond_version == cev && byond_build < ceb))		//Out of date client.
-		to_chat(src, "<span class='danger'><b>Your version of BYOND is too old:</b></span>")
-		to_chat(src, CONFIG_GET(string/client_error_message))
-		to_chat(src, "Your version: [byond_version].[byond_build]")
-		to_chat(src, "Required version: [cev].[ceb] or later")
-		to_chat(src, "Visit <a href=\"https://secure.byond.com/download\">BYOND's website</a> to get the latest version of BYOND.")
+	// Bluemoon Edit:Start Better byond warning
+	var/breaking_version = CONFIG_GET(number/client_error_version)
+	var/breaking_build = CONFIG_GET(number/client_error_build)
+	var/warn_version = CONFIG_GET(number/client_warn_version)
+	if (byond_version < breaking_version || (byond_version == breaking_version && byond_build < breaking_build))		//Out of date client.
+		to_chat_immediate(src, span_danger("<b>Your version of BYOND is too old:</b>"))
+		to_chat_immediate(src, CONFIG_GET(string/client_error_message))
+		to_chat_immediate(src, "Your version: [byond_version].[byond_build]")
+		to_chat_immediate(src, "Required version: [breaking_version].[breaking_build] or later")
+		to_chat_immediate(src, "Visit <a href=\"https://secure.byond.com/download\">BYOND's website</a> to get the latest version of BYOND.")
 		if (connecting_admin)
-			to_chat(src, "Because you are an admin, you are being allowed to walk past this limitation, But it is still STRONGLY suggested you upgrade")
+			to_chat_immediate(src, "Because you are an admin, you are being allowed to walk past this limitation, But it is still STRONGLY suggested you upgrade")
+			// Bluemoon Edit:End Better byond warning
 		else
 			qdel(src)
-			return 0
-	else if (byond_version < cwv)	//We have words for this client.
+			return FALSE
+	else if (byond_version < warn_version)	// Bluemoon Edit: Better byond warning //We have words for this client.
 		if(CONFIG_GET(flag/client_warn_popup))
 			var/msg = "<b>Your version of byond may be getting out of date:</b><br>"
 			msg += CONFIG_GET(string/client_warn_message) + "<br><br>"
 			msg += "Your version: [byond_version]<br>"
-			msg += "Required version to remove this message: [cwv] or later<br>"
+			msg += "Required version to remove this message: [warn_version] or later<br>" // Bluemoon Edit: Better byond warning
 			msg += "Visit <a href=\"https://secure.byond.com/download\">BYOND's website</a> to get the latest version of BYOND.<br>"
 			src << browse(msg, "window=warning_popup")
 		else
 			to_chat(src, "<span class='danger'><b>Your version of byond may be getting out of date:</b></span>")
 			to_chat(src, CONFIG_GET(string/client_warn_message))
 			to_chat(src, "Your version: [byond_version]")
-			to_chat(src, "Required version to remove this message: [cwv] or later")
-			to_chat(src, "Visit <a href=\"https://secure.byond.com/download\">BYOND's website</a> to get the latest version of BYOND.")
+			to_chat(src, "Required version to remove this message: [warn_version] or later") // Bluemoon Edit: Better byond warning
 
 	if (connection == "web" && !connecting_admin)
 		if (!CONFIG_GET(flag/allow_webclient))
 			to_chat(src, "Web client is disabled")
 			qdel(src)
-			return 0
+			return FALSE
 		if (CONFIG_GET(flag/webclient_only_byond_members) && !IsByondMember())
 			to_chat(src, "Sorry, but the web client is restricted to byond members only.")
 			qdel(src)
-			return 0
+			return FALSE
 
 	if( (world.address == address || !address) && !GLOB.host )
 		GLOB.host = key
@@ -464,6 +465,9 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	send_resources()
 
 	update_clickcatcher()
+
+	if(prefs.fullscreen)
+		ToggleFullscreen()
 
 	if(prefs.lastchangelog != GLOB.changelog_hash) //bolds the changelog button on the interface so we know there are updates.
 		to_chat(src, "<span class='info'>You have unread updates in the changelog.</span>")
@@ -892,9 +896,9 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 			click_intercept_time = 0 //Reset and return. Next click should work, but not this one.
 			return
 		click_intercept_time = 0 //Just reset. Let's not keep re-checking forever.
-	var/list/L = params2list(params)
+	var/list/modifiers = params2list(params)
 
-	if(L["drag"])
+	if(modifiers[DRAG])
 		return
 
 	var/mcl = CONFIG_GET(number/minute_click_limit)
@@ -940,6 +944,13 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 		// so that the visual focus indicator matches reality.
 		winset(src, null, "input.background-color=[COLOR_INPUT_DISABLED]")
 
+	/* SPLURT EDIT - undoes the code that makes input mode switch back to the chat bar when clicking on the map.
+	else
+		winset(src, null, "input.focus=true input.background-color=[COLOR_INPUT_ENABLED]")
+	*/
+
+	SEND_SIGNAL(src, COMSIG_CLIENT_CLICK, object, location, control, params, usr)
+
 	..()
 
 /client/proc/add_verbs_from_config()
@@ -977,13 +988,14 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 
 		//Precache the client with all other assets slowly, so as to not block other browse() calls
 		if (CONFIG_GET(flag/asset_simple_preload))
-			addtimer(CALLBACK(SSassets.transport, /datum/asset_transport.proc/send_assets_slow, src, SSassets.transport.preload), 5 SECONDS)
+			addtimer(CALLBACK(SSassets.transport, TYPE_PROC_REF(/datum/asset_transport, send_assets_slow), src, SSassets.transport.preload), 5 SECONDS)
 
 		#if (PRELOAD_RSC == 0)
-		for (var/name in GLOB.vox_sounds)
-			var/file = GLOB.vox_sounds[name]
-			Export("##action=load_rsc", file)
-			stoplag()
+		for (var/type in GLOB.vox_types)
+			for(var/word in GLOB.vox_types[type])
+				var/file = GLOB.vox_types[type][word]
+				Export("##action=load_rsc", file)
+				stoplag()
 		#endif
 
 
@@ -1042,7 +1054,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 		var/mob/living/M = mob
 		M.update_damage_hud()
 	if (prefs.auto_fit_viewport)
-		addtimer(CALLBACK(src,.verb/fit_viewport,10)) //Delayed to avoid wingets from Login calls.
+		addtimer(CALLBACK(src, VERB_REF(fit_viewport), 10)) //Delayed to avoid wingets from Login calls.
 	SEND_SIGNAL(mob, COMSIG_MOB_CLIENT_CHANGE_VIEW, src, old_view, actualview)
 
 /client/proc/generate_clickcatcher()
@@ -1184,3 +1196,13 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 
 	var/mob/dead/observer/observer = mob
 	observer.ManualFollow(target)
+
+/// Clears the client's screen, aside from ones that opt out
+/client/proc/clear_screen()
+	for (var/object in screen)
+		if (istype(object, /atom/movable/screen))
+			var/atom/movable/screen/screen_object = object
+			if (!screen_object.clear_with_screen)
+				continue
+
+		screen -= object

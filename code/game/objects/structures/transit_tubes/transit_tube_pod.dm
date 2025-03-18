@@ -83,7 +83,7 @@
 
 /obj/structure/transit_tube_pod/Process_Spacemove()
 	if(moving) //No drifting while moving in the tubes
-		return 1
+		return TRUE
 	else
 		return ..()
 
@@ -148,6 +148,9 @@
 		deconstruct(FALSE)	//we automatically deconstruct the pod
 
 /obj/structure/transit_tube_pod/return_air()
+	return air_contents
+
+/obj/structure/transit_tube_pod/return_analyzable_air()
 	return air_contents
 
 /obj/structure/transit_tube_pod/assume_air(datum/gas_mixture/giver)

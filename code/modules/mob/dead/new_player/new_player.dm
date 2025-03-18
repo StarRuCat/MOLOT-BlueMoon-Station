@@ -172,10 +172,10 @@
 
 /mob/dead/new_player/Topic(href, href_list[])
 	if(src != usr)
-		return 0
+		return FALSE
 
 	if(!client)
-		return 0
+		return FALSE
 
 	//don't let people get to this unless they are specifically not verified
 	if(href_list["Month"] && (CONFIG_GET(flag/age_verification) && !check_rights_for(client, R_ADMIN) && !(client.ckey in GLOB.bunker_passthrough)))
@@ -626,15 +626,14 @@
 				var/command_bold = ""
 				if(job in GLOB.command_positions)
 					command_bold = " command"
-				//Sandstorm changes
-				var/jobline = "[job_datum.title]"
 				if(job_datum in SSjob.prioritized_jobs)
-					jobline = "<span class='priority'>[jobline]</span>"
-				if(client && client.prefs && client.prefs.alt_titles_preferences[job_datum.title])
-					jobline = "[jobline]<br><span style='color:#BBBBBB; font-style: italic;'>(as [client.prefs.alt_titles_preferences[job_datum.title]])</span>"
-				jobline = "<a class='job[command_bold]' style='display:block;width:170px' href='byond://?src=[REF(src)];SelectedJob=[job_datum.title]'>[jobline] ([num_positions_current]/[num_positions_total])</a>"
-				dept_dat += jobline
-				//End of Sandstorm changes
+					dept_dat += "<a class='job[command_bold]' style='display:block;width:170px' href='byond://?src=[REF(src)];SelectedJob=[job_datum.title]'><span class='priority'>[job_datum.title] ([num_positions_current]/[num_positions_total])</span>"
+				else
+					dept_dat += "<a class='job[command_bold]' style='display:block;width:170px' href='byond://?src=[REF(src)];SelectedJob=[job_datum.title]'>[job_datum.title] ([num_positions_current]/[num_positions_total])"
+				if(client && client.prefs && client?.prefs?.alt_titles_preferences[job_datum.title])
+					dept_dat += "<br><span style='color:#BBBBBB; font-style: italic;'>as [client?.prefs?.alt_titles_preferences[job_datum.title]]</span>"
+				dept_dat += "</a>"
+
 		if(!dept_dat.len)
 			dept_dat += "<span class='nopositions'>No positions open.</span>"
 		dat += jointext(dept_dat, "")
@@ -754,14 +753,13 @@
 		return
 	client.crew_manifest_delay = world.time + (1 SECONDS)
 
-	var/dat = "<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head><body>"
-	dat += "<h4>Crew Manifest</h4>"
-	dat += GLOB.data_core.get_manifest(OOC = 1)
+	if(!GLOB.crew_manifest_tgui)
+		GLOB.crew_manifest_tgui = new /datum/crew_manifest(src)
 
-	src << browse(dat, "window=manifest;size=387x420;can_close=1")
+	GLOB.crew_manifest_tgui.ui_interact(src)
 
 /mob/dead/new_player/Move()
-	return 0
+	return FALSE
 
 
 /mob/dead/new_player/proc/close_spawn_windows()

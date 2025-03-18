@@ -97,6 +97,27 @@
 		else
 	return
 
+/proc/dir2text_ru(direction)
+	switch(direction)
+		if(NORTH)
+			return "север"
+		if(SOUTH)
+			return "юг"
+		if(EAST)
+			return "восток"
+		if(WEST)
+			return "запад"
+		if(NORTHEAST)
+			return "северо-восток"
+		if(SOUTHEAST)
+			return "юго-восток"
+		if(NORTHWEST)
+			return "северо-запад"
+		if(SOUTHWEST)
+			return "юго-запад"
+		else
+	return
+
 //Turns text into proper directions
 /proc/text2dir(direction)
 	switch(uppertext(direction))
@@ -158,7 +179,7 @@
 /proc/dir2angle(D)
 	switch(D)
 		if(NORTH)
-			return 0
+			return FALSE
 		if(SOUTH)
 			return 180
 		if(EAST)
@@ -301,7 +322,7 @@
 /proc/unix2date(timestamp, seperator = "-")
 
 	if(timestamp < 0)
-		return 0 //Do not accept negative values
+		return FALSE //Do not accept negative values
 
 	var/year = 1970 //Unix Epoc begins 1970-01-01
 	var/dayInSeconds = 86400 //60secs*60mins*24hours
@@ -380,7 +401,7 @@
 	var/list/covered_parts = list()
 
 	if(!bpc)
-		return 0
+		return FALSE
 
 	if(bpc & FULL_BODY)
 		covered_parts |= list(BODY_ZONE_L_ARM,BODY_ZONE_R_ARM,BODY_ZONE_HEAD,BODY_ZONE_CHEST,BODY_ZONE_L_LEG,BODY_ZONE_R_LEG)
@@ -574,7 +595,7 @@
 //assumes format #RRGGBB #rrggbb
 /proc/color_hex2num(A)
 	if(!A || length(A) != length_char(A))
-		return 0
+		return FALSE
 	var/R = hex2num(copytext(A, 2, 4))
 	var/G = hex2num(copytext(A, 4, 6))
 	var/B = hex2num(copytext(A, 6, 0))

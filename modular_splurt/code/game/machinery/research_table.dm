@@ -109,7 +109,7 @@
 	return TRUE
 
 /obj/machinery/research_table/buckle_mob(mob/living/buckled_mob, force, check_loc)
-	RegisterSignal(buckled_mob, COMSIG_MOB_POST_CAME, .proc/on_cum)
+	RegisterSignal(buckled_mob, COMSIG_MOB_POST_CAME, PROC_REF(on_cum))
 	say("New user detected, tracking data.")
 	. = ..()
 
@@ -122,6 +122,8 @@
 	tier /= parts
 
 /obj/machinery/research_table/proc/on_cum(mob/living/carbon/buckled_mob, obj/item/organ/genital/target_orifice, mob/living/partner)
+	if(is_centcom_level(src.z) && !slaver_mode) //BLUEMOON ADD защита от абузов и набивания очков через гост кафе
+		return
 	if(!configured)
 		say("Failed to get any data, the table is not configured!")
 		return
@@ -139,7 +141,7 @@
 	for(var/obj/item/organ/genital/genital in buckled_mob.internal_organs)
 		if(istype(genital, /obj/item/organ/genital/breasts))
 			var/obj/item/organ/genital/breasts/breasts = genital
-			points_awarded += breasts.fluid_rate + GLOB.breast_values[breasts.size]
+			points_awarded += breasts.fluid_rate + breasts.size
 			continue
 		points_awarded += genital.fluid_rate + genital.size
 	points_awarded *= tier

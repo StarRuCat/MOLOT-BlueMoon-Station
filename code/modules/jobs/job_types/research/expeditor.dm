@@ -1,7 +1,7 @@
 /datum/job/expeditor
 	title = "Expeditor"
 	flag = EXPEDITOR
-	department_head = list("Captain", "RD")
+	department_head = list("Captain", "Research Director")
 	department_flag = MEDSCI
 	faction = "Station"
 	total_positions = 4
@@ -15,13 +15,14 @@
 	exp_type_department = EXP_TYPE_SCIENCE
 	considered_combat_role = FALSE
 	outfit = /datum/outfit/job/expeditor
-	custom_spawn_text = "<font color='red'>Экспедитор: Вы здесь, чтобы исследовать космос и Пространство за Вратами. У вас очень ограниченный доступ. Вы не являетесь Офицером Службы Безопасности, вы наёмник/специалист Научного Отдела Станции. У вас нет власти, слушайте капитана и РД. НЕ ЛОМАЙТЕ СТРЕЛЯЮЩИЕ ОТБОЙНИКИ НА ТАБЕЛЬНОМ БЕЗ ПРИЧИНЫ, ИНАЧЕ ВЫ БУДЕТЕ НАКАЗАНЫ!</font>"
+	custom_spawn_text = "вы — экспедитор, член исследовательского отдела. Вы здесь, чтобы исследовать космос и пространство гейтвэя — на станции вы не имеете никакой власти. Беспрекословно выполняйте приказы капитана и РД. \n<p class='warning'>Не ломайте стреляющие отбойники на табельном оружии без причины, иначе вы будете наказаны.</p>"
 	access = list(ACCESS_RESEARCH, ACCESS_MINERAL_STOREROOM, ACCESS_TECH_STORAGE, ACCESS_GATEWAY, ACCESS_EVA)
 	minimal_access = list(ACCESS_RESEARCH, ACCESS_MINERAL_STOREROOM, ACCESS_TECH_STORAGE, ACCESS_GATEWAY, ACCESS_EVA)
 	paycheck = PAYCHECK_HARD
 	paycheck_department = ACCOUNT_SCI
 	alt_titles = list("Space Expeditor", "Gateway Explorer", "Space Explorer", "Sexplorer", "Sexpeditor", "Exploration Field Medic", "Exploration Engineer", "Exploration Mercenary", "Exploration Operative")
 	display_order = JOB_DISPLAY_ORDER_EXPEDITOR
+	departments = DEPARTMENT_BITFLAG_SCIENCE
 	blacklisted_quirks = list(/datum/quirk/mute, /datum/quirk/brainproblems, /datum/quirk/prosopagnosia, /datum/quirk/insanity)
 	threat = 2
 
@@ -40,6 +41,7 @@
 	suit_store = /obj/item/gun/energy/e_gun/mini/expeditor
 	r_pocket = /obj/item/kitchen/knife/combat
 	l_pocket = /obj/item/pda
+	accessory = /obj/item/clothing/accessory/permit/special/explorer
 	backpack_contents = list(/obj/item/storage/firstaid/regular = 1)
 
 /datum/outfit/job/expeditor/syndicate
@@ -63,6 +65,7 @@
 	duffelbag = /obj/item/storage/backpack/duffelbag/syndie
 	box = /obj/item/storage/box/survival/syndie
 	pda_slot = ITEM_SLOT_BELT
+	accessory = /obj/item/clothing/accessory/permit/special/explorer
 	backpack_contents = list(/obj/item/syndicate_uplink=1, /obj/item/storage/firstaid/regular = 1)
 
 /obj/item/radio/headset/headset_exp

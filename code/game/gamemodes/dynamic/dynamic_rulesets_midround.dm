@@ -189,7 +189,7 @@
 	name = "InteQ Sleeper Agent"
 	antag_datum = /datum/antagonist/traitor
 	antag_flag = "traitor mid"
-	protected_roles = list("Expeditor", "Prisoner", "Shaft Miner", "NanoTrasen Representative", "Lawyer", "Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain", "Head of Personnel", "Quartermaster", "Chief Engineer", "Chief Medical Officer", "Research Director")  //BLUEMOON CHANGES
+	protected_roles = list("Expeditor", "Prisoner", "Shaft Miner", "NanoTrasen Representative", "Internal Affairs Agent", "Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain", "Head of Personnel", "Quartermaster", "Chief Engineer", "Chief Medical Officer", "Research Director")  //BLUEMOON CHANGES
 	restricted_roles = list("Cyborg", "AI", "Positronic Brain")
 	required_candidates = 1
 	required_round_type = list(ROUNDTYPE_DYNAMIC_HARD, ROUNDTYPE_DYNAMIC_MEDIUM, ROUNDTYPE_DYNAMIC_LIGHT) // BLUEMOON ADD
@@ -260,10 +260,10 @@
 	antag_datum = /datum/antagonist/gang
 	antag_flag = ROLE_FAMILY_HEAD_ASPIRANT
 	antag_flag_override = ROLE_FAMILIES
-	restricted_roles = list("AI", "Cyborg", "Prisoner", "Shaft Miner", "NanoTrasen Representative", "Lawyer", "Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain", "Head of Personnel", "Quartermaster", "Chief Engineer", "Chief Medical Officer", "Research Director")  //BLUEMOON CHANGES
+	restricted_roles = list("AI", "Cyborg", "Prisoner", "Shaft Miner", "NanoTrasen Representative", "Internal Affairs Agent", "Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain", "Head of Personnel", "Quartermaster", "Chief Engineer", "Chief Medical Officer", "Research Director")  //BLUEMOON CHANGES
 	required_candidates = 9
 	required_round_type = list(ROUNDTYPE_DYNAMIC_LIGHT) // BLUEMOON ADD
-	weight = 4 //BLUEMOON CHANGES
+	weight = 16 //BLUEMOON CHANGES
 	cost = 10 //BLUEMOON CHANGES - низкая цена, т.к. надо в соло поднять семью
 	requirements = list(101,101,101,50,30,20,10,10,10,10)
 	flags = HIGH_IMPACT_RULESET
@@ -321,7 +321,7 @@
 	name = "Malfunctioning AI"
 	antag_datum = /datum/antagonist/traitor
 	antag_flag = ROLE_MALF
-	enemy_roles = list("Blueshield",  "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain", "Scientist", "Chemist", "Research Director", "Chief Engineer") //BLUEMOON CHANGES
+	enemy_roles = list("Blueshield",  "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain", "Scientist", "Chemist", "Research Director", "Chief Engineer") //BLUEMOON CHANGES
 	exclusive_roles = list("AI")
 	required_enemies = list(0,0,0,0,0,0,0,0,0,0)
 	required_candidates = 1
@@ -376,9 +376,9 @@
 	antag_datum = /datum/antagonist/wizard
 	antag_flag = "wizard mid crew"
 	antag_flag_override = ROLE_WIZARD
-	protected_roles = list("Prisoner", "Security Officer", "Warden", "Detective", "Head of Security", "Captain", "Chaplain", "Head of Personnel", "Quartermaster", "Chief Engineer", "Chief Medical Officer", "Research Director")
+	protected_roles = list("Prisoner", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain", "Chaplain", "Head of Personnel", "Quartermaster", "Chief Engineer", "Chief Medical Officer", "Research Director")
 	restricted_roles = list("AI", "Cyborg", "Positronic Brain")
-	enemy_roles = list("Security Officer","Detective","Head of Security", "Captain")
+	enemy_roles = list("Security Officer","Detective","Head of Security","Bridge Officer", "Captain")
 	required_enemies = list(0,0,0,0,0,0,0,0,0,0)
 	weight = 0
 	cost = 20
@@ -440,7 +440,7 @@
 	antag_datum = /datum/antagonist/wizard
 	antag_flag = "wizard mid"
 	antag_flag_override = ROLE_WIZARD
-	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain") //BLUEMOON CHANGES
+	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain") //BLUEMOON CHANGES
 	required_enemies = list(0,0,0,0,0,0,0,0,0,0)
 	required_candidates = 1
 	required_round_type = list(ROUNDTYPE_DYNAMIC_TEAMBASED, ROUNDTYPE_DYNAMIC_HARD, ROUNDTYPE_DYNAMIC_MEDIUM) // BLUEMOON ADD
@@ -488,7 +488,7 @@
 	antag_flag = "nukie mid"
 	antag_datum = /datum/antagonist/nukeop
 	antag_flag_override = ROLE_OPERATIVE
-	enemy_roles = list("AI", "Cyborg", "Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain") //BLUEMOON CHANGES
+	enemy_roles = list("AI", "Cyborg", "Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain") //BLUEMOON CHANGES
 	required_enemies = list(0,0,0,0,0,0,5,5,4,0) //BLUEMOON CHANGES
 	required_candidates = 5
 	weight = 3
@@ -534,9 +534,9 @@
 	antag_datum = /datum/antagonist/clockcult
 	antag_flag = "clock mid"
 	antag_flag_override = ROLE_SERVANT_OF_RATVAR
-	protected_roles = list("Shaft Miner", "NanoTrasen Representative", "Lawyer", "Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain", "Chaplain", "Head of Personnel", "Quartermaster", "Chief Engineer", "Chief Medical Officer", "Research Director") //BLUEMOON CHANGES
+	protected_roles = list("Shaft Miner", "NanoTrasen Representative", "Internal Affairs Agent", "Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain", "Chaplain", "Head of Personnel", "Quartermaster", "Chief Engineer", "Chief Medical Officer", "Research Director") //BLUEMOON CHANGES
 	restricted_roles = list("AI", "Cyborg", "Prisoner") //BLUEMOON CHANGES
-	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain", "Chaplain", "Head of Personnel", "Quartermaster", "Chief Engineer", "Chief Medical Officer", "Research Director") //BLUEMOON CHANGES
+	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain", "Chaplain", "Head of Personnel", "Quartermaster", "Chief Engineer", "Chief Medical Officer", "Research Director") //BLUEMOON CHANGES
 	required_enemies = list(1,1,1,1,1,1,0,0,0,0)
 	required_candidates = 2
 	required_round_type = list(ROUNDTYPE_DYNAMIC_TEAMBASED, ROUNDTYPE_DYNAMIC_HARD, ROUNDTYPE_DYNAMIC_MEDIUM) // BLUEMOON ADD
@@ -602,9 +602,9 @@
 	antag_datum = /datum/antagonist/cult
 	antag_flag = "narsie mid"
 	antag_flag_override = ROLE_CULTIST
-	protected_roles = list("Shaft Miner", "NanoTrasen Representative", "Lawyer", "Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain", "Chaplain", "Head of Personnel", "Quartermaster", "Chief Engineer", "Chief Medical Officer", "Research Director") //BLUEMOON CHANGES
+	protected_roles = list("Shaft Miner", "NanoTrasen Representative", "Internal Affairs Agent", "Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain", "Chaplain", "Head of Personnel", "Quartermaster", "Chief Engineer", "Chief Medical Officer", "Research Director") //BLUEMOON CHANGES
 	restricted_roles = list("AI", "Cyborg", "Prisoner") //BLUEMOON CHANGES
-	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain", "Chaplain", "Head of Personnel", "Quartermaster", "Chief Engineer", "Chief Medical Officer", "Research Director") //BLUEMOON CHANGES
+	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain", "Chaplain", "Head of Personnel", "Quartermaster", "Chief Engineer", "Chief Medical Officer", "Research Director") //BLUEMOON CHANGES
 	required_enemies = list(1,1,1,1,1,1,0,0,0,0)
 	required_round_type = list(ROUNDTYPE_DYNAMIC_TEAMBASED, ROUNDTYPE_DYNAMIC_HARD, ROUNDTYPE_DYNAMIC_MEDIUM) // BLUEMOON ADD
 	required_candidates = 6
@@ -670,7 +670,7 @@
 	name = "Blob"
 	antag_datum = /datum/antagonist/blob
 	antag_flag = ROLE_BLOB
-	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain") //BLUEMOON CHANGES
+	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain") //BLUEMOON CHANGES
 	required_enemies = list(0,0,0,0,0,0,0,0,0,0)
 	required_candidates = 1
 	weight = 3 //BLUEMOON CHANGES
@@ -689,9 +689,9 @@
 	antag_datum = /datum/antagonist/blob
 	antag_flag = "blob mid"
 	antag_flag_override = ROLE_BLOB
-	protected_roles = list("Prisoner", "Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain") //BLUEMOON CHANGES
+	protected_roles = list("Prisoner", "Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain") //BLUEMOON CHANGES
 	restricted_roles = list("Cyborg", "AI", "Positronic Brain")
-	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain") //BLUEMOON CHANGES
+	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain") //BLUEMOON CHANGES
 	required_enemies = list(0,0,0,0,0,0,0,0,0,0)
 	required_candidates = 1
 	required_round_type = list(ROUNDTYPE_DYNAMIC_TEAMBASED, ROUNDTYPE_DYNAMIC_HARD, ROUNDTYPE_DYNAMIC_MEDIUM) // BLUEMOON ADD
@@ -733,7 +733,7 @@
 	name = "Alien Infestation"
 	antag_datum = /datum/antagonist/xeno
 	antag_flag = ROLE_ALIEN
-	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain") //BLUEMOON CHANGES
+	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain") //BLUEMOON CHANGES
 	required_enemies = list(0,0,0,0,6,6,5,5,4,0) //BLUEMOON CHANGES
 	required_candidates = 1
 	weight = 3
@@ -744,6 +744,10 @@
 	var/list/vents = list()
 
 /datum/dynamic_ruleset/midround/from_ghosts/xenomorph/execute()
+	// 50% chance of being incremented by one
+	required_candidates += prob(50)
+	// 50% chance of being incremented by one
+	required_candidates += prob(50)
 	// 50% chance of being incremented by one
 	required_candidates += prob(50)
 	for(var/obj/machinery/atmospherics/components/unary/vent_pump/temp_vent in GLOB.machines)
@@ -771,6 +775,63 @@
 
 //////////////////////////////////////////////
 //                                          //
+//           TERROR SPIDERS (GHOST)              //
+//                                          //
+//////////////////////////////////////////////
+
+/datum/dynamic_ruleset/midround/from_ghosts/terror_spiders
+	name = "Terror Infestation"
+	antag_datum = /datum/antagonist/terror_spiders
+	antag_flag = ROLE_TERROR_SPIDER
+	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain") //BLUEMOON CHANGES
+	required_enemies = list(0,0,0,0,0,0,0,0,0,0)
+	required_candidates = 1
+	weight = 20 // TEST EDIT
+	cost = 12
+	required_round_type = list(ROUNDTYPE_DYNAMIC_TEAMBASED, ROUNDTYPE_DYNAMIC_HARD) // BLUEMOON ADD
+	requirements = list(101,101,101,101,50,40,30,20,10,10)
+	repeatable = TRUE
+	var/list/vents = list()
+	var/spider_type = list()
+	var/spider_types = list(4,2,2,1)
+
+
+/datum/dynamic_ruleset/midround/from_ghosts/terror_spiders/execute()
+	spider_type = pickweight(list(1, 4, 4, 1))
+	required_candidates = spider_types[spider_type]
+	for(var/obj/machinery/atmospherics/components/unary/vent_pump/temp_vent in GLOB.machines)
+		if(QDELETED(temp_vent))
+			continue
+		if(is_station_level(temp_vent.loc.z) && !temp_vent.welded)
+			var/datum/pipeline/temp_vent_parent = temp_vent.parents[1]
+			if(!temp_vent_parent)
+				continue // No parent vent
+			// Stops Aliens getting stuck in small networks.
+			// See: Security, Virology
+			if(temp_vent_parent.other_atmosmch.len > 20)
+				vents += temp_vent
+	if(!vents.len)
+		return FALSE
+	. = ..()
+
+/datum/dynamic_ruleset/midround/from_ghosts/terror_spiders/generate_ruleset_body(mob/applicant)
+	var/obj/vent = pick_n_take(vents)
+	var/mob/living/simple_animal/hostile/retaliate/poison/terror_spider/new_spider
+	if (spider_type == 1)
+		new_spider = new /mob/living/simple_animal/hostile/retaliate/poison/terror_spider/defiler(vent.loc)
+	else if (spider_type == 2)
+		new_spider = new /mob/living/simple_animal/hostile/retaliate/poison/terror_spider/queen/princess(vent.loc)
+	else if (spider_type == 3)
+		new_spider = new /mob/living/simple_animal/hostile/retaliate/poison/terror_spider/queen(vent.loc)
+	else if (spider_type == 4)
+		new_spider = new /mob/living/simple_animal/hostile/retaliate/poison/terror_spider/prince(vent.loc)
+	new_spider.key = applicant.key
+	message_admins("[ADMIN_LOOKUPFLW(new_spider)] has been made into an alien by the midround ruleset.")
+	log_game("DYNAMIC: [key_name(new_spider)] was spawned as an alien by the midround ruleset.")
+	return new_spider
+
+//////////////////////////////////////////////
+//                                          //
 //           NIGHTMARE (GHOST)              //
 //                                          //
 //////////////////////////////////////////////
@@ -780,7 +841,7 @@
 	antag_datum = /datum/antagonist/nightmare
 	antag_flag = "Nightmare"
 	antag_flag_override = ROLE_ALIEN
-	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain") //BLUEMOON CHANGES
+	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain") //BLUEMOON CHANGES
 	required_enemies = list(0,0,0,4,4,3,3,2,0,0) //BLUEMOON CHANGES
 	required_candidates = 1
 	weight = 6 //BLUEMOON CHANGES
@@ -827,7 +888,7 @@
 	antag_datum = /datum/antagonist/space_dragon
 	antag_flag = ROLE_SPACE_DRAGON
 	antag_flag_override = ROLE_SPACE_DRAGON
-	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain") //BLUEMOON CHANGE (should we include miners?)
+	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain") //BLUEMOON CHANGE (should we include miners?)
 	required_enemies = list(0,0,0,0,5,5,4,4,3,0) //BLUEMOON CHANGES
 	required_candidates = 1
 	weight = 6 //BLUEMOON CHANGES
@@ -872,7 +933,7 @@
 	name = "Abductors"
 	antag_flag = "Abductor"
 	antag_flag_override = ROLE_ABDUCTOR
-	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain") //BLUEMOON CHANGES
+	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain") //BLUEMOON CHANGES
 	required_enemies = list(0,0,0,0,0,5,5,4,4,0) //BLUEMOON CHANGES
 	required_candidates = 2
 	required_applicants = 2
@@ -912,7 +973,7 @@
 	antag_flag = "Swarmer"
 	antag_flag_override = ROLE_ALIEN
 	required_type = /mob/dead/observer
-	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain") //BLUEMOON CHANGES
+	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain") //BLUEMOON CHANGES
 	required_enemies = list(0,0,0,0,6,6,5,5,4,0) //BLUEMOON CHANGES
 	required_round_type = list(ROUNDTYPE_DYNAMIC_TEAMBASED, ROUNDTYPE_DYNAMIC_HARD, ROUNDTYPE_DYNAMIC_MEDIUM) // BLUEMOON ADD
 	required_candidates = 0
@@ -946,7 +1007,7 @@
 	antag_datum = /datum/antagonist/ninja
 	antag_flag = "Space Ninja"
 	antag_flag_override = ROLE_NINJA
-	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain") //BLUEMOON CHANGES
+	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain") //BLUEMOON CHANGES
 	required_enemies = list(0,0,0,0,5,5,4,4,3,0) //BLUEMOON CHANGES
 	required_round_type = list(ROUNDTYPE_DYNAMIC_TEAMBASED, ROUNDTYPE_DYNAMIC_HARD, ROUNDTYPE_DYNAMIC_MEDIUM) // BLUEMOON ADD
 	required_candidates = 1
@@ -988,7 +1049,7 @@
 	antag_datum = /datum/antagonist/revenant
 	antag_flag = "Revenant"
 	antag_flag_override = ROLE_REVENANT
-	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain", "Chaplain") //BLUEMOON CHANGES
+	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain", "Chaplain") //BLUEMOON CHANGES
 	required_enemies = list(0,0,0,5,5,4,4,3,3,0) //BLUEMOON CHANGES
 	required_candidates = 1
 	weight = 3 //BLUEMOON CHANGES
@@ -1046,7 +1107,7 @@
 /datum/dynamic_ruleset/midround/from_ghosts/sentient_disease/generate_ruleset_body(mob/applicant)
 	var/mob/camera/disease/virus = new /mob/camera/disease(SSmapping.get_station_center())
 	virus.key = applicant.key
-	INVOKE_ASYNC(virus, /mob/camera/disease/proc/pick_name)
+	INVOKE_ASYNC(virus, TYPE_PROC_REF(/mob/camera/disease, pick_name))
 	message_admins("[ADMIN_LOOKUPFLW(virus)] has been made into a sentient disease by the midround ruleset.")
 	log_game("[key_name(virus)] was spawned as a sentient disease by the midround ruleset.")
 	return virus
@@ -1056,7 +1117,7 @@
 	name = "Space Pirates"
 	antag_flag = "Space Pirates"
 	required_type = /mob/dead/observer
-	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain") //BLUEMOON CHANGE
+	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain") //BLUEMOON CHANGE
 	required_enemies = list(0,0,0,0,0,5,4,3,3,3) //BLUEMOON CHANGES
 	required_candidates = 0
 	required_round_type = list(ROUNDTYPE_DYNAMIC_TEAMBASED, ROUNDTYPE_DYNAMIC_HARD, ROUNDTYPE_DYNAMIC_MEDIUM) // BLUEMOON ADD
@@ -1083,7 +1144,7 @@
 	name = "InteQ Raiders"
 	antag_flag = "InteQ Raiders"
 	required_type = /mob/dead/observer
-	enemy_roles = list("Security Officer", "Detective", "Head of Security", "Captain")
+	enemy_roles = list("Security Officer", "Detective", "Head of Security","Bridge Officer", "Captain")
 	required_enemies = list(0,0,0,0,0,0,0,0,0,0)
 	required_candidates = 0
 	required_round_type = list(ROUNDTYPE_DYNAMIC_HARD, ROUNDTYPE_DYNAMIC_MEDIUM, ROUNDTYPE_DYNAMIC_TEAMBASED) // BLUEMOON ADD
@@ -1114,14 +1175,14 @@
 	antag_flag = "Bloodsucker Mid"
 	antag_flag_override = ROLE_BLOODSUCKER
 	antag_datum = /datum/antagonist/bloodsucker
-	protected_roles = list("Prisoner", "NanoTrasen Representative", "Lawyer", "Security Officer", "Blueshield", "Peacekeeper", "Brig Physician", "Warden", "Detective", "Head of Security", "Captain")
+	protected_roles = list("Prisoner", "NanoTrasen Representative", "Internal Affairs Agent", "Security Officer", "Blueshield", "Peacekeeper", "Brig Physician", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain")
 	restricted_roles = list("AI", "Cyborg", "Positronic Brain")
-	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security", "Captain") //BLUEMOON CHANGES
+	enemy_roles = list("Blueshield", "Peacekeeper", "Brig Physician", "Security Officer", "Warden", "Detective", "Head of Security","Bridge Officer", "Captain") //BLUEMOON CHANGES
 	required_enemies = 3
 	required_candidates = 1
-	required_round_type = list(ROUNDTYPE_DYNAMIC_HARD, ROUNDTYPE_DYNAMIC_MEDIUM, ROUNDTYPE_DYNAMIC_LIGHT) // BLUEMOON ADD
+	required_round_type = list(ROUNDTYPE_DYNAMIC_LIGHT) // BLUEMOON ADD
 	weight = 6
-	cost = 15
+	cost = 5
 	scaling_cost = 10
 	requirements = list(101,101,60,50,40,30,20,15,10,10)
 	antag_cap = list("denominator" = 39, "offset" = 1)

@@ -91,12 +91,12 @@
 	if(bombassembly)
 		bombassembly.on_found(finder)
 
-/obj/item/onetankbomb/on_attack_hand() //also for mousetraps
+/obj/item/onetankbomb/on_attack_hand(mob/user) //also for mousetraps
 	. = ..()
 	if(.)
 		return
 	if(bombassembly)
-		bombassembly.attack_hand()
+		bombassembly.attack_hand(user)
 
 /obj/item/onetankbomb/Move()
 	. = ..()
@@ -201,3 +201,9 @@
 		return
 	T.assume_air(air_contents)
 	air_update_turf()
+
+/obj/item/onetankbomb/return_analyzable_air()
+	if(bombtank)
+		return bombtank.return_analyzable_air()
+	else
+		return null

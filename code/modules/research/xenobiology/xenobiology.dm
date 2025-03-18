@@ -47,7 +47,7 @@
 //Effect when activated by a Luminescent. Separated into a minor and major effect. Returns cooldown in deciseconds.
 /obj/item/slime_extract/proc/activate(mob/living/carbon/human/user, datum/species/jelly/luminescent/species, activation_type)
 	to_chat(user, "<span class='notice'>Nothing happened... This slime extract cannot be activated this way.</span>")
-	return 0
+	return FALSE
 
 //Core-crossing: Feeding adult slimes extracts to obtain a much more powerful, single extract.
 /obj/item/slime_extract/attack(mob/living/simple_animal/slime/M, mob/user)
@@ -97,7 +97,7 @@
 				to_chat(user, "<span class='notice'>You spit out [S].</span>")
 				return 350
 			else
-				return 0
+				return FALSE
 
 /obj/item/slime_extract/gold
 	name = "gold slime extract"
@@ -252,7 +252,7 @@
 				to_chat(user, "<span class='warning'>Your glow is already enhanced!</span>")
 				return
 			species.update_glow(user, 5)
-			addtimer(CALLBACK(species, /datum/species/jelly/luminescent.proc/update_glow, user, LUMINESCENT_DEFAULT_GLOW), 600)
+			addtimer(CALLBACK(species, TYPE_PROC_REF(/datum/species/jelly/luminescent, update_glow), user, LUMINESCENT_DEFAULT_GLOW), 600)
 			to_chat(user, "<span class='notice'>You start glowing brighter.</span>")
 
 		if(SLIME_ACTIVATE_MAJOR)
@@ -458,7 +458,7 @@
 				return
 			to_chat(user, "<span class='notice'>You feel your skin harden and become more resistant.</span>")
 			species.armor += 25
-			addtimer(CALLBACK(src, .proc/reset_armor, species), 1200)
+			addtimer(CALLBACK(src, PROC_REF(reset_armor), species), 1200)
 			return 450
 
 		if(SLIME_ACTIVATE_MAJOR)
@@ -838,7 +838,7 @@
 	name = "slime speed potion"
 	desc = "A potent chemical mix that will remove the slowdown from any item."
 	icon = 'icons/obj/chemical.dmi'
-	icon_state = "potyellow"
+	icon_state = "potred"
 
 /obj/item/slimepotion/speed/afterattack(obj/C, mob/user)
 	. = ..()
@@ -870,7 +870,7 @@
 	name = "slime chill potion"
 	desc = "A potent chemical mix that will fireproof any article of clothing. Has three uses."
 	icon = 'icons/obj/chemical.dmi'
-	icon_state = "potblue"
+	icon_state = "potyellow"
 	var/uses = 3
 
 /obj/item/slimepotion/fireproof/afterattack(obj/item/C, mob/user)
@@ -897,7 +897,7 @@
 	name = "gender change potion"
 	desc = "An interesting chemical mix that changes the biological gender of what its applied to. Cannot be used on things that lack gender entirely."
 	icon = 'icons/obj/chemical.dmi'
-	icon_state = "potlightpink"
+	icon_state = "potrainbow"
 
 /obj/item/slimepotion/genderchange/attack(mob/living/L, mob/user)
 	if(!istype(L) || L.stat == DEAD)
@@ -917,7 +917,7 @@
 	name = "renaming potion"
 	desc = "A potion that allows a self-aware being to change what name it subconciously presents to the world."
 	icon = 'icons/obj/chemical.dmi'
-	icon_state = "potgreen"
+	icon_state = "potbrown"
 
 	var/being_used = FALSE
 
@@ -951,7 +951,7 @@
 	name = "bluespace radio potion"
 	desc = "A strange chemical that grants those who ingest it the ability to broadcast and receive subscape radio waves."
 	icon = 'icons/obj/chemical.dmi'
-	icon_state = "potgrey"
+	icon_state = "potbluespace"
 
 /obj/item/slimepotion/slime/slimeradio/attack(mob/living/M, mob/user)
 	if(!isanimal(M))

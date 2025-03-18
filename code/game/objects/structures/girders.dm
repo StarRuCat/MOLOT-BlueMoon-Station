@@ -44,7 +44,7 @@
 			M.add_fingerprint(user)
 			qdel(src)
 
-	else if(istype(W, /obj/item/pickaxe/drill/jackhammer))
+	else if(istype(W, /obj/item/pickaxe/drill/jackhammer) || istype(W, /obj/item/demolition_hammer))	// BLUEMOON EDIT - Demolition Hammer.
 		to_chat(user, "<span class='notice'>You smash through the girder!</span>")
 		new /obj/item/stack/sheet/metal(get_turf(src))
 		W.play_tool_sound(src)
@@ -378,7 +378,7 @@
 		var/obj/item/stack/sheet/runed_metal/R = W
 		if(R.get_amount() < 1)
 			to_chat(user, "<span class='warning'>You need at least one sheet of runed metal to construct a runed wall!</span>")
-			return 0
+			return FALSE
 		user.visible_message("<span class='notice'>[user] begins laying runed metal on [src]...</span>", "<span class='notice'>You begin constructing a runed wall...</span>")
 		if(do_after(user, 50, target = src))
 			if(R.get_amount() < 1)
@@ -452,7 +452,7 @@
 		var/obj/item/stack/sheet/bronze/B = W
 		if(B.get_amount() < 2)
 			to_chat(user, "<span class='warning'>You need at least two bronze sheets to build a bronze wall!</span>")
-			return 0
+			return FALSE
 		user.visible_message("<span class='notice'>[user] begins plating [src] with bronze...</span>", "<span class='notice'>You begin constructing a bronze wall...</span>")
 		if(do_after(user, 50, target = src))
 			if(B.get_amount() < 2)

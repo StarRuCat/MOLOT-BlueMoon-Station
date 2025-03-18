@@ -90,6 +90,12 @@ GENETICS SCANNER
 	var/mode = 1
 	var/scanmode = SCANMODE_HEALTH
 	var/advanced = FALSE
+	// BLUEMOON EDIT START - изменение анализатора здоровья
+	var/last_msg = ""
+	var/last_recipient_name = ""
+	var/last_scan_time = ""
+	var/browser_mode = FALSE
+	// BLUEMOON EDIT END
 
 /obj/item/healthanalyzer/Initialize(mapload)
 	. = ..()
@@ -110,6 +116,54 @@ GENETICS SCANNER
 		if(SCANMODE_WOUND)
 			to_chat(user, "<span class='notice'>Вы переключаете анализатор в режим отображения дополнительной информации о повреждениях.</span>")
 
+// BLUEMOON ADD START - изменение сканеров здоровья
+/obj/item/healthanalyzer/examine(mob/user)
+	. = ..()
+	. += "\n"
+	scanmode = scanmode % 3
+	switch(scanmode)
+		if(SCANMODE_HEALTH)
+			. += span_notice("Сканер в режиме отображения физического состояния пациента. Вы можете переключать режимы, <b>используя сканер в руке</b>.")
+		if(SCANMODE_CHEMICAL)
+			. += span_notice("Сканер в режиме отображения химикатов в теле пациента. Вы можете переключать режимы, <b>используя сканер в руке.</b>")
+		if(SCANMODE_WOUND)
+			. += span_notice("Сканер в режиме отображения дополнительной информации о повреждениях. Вы можете переключать режимы, <b>используя сканер в руке.</b>")
+	. += span_notice("Режим \"крупным планом\" [browser_mode ? "ВКЛЮЧЕН" : "ВЫКЛЮЧЕН"]. Вы можете переключить его, использовав <b>Alt-Click</b>!")
+	if(last_msg)
+		. += span_notice("Сканер содержит запись: \"[last_recipient_name]-[last_scan_time]\" Вы можете просмотртеть его, использовав <b>Ctrl-Click</b>!")
+	if(advanced)
+		. += span_notice("Сканер был улучшен и может проводить более глубокий анализ.")
+
+
+/obj/item/healthanalyzer/AltClick(mob/user)
+	. = ..()
+	var/mob/living/carbon/clicker = user
+	if(!istype(clicker) || !clicker.canUseTopic(src, BE_CLOSE))
+		return
+	browser_mode = !browser_mode
+	to_chat(clicker, span_notice("Вы переключаете режим \"крупным планом\" в состояние [browser_mode ? "ВКЛЮЧЕНО" : "ВЫКЛЮЧЕНО"]."))
+
+/obj/item/healthanalyzer/CtrlClick(mob/user)
+	. = ..()
+	var/mob/living/carbon/clicker = user
+	if(!istype(clicker) || !clicker.canUseTopic(src, BE_CLOSE))
+		return
+	if(!last_msg)
+		to_chat(clicker, span_warning("В анализаторе отсутствуют сохранённые данные!"))
+		return
+	var/to_chat_msg = last_msg
+	if(advanced)
+		to_chat_msg += "<center><a href='?src=[REF(src)];print_scan=1;subject_name=[last_recipient_name];time=[last_scan_time]'>Распечатать</a></center>"
+	if(browser_mode)
+		to_chat_msg = replacetext(to_chat_msg, "\n", "<br>") // Чтобы нормально переносилось
+		to_chat_msg = replacetext(to_chat_msg, "color='#0000CC'", "color='#13ace3'") // На тёмном фоне плохо видно
+		var/datum/browser/popup = new(user, "healthscan", "Сканирование [last_recipient_name]", 600, 900)
+		popup.set_content(to_chat_msg)
+		popup.open()
+	else
+		to_chat(user, examine_block(to_chat_msg))
+// BLUEMOON ADD END
+
 /obj/item/healthanalyzer/attack(mob/living/M, mob/living/carbon/human/user)
 	flick("[icon_state]-scan", src)	//makes it so that it plays the scan animation upon scanning, including clumsy scanning
 
@@ -127,7 +181,7 @@ GENETICS SCANNER
 						"<span class='notice'>Вы анализируете показатели персонажа [M].</span>")
 
 	if(scanmode == SCANMODE_HEALTH)
-		healthscan(user, M, mode, advanced)
+		healthscan(user, M, mode, advanced, src)
 		playsound(src, 'sound/rig/shortbeep.ogg', 50, 1, 1)
 	else if(scanmode == SCANMODE_CHEMICAL)
 		chemscan(user, M)
@@ -155,7 +209,7 @@ GENETICS SCANNER
 	return CONTEXTUAL_SCREENTIP_SET
 
 // Used by the PDA medical scanner too
-/proc/healthscan(mob/user, mob/living/M, mode = 1, advanced = FALSE)
+/proc/healthscan(mob/user, mob/living/M, mode = 1, advanced = FALSE, obj/item/healthanalyzer/connected_analyzer = null)
 	if(isliving(user) && (user.incapacitated() || user.eye_blind))
 		return
 	//Damage specifics
@@ -176,7 +230,12 @@ GENETICS SCANNER
 			mob_status = "<span class='alert'><b>Мертв[M.ru_a()]</b></span>"
 			oxy_loss = max(rand(1, 40), oxy_loss, (300 - (tox_loss + fire_loss + brute_loss))) // Random oxygen loss
 
-	var/msg = "<span class='info'>Результаты анализа субъекта - [M]:\n\tОбщее состоянее: [mob_status]</span>"
+	// BLUEMOON EDIT START - изменение анализаторов здоровья
+	var/msg = ""
+	var/scan_time = STATION_TIME_TIMESTAMP("hh:mm:ss", world.time)
+	msg += "<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'><title>Сканирование [M] от [scan_time]</title></head>"
+	msg += "<span class='info'><center><b>\[[scan_time]\]</b></center>\nРезультаты анализа субъекта - <b>[M]</b>:\n\tОбщее состояние: [mob_status]</span>"
+	// BLUEMOON EDIT END
 
 	// Damage descriptions
 	if(brute_loss > 10)
@@ -491,9 +550,31 @@ GENETICS SCANNER
 		if(cyberimp_detect)
 			msg += "<span class='notice'>Обнаружены кибернетические модификации:</span>\n"
 			msg += "<span class='notice'>[cyberimp_detect]</span>\n"
-	to_chat(user, examine_block(msg))
+
+	// BLUEMOON EDIT START - изменение анализаторов здоровья; to_chat_msg - чтобы на распечатанном листочке не было "распечатать"
+	var/to_chat_msg = msg
+	if(connected_analyzer && advanced)
+		to_chat_msg += "<center><a href='?src=[REF(connected_analyzer)];print_scan=1;subject_name=[M.get_visible_name()];time=[scan_time]'>Распечатать</a></center>"
+	to_chat_msg += "</body></html>"
+
 	SEND_SIGNAL(M, COMSIG_HEALTH_SCAN, user)//SPLURT EDIT ADD - gregnancy
 	SEND_SIGNAL(M, COMSIG_NANITE_SCAN, user, FALSE)
+	if(connected_analyzer)
+		connected_analyzer.last_msg = msg
+		connected_analyzer.last_recipient_name = M.get_visible_name()
+		connected_analyzer.last_scan_time = scan_time
+		if(connected_analyzer.browser_mode)
+			to_chat_msg = replacetext(to_chat_msg, "\n", "<br>")
+			to_chat_msg = replacetext(to_chat_msg, "color='#0000CC'", "color='#13ace3'")
+			var/datum/browser/popup = new(user, "healthscan", "Сканирование [M]", 600, 900)
+			popup.set_content(to_chat_msg)
+			popup.open()
+		else
+			to_chat(user, examine_block(to_chat_msg))
+	else
+		to_chat(user, examine_block(to_chat_msg))
+	// BLUEMOON EDIT END
+
 
 /proc/chemscan(mob/living/user, mob/living/M)
 	if(istype(M))
@@ -560,6 +641,32 @@ GENETICS SCANNER
 	icon_state = "health_adv"
 	desc = "A hand-held body scanner able to distinguish vital signs of the subject with high accuracy."
 	advanced = TRUE
+	var/printing = FALSE
+
+// BLUEMOON ADD START - изменение анализаторов здоровья
+/obj/item/healthanalyzer/advanced/Topic(href, href_list)
+	. = ..()
+	var/mob/living/carbon/user = usr
+	if(!istype(user) || !user.canUseTopic(src, BE_CLOSE))
+		return
+	if(href_list["print_scan"])
+		if(printing)
+			return
+		if(last_recipient_name != href_list["subject_name"] || last_scan_time != href_list["time"])
+			to_chat(user, span_warning("Данные этого сканирования были затёрты последующими."))
+			return
+		printing = TRUE
+		playsound(src, 'sound/effects/printer.ogg', 50, FALSE)
+		sleep(2 SECONDS)
+		var/obj/item/paper/new_health_report = new(get_turf(loc))
+		new_health_report.add_raw_text(last_msg, advanced_html = TRUE)
+		var/datum/asset/spritesheet/sheet = get_asset_datum(/datum/asset/spritesheet/simple/paper)
+		new_health_report.add_stamp(sheet.icon_class_name("stamp-machine"), 400, 50, 1, "stamp-machine")
+		new_health_report.name = "Health Scan Report - [last_recipient_name] - [last_scan_time]"
+		new_health_report.update_appearance()
+		playsound(src, 'sound/machines/ping.ogg', 50, FALSE)
+		printing = FALSE
+// BLUEMOON ADD END
 
 /// Displays wounds with extended information on their status vs medscanners
 /proc/woundscan(mob/user, mob/living/carbon/patient, obj/item/healthanalyzer/wound/scanner)
@@ -711,7 +818,7 @@ GENETICS SCANNER
 			else
 				to_chat(user, "<span class='warning'>[src]'s barometer function says a storm will land in approximately [butchertime(fixed)].</span>")
 		cooldown = TRUE
-		addtimer(CALLBACK(src,/obj/item/analyzer/proc/ping), cooldown_time)
+		addtimer(CALLBACK(src, TYPE_PROC_REF(/obj/item/analyzer, ping)), cooldown_time)
 
 /obj/item/analyzer/proc/ping()
 	if(isliving(loc))
@@ -731,16 +838,21 @@ GENETICS SCANNER
 			amount += inaccurate
 	return DisplayTimeText(max(1,amount))
 
-/proc/atmosanalyzer_scan(mixture, mob/living/user, atom/target = src, visible = TRUE)
+/proc/atmosanalyzer_scan(mixture, mob/living/user, atom/target = src, silent = FALSE)
+	mixture = target.return_analyzable_air()
+	if(!mixture)
+		return FALSE
+
 	var/icon = target
-	if(visible)
-		user.visible_message("[user] has used the analyzer on [icon2html(icon, viewers(user))] [target].", "<span class='notice'>You use the analyzer on [icon2html(icon, user)] [target].</span>")
-	var/results = "<span class='boldnotice'>Results of analysis of [icon2html(icon, user)] [target].</span>"
+	var/render_list = list()
+	if(!silent && isliving(user))
+		user.visible_message("<span class='notice'>[user] uses the analyzer on [icon2html(icon, viewers(user))] [target].</span>", "<span class='notice'>You use the analyzer on [icon2html(icon, user)] [target].</span>")
+	render_list += "<span class='boldnotice'>Results of analysis of [icon2html(icon, user)] [target].</span>"
 
 	var/list/airs = islist(mixture) ? mixture : list(mixture)
 	for(var/g in airs)
 		if(airs.len > 1) //not a unary gas mixture
-			results += "\n<span class='boldnotice'>Node [airs.Find(g)]</span>"
+			render_list += "<span class='boldnotice'>Node [airs.Find(g)]</span>"
 		var/datum/gas_mixture/air_contents = g
 
 		var/total_moles = air_contents.total_moles()
@@ -750,30 +862,27 @@ GENETICS SCANNER
 		var/cached_scan_results = air_contents.analyzer_results
 
 		if(total_moles > 0)
-			results += "\n<span class='notice'>Moles: [round(total_moles, 0.01)] mol</span>"
-			results += "\n<span class='notice'>Volume: [volume] L</span>"
-			results += "\n<span class='notice'>Pressure: [round(pressure,0.01)] kPa</span>"
+			//WS Start -- Atmos Analyzer Reformat (Issue #419)
+			render_list += "<span class='notice'>Moles: [round(total_moles, 0.01)] mol</span>\
+							\n<span class='notice'>Volume: [volume] L</span>\
+							\n<span class='notice'>Pressure: [round(pressure,0.01)] kPa</span>\
+							\n<span class='notice'>Temperature: [round(temperature - T0C,0.01)] &deg;C ([round(temperature, 0.01)] K)</span>"
+			//WS End
 
 			for(var/id in air_contents.get_gases())
-				if(air_contents.get_moles(id) >= 0.005)
-					var/gas_concentration = air_contents.get_moles(id)/total_moles
-					results += "\n<span class='notice'>[GLOB.gas_data.names[id]]: [round(gas_concentration*100, 0.01)] % ([round(air_contents.get_moles(id), 0.01)] mol)</span>"
-			results += "\n<span class='notice'>Temperature: [round(temperature - T0C,0.01)] &deg;C ([round(temperature, 0.01)] K)</span>"
+				var/gas_concentration = air_contents.get_moles(id)/total_moles
+				render_list += "<span class='notice'>[GLOB.gas_data.names[id]]: [round(gas_concentration*100, 0.01)] % ([round(air_contents.get_moles(id), 0.01)] mol)</span>"  //WS Edit -- Atmos Analyzer Reformat (Issue #419)
 
 		else
-			if(airs.len > 1)
-				results += "\n<span class='notice'>This node is empty!</span>"
-			else
-				results += "\n<span class='notice'>[target] is empty!</span>"
+			render_list += airs.len > 1 ? "<span class='notice'>This node is empty!</span>" : "<span class='notice'>[target] is empty!</span>"
 
 		if(cached_scan_results && cached_scan_results["fusion"]) //notify the user if a fusion reaction was detected
-			var/instability = round(cached_scan_results["fusion"], 0.01)
-			var/tier = instability2text(instability)
-			results += "\n<span class='boldnotice'>Large amounts of free neutrons detected in the air indicate that a fusion reaction took place.</span>"
-			results += "\n<span class='notice'>Instability of the last fusion reaction: [instability]\n This indicates it was [tier]</span>"
+			render_list += "<span class='boldnotice'>Large amounts of free neutrons detected in the air indicate that a fusion reaction took place.</span>\
+						\n<span class='notice'>Instability of the last fusion reaction: [round(cached_scan_results["fusion"], 0.01)].</span>"
 
-	to_chat(user, examine_block(results))
-	return
+	// we let the join apply newlines so we do need handholding
+	to_chat(user, examine_block(jointext(render_list, "\n")), type = MESSAGE_TYPE_INFO)
+	return TRUE
 
 /obj/item/analyzer/proc/scan_turf(mob/user, turf/location)
 
@@ -867,8 +976,7 @@ GENETICS SCANNER
 	if (!isslime(M))
 		to_chat(user, "<span class='warning'>This device can only scan slimes!</span>")
 		return
-	var/mob/living/simple_animal/slime/T = M
-	slime_scan(T, user)
+	slime_scan(M, user)
 
 /proc/slime_scan(mob/living/simple_animal/slime/T, mob/living/user)
 	var/output = "<b>Slime scan results:</b>"
@@ -1019,7 +1127,7 @@ GENETICS SCANNER
 
 		ready = FALSE
 		icon_state = "[icon_state]_recharging"
-		addtimer(CALLBACK(src, .proc/recharge), cooldown, TIMER_UNIQUE)
+		addtimer(CALLBACK(src, PROC_REF(recharge)), cooldown, TIMER_UNIQUE)
 
 /obj/item/sequence_scanner/proc/recharge()
 	icon_state = initial(icon_state)

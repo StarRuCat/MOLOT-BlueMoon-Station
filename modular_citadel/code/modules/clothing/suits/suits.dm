@@ -13,14 +13,17 @@
 	item_state = "hostrench"
 	mutantrace_variation = STYLE_DIGITIGRADE
 	body_parts_covered = CHEST|GROIN|ARMS|LEGS
+	mutantrace_variation = STYLE_DIGITIGRADE|STYLE_NO_ANTHRO_ICON // BLUEMOON ADD - фикс отсутствия спрайта для персонажей с альтернативными ногами
 
 /obj/item/clothing/suit/hooded/cloak/david
 	name = "red cloak"
 	icon_state = "goliath_cloak"
 	desc = "Ever wanted to look like a badass without ANY effort? Try this nanotrasen brand red cloak, perfect for kids"
 	hoodtype = /obj/item/clothing/head/hooded/cloakhood/david
-	body_parts_covered = CHEST|GROIN|ARMS
-	mutantrace_variation = STYLE_DIGITIGRADE
+	body_parts_covered = CHEST|ARMS
+	mob_overlay_icon = 'icons/mob/clothing/suit.dmi' //BLUEMOON ADD мы хотим чтобы даже когда оно на шее оно смотрело именно сюда, а не в файл одежды шеи
+	slot_flags = ITEM_SLOT_OCLOTHING | ITEM_SLOT_NECK
+	mutantrace_variation = STYLE_DIGITIGRADE|STYLE_SNEK_TAURIC //bluemoon add
 
 /obj/item/clothing/head/hooded/cloakhood/david
 	name = "red cloak hood"

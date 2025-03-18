@@ -17,7 +17,8 @@
 	icon_dead = "terror_princess1_dead"
 	melee_damage_lower = 15
 	melee_damage_upper = 20
-	obj_damage = 60
+	wall_destroy_hardness = 40
+	obj_damage = 45
 	maxHealth = 200
 	health = 200
 	speed = -0.1
@@ -33,7 +34,7 @@
 	canlay = 1
 	hasnested = TRUE
 	spider_spawnfrequency = 1600 // 160 seconds
-	special_abillity = list(/obj/effect/proc_holder/spell/aoe_turf/terror_shriek_princess)
+	special_abillity = list(/obj/effect/proc_holder/spell/aoe_turf/terror_shriek/princess)
 	var/spider_max_children = 20
 
 /mob/living/simple_animal/hostile/retaliate/poison/terror_spider/queen/princess/grant_queen_subtype_abilities()

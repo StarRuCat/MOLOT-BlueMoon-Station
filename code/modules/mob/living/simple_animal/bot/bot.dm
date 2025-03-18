@@ -243,7 +243,7 @@
 
 /mob/living/simple_animal/bot/adjustHealth(amount, updating_health = TRUE, forced = FALSE)
 	. = ..()
-	if(. && prob(10))
+	if(. && amount > 0 && prob(10))
 		new oil_spill_type(loc)
 
 /mob/living/simple_animal/bot/updatehealth()
@@ -560,7 +560,7 @@ Pass a positive integer as an argument to override a bot's default speed.
 			turn_on() //Saves the AI the hassle of having to activate a bot manually.
 		access_card = all_access //Give the bot all-access while under the AI's command.
 		if(client)
-			reset_access_timer_id = addtimer(CALLBACK (src, .proc/bot_reset), 600, TIMER_UNIQUE|TIMER_OVERRIDE|TIMER_STOPPABLE) //if the bot is player controlled, they get the extra access for a limited time
+			reset_access_timer_id = addtimer(CALLBACK (src, PROC_REF(bot_reset)), 600, TIMER_UNIQUE|TIMER_OVERRIDE|TIMER_STOPPABLE) //if the bot is player controlled, they get the extra access for a limited time
 			to_chat(src, "<span class='notice'><span class='big'>Priority waypoint set by [icon2html(calling_ai, src)] <b>[caller]</b>. Proceed to <b>[end_area]</b>.</span><br>[path.len-1] meters to destination. You have been granted additional door access for 60 seconds.</span>")
 		if(message)
 			to_chat(calling_ai, "<span class='notice'>[icon2html(src, calling_ai)] [name] called to [end_area]. [path.len-1] meters to destination.</span>")
@@ -945,7 +945,7 @@ Pass a positive integer as an argument to override a bot's default speed.
 	. = ..()
 	bot_reset()
 
-/mob/living/simple_animal/bot/revive(full_heal = 0, admin_revive = 0)
+/mob/living/simple_animal/bot/revive(full_heal = 0, admin_revive = 0, excess_healing = 0)
 	if(..())
 		update_icon()
 		. = 1

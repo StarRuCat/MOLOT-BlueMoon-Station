@@ -19,8 +19,9 @@
 
 /datum/map_template/ruin/space/spacehotelsplurt
 	prefix = "modular_splurt/_maps/RandomRuins/SpaceRuins/"
-	id = "spacehotelsplurt"
-	suffix = "spacehotelsplurt.dmm"
+	id = "spacehotelbluemoon"
+	suffix = "spacehotelbluemoon.dmm"
 	name = "Twin Spires Hotel and Club"
 	description = "A Nanotrasen-partnered interstellar hotel and stripclub"
 	always_place = TRUE
+	//variants = list("map_variant1.dmm", "map_variant2.dmm") should be in the same prefix directory as parent map

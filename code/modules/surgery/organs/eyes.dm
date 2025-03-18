@@ -89,28 +89,35 @@
 
 /obj/item/organ/eyes/applyOrganDamage(d, maximum = maxHealth)
 	. = ..()
-	if(!.)
-		return
-	var/old_damaged = eye_damaged
-	switch(damage)
-		if(INFINITY to maxHealth)
-			eye_damaged = BLIND_VISION_THREE
-		if(maxHealth to high_threshold)
-			eye_damaged = BLURRY_VISION_TWO
-		if(high_threshold to low_threshold)
-			eye_damaged = BLURRY_VISION_ONE
-		else
+	if(!owner)
+		return FALSE
+	apply_damaged_eye_effects()
+
+/// Applies effects to our owner based on how damaged our eyes are
+/obj/item/organ/eyes/proc/apply_damaged_eye_effects()
+	// we're in healthy threshold, either try to heal (if damaged) or do nothing
+	if(damage <= low_threshold)
+		if(eye_damaged)
 			eye_damaged = FALSE
-	if(eye_damaged == old_damaged || !owner)
+			// clear nearsightedness from damage
+			owner.clear_fullscreen(EYE_DAMAGE)
+			// and cure blindness from damage
+			owner.cure_blind(EYE_DAMAGE)
 		return
-	if(old_damaged == BLIND_VISION_THREE)
-		owner.cure_blind(EYE_DAMAGE)
-	else if(eye_damaged == BLIND_VISION_THREE)
+
+	//various degrees of "oh fuck my eyes", from "point a laser at your eye" to "staring at the Sun" intensities
+	// 50 - blind
+	// 49-31 - nearsighted (2 severity)
+	// 30-20 - nearsighted (1 severity)
+	if(organ_flags & ORGAN_FAILING)
+		// become blind from damage
 		owner.become_blind(EYE_DAMAGE)
-	if(eye_damaged && eye_damaged != BLIND_VISION_THREE)
-		owner.overlay_fullscreen("eye_damage", /atom/movable/screen/fullscreen/scaled/impaired, eye_damaged)
+
 	else
-		owner.clear_fullscreen("eye_damage")
+		// become nearsighted from damage
+		owner.overlay_fullscreen(EYE_DAMAGE, /atom/movable/screen/fullscreen/scaled/impaired, damage > high_threshold ? 2 : 1)
+
+	eye_damaged = TRUE
 
 /obj/item/organ/eyes/night_vision
 	name = "shadow eyes"
@@ -157,6 +164,7 @@
 
 /obj/item/organ/eyes/robotic
 	name = "robotic eyes"
+	icon = 'modular_bluemoon/icons/obj/surgery.dmi' //BLUEMOON ADD респрайты киберглаз
 	icon_state = "cybernetic_eyeballs"
 	desc = "Your vision is augmented."
 	status = ORGAN_ROBOTIC
@@ -177,6 +185,7 @@
 	desc = "These cybernetic eyes will give you X-ray vision. Blinking is futile."
 	left_eye_color = "000"
 	right_eye_color = "000"
+	icon_state = "xray_eyes" //BLUEMOON ADD респрайты киберглаз
 	see_in_dark = 8
 	sight_flags = SEE_MOBS | SEE_OBJS | SEE_TURFS
 
@@ -185,6 +194,7 @@
 	desc = "These cybernetic eye implants will give you thermal vision. Vertical slit pupil included."
 	left_eye_color = "FC0"
 	right_eye_color = "FC0"
+	icon_state = "thermal_eyes" //BLUEMOON ADD респрайты киберглаз
 	sight_flags = SEE_MOBS
 	lighting_alpha = LIGHTING_PLANE_ALPHA_MOSTLY_VISIBLE
 	flash_protect = -1
@@ -225,6 +235,7 @@
 /obj/item/organ/eyes/robotic/shield
 	name = "shielded robotic eyes"
 	desc = "These reactive micro-shields will protect you from welders and flashes without obscuring your vision."
+	icon_state = "shielded_eyes" //BLUEMOON ADD респрайты киберглаз
 	flash_protect = 2
 
 /obj/item/organ/eyes/robotic/shield/emp_act(severity)
@@ -238,6 +249,7 @@
 	left_eye_color = "000"
 	right_eye_color = "000"
 	actions_types = list(/datum/action/item_action/organ_action/use, /datum/action/item_action/organ_action/toggle)
+	icon_state = "light_eyes" //BLUEMOON ADD респрайты киберглаз
 	var/current_color_string = "#ffffff"
 	var/active = FALSE
 	var/max_light_beam_distance = 5
@@ -333,7 +345,7 @@
 	if(!silent)
 		to_chat(owner, "<span class='warning'>Your [src] clicks and makes a whining noise, before shooting out a beam of light!</span>")
 	active = TRUE
-	RegisterSignal(owner, COMSIG_ATOM_DIR_CHANGE, .proc/update_visuals)
+	RegisterSignal(owner, COMSIG_ATOM_DIR_CHANGE, PROC_REF(update_visuals))
 	cycle_mob_overlay()
 
 /obj/item/organ/eyes/robotic/glow/proc/deactivate(silent = FALSE)

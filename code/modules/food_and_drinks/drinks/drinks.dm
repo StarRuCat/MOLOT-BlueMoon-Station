@@ -10,7 +10,7 @@
 	righthand_file = 'icons/mob/inhands/misc/food_righthand.dmi'
 	reagent_flags = OPENCONTAINER
 	reagent_value = DEFAULT_REAGENTS_VALUE
-	var/gulp_size = 5
+	var/gulp_size = 5 //Максимум выпиваемый из-за количества реагентов
 	possible_transfer_amounts = list(5,10,15,20,25,30,50)
 	volume = 50
 	resistance_flags = NONE
@@ -33,6 +33,9 @@
 		return
 
 	var/gulp_amount = gulp_size
+	if(user == M && ishuman(M))
+		var/mob/living/carbon/human/H = M
+		gulp_amount = H.self_gulp_size
 	if(M == user)
 		if(user.zone_selected == BODY_ZONE_PRECISE_MOUTH && !beingChugged)
 			beingChugged = TRUE
@@ -91,7 +94,7 @@
 		if(iscyborg(user)) //Cyborg modules that include drinks automatically refill themselves, but drain the borg's cell
 			var/mob/living/silicon/robot/bro = user
 			bro.cell.use(30)
-			addtimer(CALLBACK(reagents, /datum/reagents.proc/add_reagent, refill, trans), 600)
+			addtimer(CALLBACK(reagents, TYPE_PROC_REF(/datum/reagents, add_reagent), refill, trans), 600)
 
 	else if(target.is_drainable()) //A dispenser. Transfer FROM it TO us.
 		if (!is_refillable())
@@ -221,6 +224,7 @@
 		if(prob(33))
 			new/obj/item/shard(drop_location())
 		obj_integrity = 1
+		qdel(src)
 	..()
 
 ////////////////////////////////////////////////////////////////////////////////
